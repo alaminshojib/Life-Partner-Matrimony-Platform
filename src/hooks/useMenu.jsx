@@ -17,9 +17,9 @@ const useMenu = () => {
     // }, [])
 
     const {data: menu = [], isPending: loading, refetch} = useQuery({
-        queryKey: ['menu'], 
+        queryKey: ['biodatas'], 
         queryFn: async() =>{
-            const res = await axiosPublic.get('/menu');
+            const res = await axiosPublic.get('/biodatas');
             return res.data;
         }
     })

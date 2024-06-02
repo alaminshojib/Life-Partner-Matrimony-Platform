@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SectionTitle from '../../../components/SectionTitle/SectionTitle';
-import BioGrids from './BioGrids';
-import Biodata from './Biodata';
+
 import BioDetailsData from './BioDetailsData';
-import { Paper, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
-import { Table } from 'antd';
-import { Link } from 'react-router-dom';
+
 
 const BioDetails = () => {
     // State for selected filter options
@@ -18,11 +15,11 @@ const BioDetails = () => {
     // Division options
     const divisionOptions = [
         'Dhaka',
-        'Chattagram',
+        'Chattogram',
         'Rangpur',
-        'Barisal',
+        'Barishal',
         'Khulna',
-        'Maymansign',
+        'Mymensingh',
         'Sylhet'
     ];
 
@@ -47,6 +44,8 @@ const BioDetails = () => {
         setSelectedDivision(event.target.value);
     };
 
+    
+
     return (
         <div>
             <Helmet>
@@ -54,14 +53,14 @@ const BioDetails = () => {
             </Helmet>
 
             <section className="px-5 pt-14 pb-5">
-                <SectionTitle heading="Biodata ID : " ></SectionTitle>
+                <SectionTitle heading={`Biodata Id: ${menu.lenght}`} ></SectionTitle>
 
                 <div className="container grid grid-cols-12 gap-y-6 md:gap-10 mx-auto">
                     <div className="col-span-12 md:col-span-3 pt-5 pl-4 flex flex-col justify-between py-2 space-y-8 md:space-y-16">
                         <div className="space-y-8 md:space-y-12 flex flex-col">
                             <BioDetailsData></BioDetailsData>
                         </div>
-                      
+
                     </div>
                     {/* Divider */}
                     <div className="col-span-12 md:col-span-1 md:flex justify-center items-center">

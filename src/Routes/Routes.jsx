@@ -43,7 +43,7 @@ import EditBiodata from "../pages/Dashboard/EditBiodata/EditBiodata";
           element: <BiodatasPage></BiodatasPage>
         },
         {
-          path: 'bioDetails',
+          path: 'bioDetails/:_id',
           element: <BioDetails></BioDetails>
         },
         {
@@ -124,7 +124,7 @@ import EditBiodata from "../pages/Dashboard/EditBiodata/EditBiodata";
         {
           path: 'updateItem/:id',
           element: <AdminRoute><UpdateItem></UpdateItem></AdminRoute>,
-          loader: ({params}) => fetch(`http://localhost:5000/menu/${params.id}`)
+          loader: ({params}) => fetch(`http://localhost:5000/biodatas/${params.id}`)
         },
         {
           path: 'users',

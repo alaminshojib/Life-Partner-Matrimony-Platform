@@ -6,156 +6,76 @@ import { Badge } from 'antd';
 import logo from '../../../assets/navbar/logo.png';
 
 
-// const NavBar = () => {
-//     const { user, logOut } = useContext(AuthContext);
-//     const [isAdmin] = useAdmin();
-//     const [cart] = useCart();
 
-//     const handleLogOut = () => {
-//         logOut()
-//             .then(() => { })
-//             .catch(error => console.log(error));
-//     }
-
-//     const navOptions = <>
-//         <li><Link to="/">Home</Link></li>
-//         {/* <li><Link to="/menu">Our Menu</Link></li> */}
-//         <li><Link to="/biodatas">Biodatas</Link></li>
-//         <li><Link to="/order/salad">About Us</Link></li>
-//         <li><Link to="/bioDetails">Contact Us</Link></li>
-//         {
-//             // user ? 'true': 'false'
-//             // user ? condition ? 'double true' : 'one true' : 'false' 
-//         }
-//         {
-//             user && isAdmin && <li><Link to="/dashboard/adminHome">Dashboard</Link></li>
-//         }
-//         {
-//             user && !isAdmin && <li><Link to="/dashboard/userHome">Dashboard</Link></li>
-//         }
-
-
-//     </>
-
-//     return (
-//         <>
-//             <div className="navbar fixed z-10 bg-opacity-30 max-w-screen-xl bg-black text-white">
-//                 <div className="navbar-start">
-//                     <div className="dropdown">
-//                         <label tabIndex={0} className="btn btn-ghost lg:hidden">
-//                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
-//                         </label>
-//                         <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-//                             {navOptions}
-//                         </ul>
-//                     </div>
-//                     <div className="flex justify-center items-center gap-2">
-//                         <img className="w-8 h-8" src={logo} alt="logo" />
-//                         <Link className="normal-case text-xl">  Life Partner</Link>
-//                     </div>
-
-//                 </div>
-//                 <div className="navbar-center hidden lg:flex">
-//                     <ul className="menu menu-horizontal px-1">
-//                         {navOptions}
-//                     </ul>
-//                 </div>
-//                 <div className="navbar-end gap-4 pr-2">
-//                     <div>
-//                         <Link to="/dashboard/cart">
-//                             <div className="flex justify-center items-center gap-1">
-//                                 <Badge count= {cart.length}>
-//                                     <FaShoppingCart className="w-6 h-6 text-white"/>
-//                                 </Badge>
-//                             </div>
-//                         </Link>
-
-
-//                     </div>
-//                     <div>
-//                     {
-//                         user ? <>
-//                             {/* <span>{user?.displayName}</span> */}
-//                             <button onClick={handleLogOut} className="btn btn-ghost">LogOut</button>
-//                         </> : <>
-//                             <Link to="/login">Login</Link>
-//                         </>
-//                     }</div>
-//                 </div>
-//             </div>
-//         </>
-//     );
-// };
-
-// export default NavBar;
-
-import { Fragment, useContext } from 'react';
+import { useContext } from 'react';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { NavLink } from 'react-router-dom';
 import { AuthContext } from "../../../providers/AuthProvider";
 
-const navigation = [
-    { name: 'Home', to: '/', current: true },
-    { name: 'Biodatas', to: '/', current: true },
-    { name: 'About Us', to: '/team', current: false },
-    { name: 'Contact Us', to: '/projects', current: false },
-    { name: 'Dashboard', to: '/calendar', current: false },
-];
 
 export default function NavBar() {
+    const [cart] = useCart();
     const { user, logOut } = useContext(AuthContext);
+    const [isAdmin] = useAdmin();
 
     const handleLogOut = () => {
         logOut()
             .then(() => { })
             .catch(error => console.log(error));
     };
+    
+
+
+    const navOptions = <>
+        <NavLink className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to='/' > Home </NavLink>
+        <NavLink className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to='/biodatas' > Biodatas </NavLink>
+        <NavLink className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to='/order' > About Us </NavLink>
+        <NavLink className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to="/bioDetails/:_id" > Contact Us </NavLink>
+        {
+            user && isAdmin && <Link className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to="/dashboard/adminHome">Dashboard</Link>
+        }
+        {
+            user && !isAdmin && <Link className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to="/dashboard/userHome">Dashboard</Link>
+        }
+    </>
 
     return (
-        <Disclosure as="nav" className="bg-gray-800">
+        <Disclosure as="nav" className="navbar fixed z-10 bg-opacity-30 w-screen bg-black text-white">
             {({ open }) => (
                 <>
-                    <div className="flex items-center justify-between px-4 py-4">
+                    <div className="flex items-center justify-between px-8 py-4">
+                        <div className="flex items-center justify-center gap-2">
+                            <img className="h-6 w-6 " src={logo} alt="Your Company" />
+                            <h1 className="text-2xl font-bold text-white">Life Partner</h1>
+                        </div>
+
                         <div className="flex items-center">
-                            <div className="flex items-center justify-center gap-2">
-                                <img className="h-6 w-6 " src={logo} alt="Your Company" />
-                                <h1 className="text-2xl font-bold text-white">Life Partner</h1>
-                            </div>
 
 
                             <div className="hidden sm:ml-6 sm:block mx-auto justify-center items-center ">
-                                <div className="flex space-x-4">
-                                    {navigation.map((item) => (
-                                        <NavLink
-                                            key={item.name}
+                                <div className="flex space-x-4 w-fit  mx-auto justify-center items-center">
 
-                                            to={item.to}
-                                            className={`${item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                                                } rounded-md px-3 py-2 text-sm font-medium`}
-                                            activeClassName="bg-gray-900 text-white"
-                                            exact
-                                        >
-                                            {item.name}
-                                        </NavLink>
-                                    ))}
+
+                                    {navOptions}
+
                                 </div>
                             </div>
                         </div>
                         <div className="flex items-center">
                             <button
                                 type="button"
-                                className="text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                                className="text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 "
                             >
-                                <BellIcon className="h-6 w-6" aria-hidden="true" />
+                                 <Badge count= {cart.length}>
+                                   <FaShoppingCart className="w-6 h-6 text-white mr-2"/>
+                                </Badge>
                             </button>
                             <Menu as="div" className="relative ml-3">
                                 <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                     <img
                                         className="h-8 w-8 rounded-full"
-                                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                        alt=""
-                                    />
+                                        src={user?.photoURL} alt="P" />
                                 </MenuButton>
                                 <Transition
                                     enter="transition ease-out duration-100"
@@ -168,13 +88,18 @@ export default function NavBar() {
                                     <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                         <MenuItem>
                                             <NavLink to="#" className="block px-4 py-2 text-sm text-gray-700">
-                                                {user.displayName || 'Your Profile'}
+                                                {user?.displayName || 'Your Profile'}
                                             </NavLink>
                                         </MenuItem>
                                         <MenuItem>
-                                            <button onClick={handleLogOut} className="block px-4 py-2 text-sm text-gray-700">
-                                                Sign out
-                                            </button>
+                                                {
+                                                    user ? <>
+                                                        {/* <span>{user?.displayName}</span> */}
+                                                        <button onClick={handleLogOut} className="block px-4 py-2 text-sm text-gray-700">LogOut</button>
+                                                    </> : <>
+                                                        <Link className="block px-4 py-2 text-sm text-gray-700" to="/login">Login</Link>
+                                                    </>
+                                                }
                                         </MenuItem>
                                     </MenuItems>
                                 </Transition>
@@ -189,18 +114,7 @@ export default function NavBar() {
                     </div>
                     <DisclosurePanel className="sm:hidden">
                         <div className="px-2 pt-2 pb-3 space-y-1">
-                            {navigation.map((item) => (
-                                <NavLink
-                                    key={item.name}
-                                    to={item.to}
-                                    className={`${item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                                        } block px-3 py-2 rounded-md text-base font-medium`}
-                                    activeClassName="bg-gray-900 text-white"
-                                    exact
-                                >
-                                    {item.name}
-                                </NavLink>
-                            ))}
+                            {navOptions}
                         </div>
                     </DisclosurePanel>
                 </>
