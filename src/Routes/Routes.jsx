@@ -9,7 +9,7 @@ import SignUp from "../pages/SignUp/SignUp";
 import PrivateRoute from "./PrivateRoute";
 import Secret from "../pages/Shared/Secret/Secret";
 import Dashboard from "../Layout/Dashboard";
-import Cart from "../pages/Dashboard/Cart/Cart";
+import Cart from "../pages/Dashboard/CheckoutPage/CheckoutPage";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 import AddItems from "../pages/Dashboard/AddItems/AddItems";
 import AdminRoute from "./AdminRoute";
@@ -24,6 +24,9 @@ import BioDetails from "../pages/Order/Biodatas/BioDetails";
 import EditBiodata from "../pages/Dashboard/EditBiodata/EditBiodata";
 import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
+import ViewBiodata from "../pages/Dashboard/ViewBiodata/ViewBiodata";
+import MyContactRequest from "../pages/Dashboard/MyContactRequest/MyContactRequest";
+import MyFavouritesBiodata from "../pages/Dashboard/MyFavouritesBiodata/MyFavouritesBiodata";
 
 
   export const router = createBrowserRouter([
@@ -85,26 +88,17 @@ import Contact from "../pages/Contact/Contact";
         },
         {
           path: 'view-biodata',
-          element: <UserHome></UserHome>
+          element: <ViewBiodata></ViewBiodata>
         },
         {
           path: 'my-contact-request',
-          element: <UserHome></UserHome>
+          element: <MyContactRequest></MyContactRequest>
         },
         {
           path: 'my-favourites-biodata',
-          element: <UserHome></UserHome>
+          element: <MyFavouritesBiodata></MyFavouritesBiodata>
         },
-        {
-          path: 'logout',
-          element: <UserHome></UserHome>
-        },
-
-
-
-
-
-
+       
         {
           path: 'cart',
           element: <Cart></Cart>

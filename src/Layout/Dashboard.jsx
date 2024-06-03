@@ -116,7 +116,7 @@ const Dashboard = () => {
                                 <li>
                                     <NavLink to="/dashboard/cart" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
                                         <FaShoppingCart className="mr-2" />
-                                        My Cart ({cart.length})
+                                        My Checkout ({cart.length})
                                     </NavLink>
                                 </li>
                                 <li>
