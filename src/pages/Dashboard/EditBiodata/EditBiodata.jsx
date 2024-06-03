@@ -1,25 +1,31 @@
 import React, { useState } from 'react';
+import useAuth from '../../../hooks/useAuth';
+import ReactCountryFlag from "react-country-flag";
+import countryData from 'country-flag-icons/react/3x2';
 
 const EditBiodata = () => {
+  const { user } = useAuth(); // Access user directly from useAuth
+
   const [formData, setFormData] = useState({
-    biodataType: 'Male',
-    name: 'John Doe',
-    profileImage: 'https://example.com/profile.jpg',
-    dob: '1990-01-01',
-    height: '6 feet',
-    weight: '170 lbs',
-    age: '32',
-    occupation: 'Engineer',
-    race: 'Caucasian',
-    fathersName: 'David Doe',
-    mothersName: 'Mary Doe',
-    permanentDivision: 'Dhaka',
-    presentDivision: 'Dhaka',
-    expectedPartnerAge: '25-35',
-    expectedPartnerHeight: '5 feet 5 inches - 6 feet',
-    expectedPartnerWeight: '120 lbs - 180 lbs',
-    contactEmail: 'john@example.com',
-    mobileNumber: '1234567890',
+    biodataType: '',
+    name: '',
+    profileImage: '',
+    dob: '',
+    height: '',
+    weight: '',
+    age: '',
+    occupation: '',
+    race: '',
+    fathersName: '',
+    mothersName: '',
+    permanentDivision: '',
+    presentDivision: '',
+    expectedPartnerAge: '',
+    expectedPartnerHeight: '',
+    expectedPartnerWeight: '',
+    contactEmail: user.email, // Set contactEmail directly to user's email
+    mobileCountryCode: '', // Example: Set default country code
+    mobileNumber: '',
   });
 
   const handleChange = (e) => {
@@ -48,8 +54,9 @@ const EditBiodata = () => {
       expectedPartnerAge: '',
       expectedPartnerHeight: '',
       expectedPartnerWeight: '',
-      contactEmail: '',
-      mobileNumber: '',
+      contactEmail: formData.contactEmail, // Keep contactEmail as edited
+      mobileCountryCode: formData.mobileCountryCode, // Keep mobileCountryCode
+      mobileNumber: formData.mobileNumber,
     });
   };
 
@@ -62,11 +69,13 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Biodata Type :</label>
             <select
+              required
               name="biodataType"
               value={formData.biodataType}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
+              <option value="">Select Biodata Type</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
@@ -75,6 +84,7 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Name :</label>
             <input
+              required
               type="text"
               name="name"
               value={formData.name}
@@ -86,6 +96,7 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Profile Image :</label>
             <input
+              required
               type="text"
               name="profileImage"
               value={formData.profileImage}
@@ -97,6 +108,7 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Date of Birth :</label>
             <input
+              required
               type="date"
               name="dob"
               value={formData.dob}
@@ -108,6 +120,7 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Height :</label>
             <select
+              required
               name="height"
               value={formData.height}
               onChange={handleChange}
@@ -125,6 +138,7 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Weight :</label>
             <select
+              required
               name="weight"
               value={formData.weight}
               onChange={handleChange}
@@ -142,6 +156,7 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Age :</label>
             <input
+              required
               type="text"
               name="age"
               value={formData.age}
@@ -153,6 +168,7 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Occupation :</label>
             <select
+
               name="occupation"
               value={formData.occupation}
               onChange={handleChange}
@@ -169,8 +185,6 @@ const EditBiodata = () => {
               <option value="Unemployed">Unemployed</option>
               <option value="Homemaker">Homemaker</option>
               <option value="Retired">Retired</option>
-
-
               {/* Add more options as needed */}
             </select>
           </div>
@@ -179,6 +193,7 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Race :</label>
             <select
+              required
               name="race"
               value={formData.race}
               onChange={handleChange}
@@ -198,6 +213,7 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Father's Name :</label>
             <input
+              required
               type="text"
               name="fathersName"
               value={formData.fathersName}
@@ -209,6 +225,7 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Mother's Name :</label>
             <input
+              required
               type="text"
               name="mothersName"
               value={formData.mothersName}
@@ -220,6 +237,7 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Permanent Division :</label>
             <select
+
               name="permanentDivision"
               value={formData.permanentDivision}
               onChange={handleChange}
@@ -231,7 +249,7 @@ const EditBiodata = () => {
               <option value="Rajshahi">Rajshahi</option>
               <option value="Chattogram">Chattogram</option>
               <option value="Rangpur">Rangpur</option>
-              <option value="Barisal">Barisal</option>
+              <option value="Barishal">Barishal</option>
               <option value="Khulna">Khulna</option>
               <option value="Mymensingh">Mymensingh</option>
               <option value="Sylhet">Sylhet</option>
@@ -242,17 +260,19 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Present Division :</label>
             <select
+              required
               name="presentDivision"
               value={formData.presentDivision}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
+
               <option value="">Select Present Division</option>
               <option value="Dhaka">Dhaka</option>
               <option value="Rajshahi">Rajshahi</option>
               <option value="Chattogram">Chattogram</option>
               <option value="Rangpur">Rangpur</option>
-              <option value="Barisal">Barisal</option>
+              <option value="Barishal">Barishal</option>
               <option value="Khulna">Khulna</option>
               <option value="Mymensingh">Mymensingh</option>
               <option value="Sylhet">Sylhet</option>
@@ -261,26 +281,37 @@ const EditBiodata = () => {
 
           </div>
 
-          {/* Expected Partner Age */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Expected Partner Age :</label>
-            <input
-              type="text"
+            <select
+              required
               name="expectedPartnerAge"
               value={formData.expectedPartnerAge}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            />
+            >
+              <option value="">Select Expected Partner Age</option>
+              <option value="18-25">18 - 25</option>
+              <option value="26-30">26 - 30</option>
+              <option value="31-35">31 - 35</option>
+              <option value="36-40">36 - 40</option>
+              <option value="41-45">41 - 45</option>
+              <option value="46-50">46 - 50</option>
+              {/* Add more age ranges as needed */}
+            </select>
           </div>
+
           {/* Expected Partner Height */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Expected Partner Height :</label>
             <select
+              required
               name="expectedPartnerHeight"
               value={formData.expectedPartnerHeight}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
+              <option value="">Select Expected Partner Height</option>
               <option value="5 feet 0 inches - 5 feet 5 inches">4 feet 0 inches - 5 feet 0 inches</option>
               <option value="5 feet 0 inches - 5 feet 5 inches">5 feet 0 inches - 5 feet 5 inches</option>
               <option value="5 feet 6 inches - 6 feet 0 inches">5 feet 6 inches - 6 feet 0 inches</option>
@@ -293,15 +324,20 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Expected Partner Weight :</label>
             <select
+              required
               name="expectedPartnerWeight"
               value={formData.expectedPartnerWeight}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
+              <option value="">Select Expected Partner Weight</option>
               <option value="45 kg - 55 kg">35 kg - 45 kg</option>
-              <option value="45 kg - 55 kg">45 kg - 55 kg</option>
+              <option value="45 kg - 55 kg">46 kg - 55 kg</option>
               <option value="56 kg - 65 kg">56 kg - 65 kg</option>
               <option value="66 kg - 75 kg">66 kg - 75 kg</option>
+              <option value="66 kg - 75 kg">76 kg - 85 kg</option>
+              <option value="66 kg - 75 kg">86 kg - 95 kg</option>
+              <option value="66 kg - 75 kg">96 kg - 105 kg</option>
               {/* Add more options as needed */}
             </select>
           </div>
@@ -311,26 +347,42 @@ const EditBiodata = () => {
             <label className="block text-sm font-medium text-gray-700">Contact Email :</label>
             <input
               type="email"
-              required
               name="contactEmail"
               value={formData.contactEmail}
               onChange={handleChange}
-              readOnly
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
           </div>
-          {/* Mobile Number */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Mobile Number : *</label>
-            <input
-              type="text"
-              required
-              name="mobileNumber"
-              value={formData.mobileNumber}
-              onChange={handleChange}
-              className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            />
+          {/* Mobile Number with Country Code */}
+          <div className="flex flex-col ">
+            <label className="block text-sm items-start font-medium text-gray-700 mr-2">Mobile Number :</label>
+            <div className="flex items-center gap-3 w-full">
+              <select
+                name="mobileCountryCode"
+                value={formData.mobileCountryCode}
+                onChange={handleChange}
+                className="mt-1 p-1 block w-fit border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              >
+                {/* Dynamically generate country code options */}
+                {Object.keys(countryData).map((countryCode) => (
+                  <option key={countryCode} value={countryCode}>
+                    {countryCode}{' '}
+                    <ReactCountryFlag countryCode={countryCode} svg />
+                  </option>
+                ))}
+              </select>
+              <input
+                type="text"
+                required
+                name="mobileNumber"
+                value={formData.mobileNumber}
+                onChange={handleChange}
+                className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              />
+            </div>
           </div>
+
+
         </div>
         <div className="flex justify-end">
           <button
