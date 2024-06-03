@@ -22,6 +22,8 @@ import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
 import BiodatasPage from "../pages/Order/Biodatas/BiodatasPage";
 import BioDetails from "../pages/Order/Biodatas/BioDetails";
 import EditBiodata from "../pages/Dashboard/EditBiodata/EditBiodata";
+import About from "../pages/About/About";
+import Contact from "../pages/Contact/Contact";
 
 
   export const router = createBrowserRouter([
@@ -43,12 +45,20 @@ import EditBiodata from "../pages/Dashboard/EditBiodata/EditBiodata";
           element: <BiodatasPage></BiodatasPage>
         },
         {
-          path: 'bioDetails/:_id',
+          path: 'bioDetails/:id',
           element: <BioDetails></BioDetails>
         },
         {
           path: 'login',
           element: <Login></Login>
+        },
+        {
+          path: 'aboutUs',
+          element: <About></About>
+        },
+        {
+          path: 'contactUs',
+          element: <Contact></Contact>
         },
         {
           path: 'signup',

@@ -30,8 +30,8 @@ export default function NavBar() {
     const navOptions = <>
         <NavLink className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to='/' > Home </NavLink>
         <NavLink className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to='/biodatas' > Biodatas </NavLink>
-        <NavLink className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to='/order' > About Us </NavLink>
-        <NavLink className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to="/bioDetails/:_id" > Contact Us </NavLink>
+        <NavLink className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to='/aboutUs' > About Us </NavLink>
+        <NavLink className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to="/contactUs" > Contact Us </NavLink>
         {
             user && isAdmin && <Link className={"hover:bg-blue-500 py-1 px-2 rounded-md"} to="/dashboard/adminHome">Dashboard</Link>
         }

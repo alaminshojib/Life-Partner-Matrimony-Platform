@@ -1,110 +1,157 @@
-import { FaAd, FaBook, FaCalendar, FaEnvelope, FaHome, FaList, FaSearch, FaShoppingCart, FaUsers, FaUtensils } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaHome, FaUtensils, FaListAlt, FaEdit, FaHeart, FaEnvelopeOpen, FaUsers, FaShoppingCart, FaHistory, FaSearch, FaBars, FaTimes } from "react-icons/fa";
 import { NavLink, Outlet } from "react-router-dom";
 import useCart from "../hooks/useCart";
 import useAdmin from "../hooks/useAdmin";
 
-
 const Dashboard = () => {
     const [cart] = useCart();
-
-    // TODO: get isAdmin value from the database
     const [isAdmin] = useAdmin();
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    const toggleDrawer = () => {
+        setIsDrawerOpen(!isDrawerOpen);
+    };
 
     return (
-        <div className="flex">
+        <div className="flex flex-col md:flex-row h-fit">
+            {/* drawer handle */}
+            <div className="md:hidden bg-blue-500 flex items-center justify-between ">
+               <div>
+               {isDrawerOpen ? (
+                    <button className="text-white p-4" onClick={toggleDrawer}>
+                        <FaTimes />
+                    </button>
+                ) : (
+                    <button className="text-white p-4" onClick={toggleDrawer}>
+                        <FaBars  />
+                    </button>
+
+                )}
+                </div> 
+
+                <nav className="flex items-center px-3 font-bold text-md text-white">
+                    <ul className="flex space-x-4">
+                        <li>
+                            <NavLink to="/" className=" hover:text-orange-500">Home</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/order/salad" className=" hover:text-orange-500">Menu</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/order/contact" className=" hover:text-orange-500">Contact</NavLink>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
             {/* dashboard side bar */}
-            <div className="w-64 min-h-screen bg-orange-400">
+            <div className={`w-full md:w-64 min-h-screen bg-blue-500 md:flex-shrink-0 ${isDrawerOpen ? 'block' : 'hidden'} md:block`}>
                 <ul className="menu p-4">
+                    {/* sidebar links */}
                     {
-                        !isAdmin ? <>
+                        isAdmin ? <>
                             <li>
-                                <NavLink to="/dashboard/adminHome">
-                                    <FaHome></FaHome>
-                                    Admin Home</NavLink>
+                                <NavLink to="/dashboard/adminHome" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                    <FaHome className="mr-2" />
+                                    Admin Home
+                                </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/dashboard/addItems">
-                                    <FaUtensils></FaUtensils>
-                                    Add Items</NavLink>
+                                <NavLink to="/dashboard/addItems" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                    <FaUtensils className="mr-2" />
+                                    Add Items
+                                </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/dashboard/manageItems">
-                                    <FaList></FaList>
-                                    Manage Items</NavLink>
+                                <NavLink to="/dashboard/manageItems" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                    <FaListAlt className="mr-2" />
+                                    Manage Items
+                                </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/dashboard/bookings">
-                                    <FaBook></FaBook>
-                                    Manage Bookings</NavLink>
+                                <NavLink to="/dashboard/bookings" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                    <FaHistory className="mr-2" />
+                                    Manage Bookings
+                                </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/dashboard/users">
-                                    <FaUsers></FaUsers>
-                                    All Users</NavLink>
+                                <NavLink to="/dashboard/users" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                    <FaUsers className="mr-2" />
+                                    All Users
+                                </NavLink>
                             </li>
                         </>
                             :
                             <>
                                 <li>
-                                    <NavLink to="/dashboard/userHome">
-                                        <FaHome></FaHome>
-                                        User Home</NavLink>
+                                    <NavLink to="/dashboard/userHome" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                        <FaHome className="mr-2" />
+                                        User Home
+                                    </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="/dashboard/edit-biodata">
-                                        <FaCalendar></FaCalendar>
-                                        Edit Biodata</NavLink>
+                                    <NavLink to="/dashboard/edit-biodata" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                        <FaEdit className="mr-2" />
+                                        Edit Biodata
+                                    </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="/dashboard/view-biodata">
-                                        <FaCalendar></FaCalendar>
-                                        View Biodata</NavLink>
+                                    <NavLink to="/dashboard/view-biodata" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                        <FaSearch className="mr-2" />
+                                        View Biodata
+                                    </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="/dashboard/my-contact-request">
-                                        <FaCalendar></FaCalendar>
-                                        My Contact Request</NavLink>
+                                    <NavLink to="/dashboard/my-contact-request" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                        <FaEnvelopeOpen className="mr-2" />
+                                        My Contact Request
+                                    </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="/dashboard/my-favourites-biodata">
-                                        <FaCalendar></FaCalendar>
-                                    My Favourites Biodata</NavLink>
+                                    <NavLink to="/dashboard/my-favourites-biodata" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                        <FaHeart className="mr-2" />
+                                        My Favourites Biodata
+                                    </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="/dashboard/cart">
-                                        <FaShoppingCart></FaShoppingCart>
-                                        My Cart ({cart.length})</NavLink>
+                                    <NavLink to="/dashboard/cart" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                        <FaShoppingCart className="mr-2" />
+                                        My Cart ({cart.length})
+                                    </NavLink>
                                 </li>
-                             
                                 <li>
-                                    <NavLink to="/dashboard/paymentHistory">
-                                        <FaList></FaList>
-                                        Real Payment History</NavLink>
+                                    <NavLink to="/dashboard/paymentHistory" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                        <FaHistory className="mr-2" />
+                                        Real Payment History
+                                    </NavLink>
                                 </li>
                             </>
                     }
                     {/* shared nav links */}
-                    <div className="divider"></div>
+                    <div className="divider my-4 border-b-2 border-white"></div>
                     <li>
-                        <NavLink to="/">
-                            <FaHome></FaHome>
-                            Home</NavLink>
+                        <NavLink to="/" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                            <FaHome className="mr-2" />
+                            Home
+                        </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/order/salad">
-                            <FaSearch></FaSearch>
-                            Menu</NavLink>
+                        <NavLink to="/order/salad" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                            <FaSearch className="mr-2" />
+                            Menu
+                        </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/order/contact">
-                            <FaEnvelope></FaEnvelope>
-                            Contact</NavLink>
+                        <NavLink to="/order/contact" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                            <FaEnvelopeOpen className="mr-2" />
+                            Contact
+                        </NavLink>
                     </li>
                 </ul>
             </div>
             {/* dashboard content */}
-            <div className="flex-1 p-8">
-                <Outlet></Outlet>
+            <div className="flex-1 p-8 bg-gray-100">
+                <Outlet />
             </div>
         </div>
     );
