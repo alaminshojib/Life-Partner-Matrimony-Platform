@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import useAuth from '../../../hooks/useAuth';
-import ReactCountryFlag from "react-country-flag";
 import countryData from 'country-flag-icons/react/3x2';
+import Swal from 'sweetalert2';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import useAxiosPublic from '../../../hooks/useAxiosPublic';
 
 const EditBiodata = () => {
-  const { user } = useAuth(); // Access user directly from useAuth
+  const { user } = useAuth();
+  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
 
-  const [formData, setFormData] = useState({
+  const defaultFormData = {
     biodataType: '',
     name: '',
     profileImage: '',
@@ -23,47 +28,105 @@ const EditBiodata = () => {
     expectedPartnerAge: '',
     expectedPartnerHeight: '',
     expectedPartnerWeight: '',
-    contactEmail: user.email, // Set contactEmail directly to user's email
-    mobileCountryCode: '', // Example: Set default country code
+    contactEmail: user.email,
+    mobileCountryCode: 'BD',
     mobileNumber: '',
-  });
+  };
+
+  const [formData, setFormData] = useState(defaultFormData);
+  const [loading, setLoading] = useState(false); // State for loading spinner
+
+  const fetchBiodata = async () => {
+    try {
+      const response = await axiosSecure.get(`/biodatas/${user.email}`);
+      const biodata = response.data;
+      setFormData(biodata);
+    } catch (error) {
+      console.error('Error fetching biodata:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBiodata();
+  }, [axiosSecure, user.email]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handlePublish = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
-    // Reset form fields
-    setFormData({
-      biodataType: '',
-      name: '',
-      profileImage: '',
-      dob: '',
-      height: '',
-      weight: '',
-      age: '',
-      occupation: '',
-      race: '',
-      fathersName: '',
-      mothersName: '',
-      permanentDivision: '',
-      presentDivision: '',
-      expectedPartnerAge: '',
-      expectedPartnerHeight: '',
-      expectedPartnerWeight: '',
-      contactEmail: formData.contactEmail, // Keep contactEmail as edited
-      mobileCountryCode: formData.mobileCountryCode, // Keep mobileCountryCode
-      mobileNumber: formData.mobileNumber,
-    });
+    setLoading(true); // Set loading to true when publishing
+
+    try {
+      const formDataWithContactEmail = { ...formData, contactEmail: user.email };
+      const response = await axiosSecure.post('/biodatas', formDataWithContactEmail);
+      console.log(response.data);
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Your biodata has been saved successfully.',
+      });
+      setFormData(defaultFormData);
+    } catch (error) {
+      console.error('Error:', error);
+      Swal.fire({
+        icon: 'info',
+        title: 'Oops...',
+        text: 'You have already published your Biodata!',
+      });
+    } finally {
+      setLoading(false); // Reset loading after publishing
+    }
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setLoading(true); // Set loading to true when saving
+
+    try {
+      const existingData = await axiosSecure.get(`/biodatas/${formData.contactEmail}`);
+      const existingFormData = existingData.data;
+
+      const hasChanges = JSON.stringify(existingFormData) !== JSON.stringify(formData);
+
+      if (!hasChanges) {
+        Swal.fire({
+          icon: 'info',
+          title: 'No Changes Detected!',
+          text: 'You have to change something before updating the biodata.',
+        });
+        return;
+      }
+
+      const response = await axiosSecure.patch(`/biodatas/${formData.contactEmail}`, formData);
+      console.log(response.data.message);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Biodata updated successfully.',
+      });
+
+    } catch (error) {
+      console.error('Error:', error);
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Failed to update biodata',
+      });
+
+    } finally {
+      setLoading(false); // Reset loading after saving
+    }
   };
 
   return (
     <div className="container mx-auto px-4">
       <h2 className="text-3xl font-semibold text-gray-800 mb-8">Edit Biodata</h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handlePublish} className="space-y-6">
+        {/* Form fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Biodata Type */}
           <div>
@@ -157,7 +220,7 @@ const EditBiodata = () => {
             <label className="block text-sm font-medium text-gray-700">Age :</label>
             <input
               required
-              type="text"
+              type="number"
               name="age"
               value={formData.age}
               onChange={handleChange}
@@ -168,7 +231,6 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Occupation :</label>
             <select
-
               name="occupation"
               value={formData.occupation}
               onChange={handleChange}
@@ -237,7 +299,6 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Permanent Division :</label>
             <select
-
               name="permanentDivision"
               value={formData.permanentDivision}
               onChange={handleChange}
@@ -331,13 +392,9 @@ const EditBiodata = () => {
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
               <option value="">Select Expected Partner Weight</option>
-              <option value="45 kg - 55 kg">35 kg - 45 kg</option>
-              <option value="45 kg - 55 kg">46 kg - 55 kg</option>
-              <option value="56 kg - 65 kg">56 kg - 65 kg</option>
-              <option value="66 kg - 75 kg">66 kg - 75 kg</option>
-              <option value="66 kg - 75 kg">76 kg - 85 kg</option>
-              <option value="66 kg - 75 kg">86 kg - 95 kg</option>
-              <option value="66 kg - 75 kg">96 kg - 105 kg</option>
+              <option value="Underweight">Underweight</option>
+              <option value="Normal">Normal</option>
+              <option value="Overweight">Overweight</option>
               {/* Add more options as needed */}
             </select>
           </div>
@@ -346,6 +403,7 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Contact Email :</label>
             <input
+              readOnly
               type="email"
               name="contactEmail"
               value={formData.contactEmail}
@@ -353,48 +411,71 @@ const EditBiodata = () => {
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
           </div>
-          {/* Mobile Number with Country Code */}
-          <div className="flex flex-col ">
-            <label className="block text-sm items-start font-medium text-gray-700 mr-2">Mobile Number :</label>
-            <div className="flex items-center gap-3 w-full">
-              <select
-                name="mobileCountryCode"
-                value={formData.mobileCountryCode}
-                onChange={handleChange}
-                className="mt-1 p-1 block w-fit border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              >
-                {/* Dynamically generate country code options */}
-                {Object.keys(countryData).map((countryCode) => (
-                  <option key={countryCode} value={countryCode}>
-                    {countryCode}{' '}
-                    <ReactCountryFlag countryCode={countryCode} svg />
-                  </option>
-                ))}
-              </select>
+          {/* Mobile Number */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Mobile Number :</label>
+            <div className="mt-1 flex items-center gap-2 rounded-md shadow-sm">
+              <div className=" inset-y-0 left-0 flex items-center ">
+                <label htmlFor="mobileCountryCode" className="sr-only">
+                  Country Code
+                </label>
+                <select
+                  id="mobileCountryCode"
+                  name="mobileCountryCode"
+                  value={formData.mobileCountryCode}
+                  onChange={handleChange}
+                  className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  {Object.keys(countryData).map((countryCode) => (
+                    <option key={countryCode} value={countryCode}>
+                      {countryCode}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <input
-                type="text"
                 required
+                type="tel"
                 name="mobileNumber"
+                id="mobileNumber"
                 value={formData.mobileNumber}
                 onChange={handleChange}
                 className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Mobile Number"
               />
             </div>
           </div>
-
-
         </div>
+        {/* Buttons */}
         <div className="flex justify-end">
           <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+            type="button"
+            disabled={formData ? false : true}
+            onClick={handleSave}
+            className={`bg-gray-500 text-white py-2 px-4 rounded-md mr-2 hover:bg-gray-600 focus:outline-none focus:bg-gray-600 ${formData ? '' : 'opacity-50 cursor-not-allowed'}`}
           >
-            Save and Publish Now
+            {loading ? <Spinner /> : 'Edit & Save'}
+          </button>
+          <button
+            type="submit"
+            onClick={handlePublish}
+            className={`bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600 ${formData ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={formData ? true : false}
+          >
+            {loading ? <Spinner /> : 'Publish'}
           </button>
         </div>
       </form>
     </div>
   );
 };
+
+// Loading spinner component
+const Spinner = () => (
+  <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8z"></path>
+  </svg>
+);
 
 export default EditBiodata;

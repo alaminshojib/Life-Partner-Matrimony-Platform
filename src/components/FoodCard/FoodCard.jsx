@@ -23,7 +23,7 @@ const FoodCard = ({ item }) => {
                 image,
                 price
             }
-            axiosSecure.post('/carts', cartItem)
+            axiosSecure.post('/checkouts', cartItem)
                 .then(res => {
                     console.log(res.data)
                     if (res.data.insertedId) {

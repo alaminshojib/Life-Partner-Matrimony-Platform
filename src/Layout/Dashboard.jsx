@@ -1,34 +1,44 @@
 import React, { useState } from "react";
-import { FaHome, FaUtensils, FaListAlt, FaEdit, FaHeart, FaEnvelopeOpen, FaUsers, FaShoppingCart, FaHistory, FaSearch, FaBars, FaTimes } from "react-icons/fa";
-import { NavLink, Outlet } from "react-router-dom";
+import { FaHome, FaUtensils, FaListAlt, FaEdit, FaHeart, FaEnvelopeOpen, FaUsers, FaShoppingCart, FaHistory, FaSearch, FaBars, FaTimes, FaSignOutAlt, FaEnvelope } from "react-icons/fa";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import useCart from "../hooks/useCart";
 import useAdmin from "../hooks/useAdmin";
+import useAuth from "../hooks/useAuth";
 
 const Dashboard = () => {
     const [cart] = useCart();
     const [isAdmin] = useAdmin();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const { logOut } = useAuth();
+    const navigate = useNavigate();
 
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
     };
 
+    const handleLogout = () => {
+        logOut()
+            .then()
+            .catch()
+
+        navigate("/login")
+    }
+
     return (
         <div className="flex flex-col md:flex-row h-fit">
             {/* drawer handle */}
             <div className="md:hidden bg-blue-500 flex items-center justify-between ">
-               <div>
-               {isDrawerOpen ? (
-                    <button className="text-white p-4" onClick={toggleDrawer}>
-                        <FaTimes />
-                    </button>
-                ) : (
-                    <button className="text-white p-4" onClick={toggleDrawer}>
-                        <FaBars  />
-                    </button>
-
-                )}
-                </div> 
+                <div>
+                    {isDrawerOpen ? (
+                        <button className="text-white p-4" onClick={toggleDrawer}>
+                            <FaTimes />
+                        </button>
+                    ) : (
+                        <button className="text-white p-4" onClick={toggleDrawer}>
+                            <FaBars />
+                        </button>
+                    )}
+                </div>
 
                 <nav className="flex items-center px-3 font-bold text-md text-white">
                     <ul className="flex space-x-4">
@@ -53,9 +63,28 @@ const Dashboard = () => {
                             <li>
                                 <NavLink to="/dashboard/adminHome" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
                                     <FaHome className="mr-2" />
-                                    Admin Home
+                                    Admin Dashboard
                                 </NavLink>
                             </li>
+                            <li>
+                                <NavLink to="/dashboard/manage" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                    <FaUsers className="mr-2" />
+                                    Manage Users
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/dashboard/approvedPremium" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                    <FaHeart className="mr-2" />
+                                    Approved Premium
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/dashboard/approvedContactRequest" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                    <FaEnvelopeOpen className="mr-2" />
+                                    Approved Contact Request
+                                </NavLink>
+                            </li>
+
                             <li>
                                 <NavLink to="/dashboard/addItems" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
                                     <FaUtensils className="mr-2" />
@@ -74,12 +103,7 @@ const Dashboard = () => {
                                     Manage Bookings
                                 </NavLink>
                             </li>
-                            <li>
-                                <NavLink to="/dashboard/users" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
-                                    <FaUsers className="mr-2" />
-                                    All Users
-                                </NavLink>
-                            </li>
+
                         </>
                             :
                             <>
@@ -143,8 +167,14 @@ const Dashboard = () => {
                     </li>
                     <li>
                         <NavLink to="/order/contact" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
-                            <FaEnvelopeOpen className="mr-2" />
+                            <FaEnvelope className="mr-2" />
                             Contact
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink onClick={handleLogout} to="/order/contact" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                            <FaSignOutAlt className="mr-2" />
+                            Logout
                         </NavLink>
                     </li>
                 </ul>

@@ -27,6 +27,7 @@ import Contact from "../pages/Contact/Contact";
 import ViewBiodata from "../pages/Dashboard/ViewBiodata/ViewBiodata";
 import MyContactRequest from "../pages/Dashboard/MyContactRequest/MyContactRequest";
 import MyFavouritesBiodata from "../pages/Dashboard/MyFavouritesBiodata/MyFavouritesBiodata";
+import ManageUsers from "../pages/ManageUsers/ManageUsers";
 
 
   export const router = createBrowserRouter([
@@ -133,6 +134,10 @@ import MyFavouritesBiodata from "../pages/Dashboard/MyFavouritesBiodata/MyFavour
         {
           path: 'users',
           element: <AdminRoute><AllUsers></AllUsers></AdminRoute>
+        },
+        {
+          path: 'manage',
+          element: <AdminRoute><ManageUsers></ManageUsers></AdminRoute>
         }
 
       ]

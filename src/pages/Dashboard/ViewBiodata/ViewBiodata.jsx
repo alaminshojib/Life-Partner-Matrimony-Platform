@@ -1,15 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import useAuth from '../../../hooks/useAuth';
+import Swal from 'sweetalert2';
 
 const ViewBiodata = () => {
   const [biodata, setBiodata] = useState(null);
+  const [loading, setLoading] = useState(true); // State for loading spinner
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
 
   useEffect(() => {
-    // Fetch biodata from server or local storage
-    const fetchedBiodata = {}; // Fetch biodata here
-    setBiodata(fetchedBiodata);
-  }, []);
+    const fetchBiodata = async () => {
+      try {
+        const response = await axiosSecure.get(`/biodatas/${user.email}`);
+        setBiodata(response.data);
+      } catch (error) {
+        console.error('Error fetching biodata:', error);
+      } finally {
+        setLoading(false); // Set loading to false once data is fetched or on error
+      }
+    };
+
+    fetchBiodata();
+  }, [axiosSecure, user.email]);
 
   const handleMakePremium = () => {
     setIsModalOpen(true);
@@ -19,25 +34,54 @@ const ViewBiodata = () => {
     setIsModalOpen(false);
   };
 
-  const handleConfirmMakePremium = () => {
-    // Send request to server to mark biodata as premium
-    // Upon successful response, you can set the biodata as premium
-    setIsModalOpen(false); // Close modal
-    // Example: 
-    // makeBiodataPremium(biodata.id).then(() => {
-    //   setBiodata({ ...biodata, isPremium: true });
-    // });
+  const handleConfirmMakePremium = async () => {
+    try {
+      await axiosSecure.patch(`/biodatas/premium/${user.email}`);
+      setIsModalOpen(false);
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Biodata has been marked as premium.',
+      });
+      setBiodata(prevState => ({ ...prevState, isPremium: true }));
+    } catch (error) {
+      console.error('Error marking biodata as premium:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to mark biodata as premium. Please try again.',
+      });
+    }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h2 className="text-3xl font-semibold text-gray-800 mb-4">Loading Biodata...</h2>
+          {/* You can add a spinner component or any other loading indicator here if needed */}
+        </div>
+      </div>
+    );
+  }
+
   if (!biodata) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h2 className="text-3xl font-semibold text-gray-800 mb-4">No Biodata Found</h2>
+          <p className="text-lg text-gray-600 mb-8">Please publish your biodata first.</p>
+          {/* You can add a button or any other elements here if needed */}
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="container mx-auto px-4 relative">
       <h2 className="text-3xl font-semibold text-gray-800 mb-4">View Biodata</h2>
       <div className="bg-white rounded-lg shadow-md p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <h3 className="text-xl font-semibold mb-4">Personal Information :</h3>
             <div className="space-y-2">
@@ -66,9 +110,16 @@ const ViewBiodata = () => {
             </div>
           </div>
         </div>
-        <button onClick={handleMakePremium} className="mt-8 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Make Biodata Premium</button>
+        {biodata.isPremium ? (
+          <button className="mt-8 bg-orange-500 text-white font-bold py-2 px-4 rounded-md cursor-not-allowed opacity-50" disabled>
+            Already Marked as Premium
+          </button>
+        ) : (
+          <button onClick={handleMakePremium} className="mt-8 bg-orange-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Make Biodata Premium</button>
+        )}
       </div>
-      <Modal
+     {/* Modal for confirming premium */}
+     <Modal
         isOpen={isModalOpen}
         onRequestClose={handleCloseModal}
         contentLabel="Confirm Make Biodata Premium"
@@ -88,7 +139,7 @@ const ViewBiodata = () => {
 };
 
 const InfoRow = ({ label, value }) => (
-  <div className="flex">
+  <div className="flex border-b border-gray-200 py-2">
     <span className="font-semibold w-1/3">{label}:</span>
     <span className="w-2/3">{value}</span>
   </div>
