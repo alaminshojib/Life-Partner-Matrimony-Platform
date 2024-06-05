@@ -1,16 +1,24 @@
-// BioDetailsData.jsx
-
 import React, { useState } from "react";
 import Swal from 'sweetalert2';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar, faGem } from '@fortawesome/free-solid-svg-icons';
 import CheckoutModal from './CheckoutModal'; // Import your CheckoutModal component here
 
-const BioDetailsData = ({ singleData, isPremiumUser }) => {
+const BioDetailsData = ({ singleData, isPremiumUser, isFavorite }) => {
   const [showCheckoutModal, setShowCheckoutModal] = useState(false); // State to control the visibility of the checkout modal
+  const [isAddedToFavorites, setIsAddedToFavorites] = useState(isFavorite); // State to track if the biodata is added to favorites
 
   const handleAction = () => {
     if (!isPremiumUser) {
       setShowCheckoutModal(true); // Open the checkout modal
     }
+  };
+
+  const addToFavorites = () => {
+    // Logic to add the biodata to favorites
+    // For demonstration purposes, I'll just toggle the state
+    setIsAddedToFavorites(!isAddedToFavorites);
+    // You can perform API calls or dispatch actions to add the biodata to favorites
   };
 
   return (
@@ -23,6 +31,19 @@ const BioDetailsData = ({ singleData, isPremiumUser }) => {
             <span className="text-sm text-gray-100">Type: {singleData?.biodata_type}</span>
           </div>
         </div>
+        <div className="flex items-center space-x-2">
+          {!isPremiumUser && (
+            <FontAwesomeIcon icon={faGem} className="text-yellow-500 text-xl" />
+          )}
+          <FontAwesomeIcon 
+            icon={faStar} 
+            className={`text-xl cursor-pointer ${isAddedToFavorites ? "text-yellow-500" : "text-gray-500"}`} 
+            onClick={addToFavorites} 
+          />
+          {isPremiumUser && (
+            <FontAwesomeIcon icon={faGem} className="text-yellow-500 text-xl" />
+          )}
+        </div>
       </div>
       <div className="p-4 space-y-2 text-sm text-gray-600">
         <div>
@@ -30,26 +51,29 @@ const BioDetailsData = ({ singleData, isPremiumUser }) => {
           <table className="w-full">
             <tbody>
               <tr>
-                <td className="font-semibold pr-4 text-purple-500 border border-gray-300">Name:</td>
-                <td className="border border-gray-300">{singleData?.name}</td>
+                <td className="font-semibold pr-4 text-purple-500">Name:</td>
+                <td>{singleData?.name}</td>
               </tr>
               <tr>
-                <td className="font-semibold pr-4 text-purple-500 border border-gray-300">Permanent Division:</td>
-                <td className="border border-gray-300">{singleData?.permanent_division}</td>
+                <td className="font-semibold pr-4 text-purple-500">Permanent Division:</td>
+                <td>{singleData?.permanent_division}</td>
               </tr>
               <tr>
-                <td className="font-semibold pr-4 text-purple-500 border border-gray-300">Age:</td>
-                <td className="border border-gray-300">{singleData?.age}</td>
+                <td className="font-semibold pr-4 text-purple-500">Age:</td>
+                <td>{singleData?.age}</td>
               </tr>
               <tr>
-                <td className="font-semibold pr-4 text-purple-500 border border-gray-300">Occupation:</td>
-                <td className="border border-gray-300">{singleData?.occupation}</td>
+                <td className="font-semibold pr-4 text-purple-500">Occupation:</td>
+                <td>{singleData?.occupation}</td>
               </tr>
             </tbody>
           </table>
         </div>
         {!isPremiumUser && (
-          <button onClick={handleAction} className="bg-blue-500 text-white p-1 rounded-md w-fit  btn-gradient justify-center mx-auto flex hover:bg-green-400">
+          <button 
+            onClick={handleAction} 
+            className="bg-blue-500 text-white py-2 px-4 rounded-md w-fit btn-gradient justify-center mx-auto flex hover:bg-blue-600 transition duration-300"
+          >
             Request Contact Info
           </button>
         )}

@@ -1,72 +1,130 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
+import Swal from 'sweetalert2';
+import { FaTrashAlt, FaCrown } from "react-icons/fa";
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 const ApprovedPremium = () => {
-    const [premiumRequests, setPremiumRequests] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const axiosSecure = useAxiosSecure();
+    const { data: users = [], refetch } = useQuery({
+        queryKey: ['users'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('/users');
+            return res.data;
+        }
+    });
 
-    useEffect(() => {
-        axios.get('/premium-requests')
-            .then(response => {
-                setPremiumRequests(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching premium requests:', error);
-            });
-    }, []);
-
-    const makePremium = (id) => {
-        axios.patch(`/premium-requests/${id}/make-premium`)
-            .then(response => {
-                setPremiumRequests(prevRequests => {
-                    return prevRequests.map(request => {
-                        if (request.id === id) {
-                            return { ...request, isPremium: true };
-                        }
-                        return request;
-                    });
+    const handleMakePremium = async (user) => {
+        try {
+            const res = await axiosSecure.patch(`/users/premium/${user._id}`);
+            if (res.data.modifiedCount > 0) {
+                refetch();
+                Swal.fire({
+                    icon: 'success',
+                    title: `${user.name} is now a premium user!`,
+                    showConfirmButton: false,
+                    timer: 1500
                 });
-            })
-            .catch(error => {
-                console.error('Error making request premium:', error);
-            });
+            }
+        } catch (error) {
+            handleError(error);
+        }
     };
+
+    const handleDeleteUser = async (user) => {
+        try {
+            const res = await axiosSecure.delete(`/users/${user._id}`);
+            if (res.data.deletedCount > 0) {
+                refetch();
+                Swal.fire({
+                    icon: 'success',
+                    title: `${user.name} deleted successfully!`,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        } catch (error) {
+            handleError(error);
+        }
+    };
+
+    const handleError = (error) => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong!',
+        });
+    };
+
+   
 
     return (
         <div className="container mx-auto">
-            <h2 className="text-2xl font-bold mb-4">Premium Approval Requests</h2>
-            <table className="w-full border-collapse border border-gray-300">
-                <thead>
+            <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Approved Premium Users:</h1>
+            
+            <table className="table table-striped w-full shadow-lg rounded-lg overflow-hidden">
+                <thead className="bg-gradient-to-r from-blue-500 to-blue-700 text-white">
                     <tr>
-                        <th className="px-4 py-2 bg-gray-100">Name</th>
-                        <th className="px-4 py-2 bg-gray-100">Email</th>
-                        <th className="px-4 py-2 bg-gray-100">Biodata ID</th>
-                        <th className="px-4 py-2 bg-gray-100">Actions</th>
+                        <th className="py-3 px-4 text-center">#</th>
+                        <th className="py-3 px-4 text-center">Biodata Id</th>
+                        <th className="py-3 px-4 text-center">Name</th>
+                        <th className="py-3 px-4 text-center">Email</th>
+                        <th className="py-3 px-4 text-center">Status</th>
+                        <th className="py-3 px-4 text-center">Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {premiumRequests.map(request => (
-                        <tr key={request.id}>
-                            <td className="border px-4 py-2">{request.name}</td>
-                            <td className="border px-4 py-2">{request.email}</td>
-                            <td className="border px-4 py-2">{request.biodataId}</td>
-                            <td className="border px-4 py-2">
-                                {request.isPremium ? (
-                                    <span className="text-green-500 font-bold">Premium</span>
-                                ) : (
-                                    <button 
-                                        className="px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600"
-                                        onClick={() => makePremium(request.id)}
+                <tbody className="bg-white border-b transition duration-200 hover:bg-gray-100">
+                    {users.length > 0 ? (
+                        users.map((user, index) => (
+                            <tr key={user._id} className='border-2'>
+                                <th className="py-3 px-4 text-center">#</th>
+                                <td className="py-3 px-4 text-center">{user.biodataId}</td>
+
+                                <td className="py-3 px-4 text-center">{user.name}</td>
+                                <td className="py-3 px-4 text-center">{user.email}</td>
+                                <td className="py-3 px-4 text-center">
+                                    {user.role1 === 'premium' ? (
+                                        <span className="text-sm font-semibold text-yellow-600">Premium</span>
+                                    ) : (
+                                        <button
+                                            onClick={() => handleMakePremium(user)}
+                                            className="bg-yellow-500 text-white p-2 font-bold rounded-lg hover:bg-yellow-600 transition duration-200"
+                                        >
+                                            Make Premium
+                                        </button>
+                                    )}
+                                </td>
+                                <td className="py-3 px-4 text-center">
+                                    <button
+                                        onClick={() => handleDeleteUser(user)}
+                                        className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition duration-200"
                                     >
-                                        Make Premium
+                                        <FaTrashAlt className="text-white text-2xl" />
                                     </button>
-                                )}
-                            </td>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="6" className="py-3 px-4 text-center text-gray-500">No Available Data By This Name</td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
         </div>
     );
 };
 
-export default ApprovedPremium;
+const queryClient = new QueryClient();
+
+const App = () => {
+    return (
+        <QueryClientProvider client={queryClient}>
+            <ApprovedPremium />
+        </QueryClientProvider>
+    );
+};
+
+export default App;
