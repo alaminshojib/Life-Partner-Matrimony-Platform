@@ -1,10 +1,11 @@
 
+
 import React, { useState, useEffect } from 'react';
-import useAuth from '../../../hooks/useAuth';
-import countryData from 'country-flag-icons/react/3x2';
 import Swal from 'sweetalert2';
+import useAuth from '../../../hooks/useAuth';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useAxiosPublic from '../../../hooks/useAxiosPublic';
+import countryData from 'country-flag-icons/react/3x2';
 
 const EditBiodata = () => {
   const { user } = useAuth();
@@ -34,13 +35,12 @@ const EditBiodata = () => {
   };
 
   const [formData, setFormData] = useState(defaultFormData);
-  const [loading, setLoading] = useState(false); // State for loading spinner
+  const [loading, setLoading] = useState(false);
 
   const fetchBiodata = async () => {
     try {
       const response = await axiosSecure.get(`/biodatas/${user.email}`);
-      const biodata = response.data;
-      setFormData(biodata);
+      setFormData(response.data);
     } catch (error) {
       console.error('Error fetching biodata:', error);
     }
@@ -56,12 +56,11 @@ const EditBiodata = () => {
 
   const handlePublish = async (e) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true when publishing
+    setLoading(true);
 
     try {
       const formDataWithContactEmail = { ...formData, contactEmail: user.email };
       const response = await axiosSecure.post('/biodatas', formDataWithContactEmail);
-      console.log(response.data);
       Swal.fire({
         icon: 'success',
         title: 'Success!',
@@ -76,18 +75,17 @@ const EditBiodata = () => {
         text: 'You have already published your Biodata!',
       });
     } finally {
-      setLoading(false); // Reset loading after publishing
+      setLoading(false);
     }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true when saving
+    setLoading(true);
 
     try {
       const existingData = await axiosSecure.get(`/biodatas/${formData.contactEmail}`);
       const existingFormData = existingData.data;
-
       const hasChanges = JSON.stringify(existingFormData) !== JSON.stringify(formData);
 
       if (!hasChanges) {
@@ -100,25 +98,20 @@ const EditBiodata = () => {
       }
 
       const response = await axiosSecure.patch(`/biodatas/${formData.contactEmail}`, formData);
-      console.log(response.data.message);
-
       Swal.fire({
         icon: 'success',
         title: 'Success!',
         text: 'Biodata updated successfully.',
       });
-
     } catch (error) {
       console.error('Error:', error);
-
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Failed to update biodata',
       });
-
     } finally {
-      setLoading(false); // Reset loading after saving
+      setLoading(false);
     }
   };
 
@@ -450,19 +443,19 @@ const EditBiodata = () => {
         <div className="flex justify-end">
           <button
             type="button"
-            disabled={formData ? false : true}
+            disabled={!formData}
             onClick={handleSave}
-            className={`bg-gray-500 text-white py-2 px-4 rounded-md mr-2 hover:bg-gray-600 focus:outline-none focus:bg-gray-600 ${formData ? '' : 'opacity-50 cursor-not-allowed'}`}
+            className="bg-gray-500 text-white py-2 px-4 rounded-md mr-2 hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
           >
-            {loading ? <Spinner /> : 'Edit & Save'}
+            Edit & Save
           </button>
           <button
             type="submit"
-            onClick={handlePublish}
-            className={`bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600 ${formData ? 'opacity-50 cursor-not-allowed' : ''}`}
-            disabled={formData ? true : false}
+            onSubmit={handlePublish}
+            className={`bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600 ${!formData ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={!formData}
           >
-            {loading ? <Spinner /> : 'Publish'}
+            Publish
           </button>
         </div>
       </form>

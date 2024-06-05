@@ -15,30 +15,34 @@ const PaymentHistory = () => {
     })
 
     return (
-        <div>
-            <h2 className="text3-xl">Total Payments: {payments.length}</h2>
+        <div className="bg-gray-100 p-6 rounded-lg">
+            <h2 className="text-3xl font-semibold mb-4">Payment History</h2>
             <div className="overflow-x-auto">
-                <table className="table table-zebra">
-                    {/* head */}
+                <table className="w-full table-auto">
+                    {/* Head */}
                     <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>price</th>
-                            <th>Transaction Id</th>
-                            <th>Status</th>
+                        <tr className="bg-gray-200">
+                            <th className="px-4 py-2">#</th>
+                            <th className="px-4 py-2">Price</th>
+                            <th className="px-4 py-2">Transaction Id</th>
+                            <th className="px-4 py-2">Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {payments.map((payment, index) => <tr key={payment._id}>
-                            <th>{index + 1}</th>
-                            <td>${payment.price}</td>
-                            <td>{payment.transactionId}</td>
-                            <td>{payment.status}</td>
-                        </tr>)}
-                        
+                        {payments.map((payment, index) => (
+                            <tr key={payment._id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                <td className="border px-4 py-2">{index + 1}</td>
+                                <td className="border px-4 py-2">${payment.price}</td>
+                                <td className="border px-4 py-2">{payment.transactionId}</td>
+                                <td className="border px-4 py-2">{payment.status}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
+            {payments.length === 0 && (
+                <p className="text-gray-500 mt-4">No payments found.</p>
+            )}
         </div>
     );
 };

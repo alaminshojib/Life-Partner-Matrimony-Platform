@@ -101,7 +101,7 @@ const ManageUsers = () => {
 
     const handleSearch = async () => {
         try {
-            const response = await axios.post('/users/search', { name: searchTerm });
+            const response = await axios.post('/users/search', { email: searchTerm });
             refetch();
         } catch (error) {
             console.error('Error searching users:', error);
@@ -114,6 +114,7 @@ const ManageUsers = () => {
             });
         }
     };
+    
 
     return (
         <div className="container mx-auto py-8">

@@ -1,89 +1,60 @@
-import { useState } from "react";
-import axios from 'axios';
+// BioDetailsData.jsx
+
+import React, { useState } from "react";
+import Swal from 'sweetalert2';
+import CheckoutModal from './CheckoutModal'; // Import your CheckoutModal component here
 
 const BioDetailsData = ({ singleData, isPremiumUser }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false); // State to control the visibility of the checkout modal
 
-  const handleAddToFavorites = async () => {
-    try {
-      const response = await axios.patch(`/biodatas/premium/${singleData.contactEmail}`);
-      if (response.status === 200) {
-        setIsFavorite(true);
-      } else {
-        throw new Error("Failed to add to favorites");
-      }
-    } catch (error) {
-      console.error("Error:", error);
+  const handleAction = () => {
+    if (!isPremiumUser) {
+      setShowCheckoutModal(true); // Open the checkout modal
     }
   };
-
-  const handleRequestContactInfo = () => {
-    // Your logic for requesting contact info
-  };
-
-  const handleCheckout = async () => {
-    try {
-      const response = await axios.post("/checkouts", {
-        biodataId: singleData?.id, // Ensure singleData is not null before accessing properties
-        // Include other necessary checkout data here
-      });
-      if (response.status === 200) {
-        // Handle success, if needed
-        console.log("Checkout successful");
-      } else {
-        throw new Error("Failed to create checkout");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const rows = singleData ? [
-    { name: 'Name:', value: singleData.name },
-    { name: 'Permanent Division:', value: singleData.permanentDivision },
-    { name: 'Age:', value: singleData.age },
-    { name: 'Occupation:', value: singleData.occupation },
-  ] : [];
 
   return (
-    <div className="container flex flex-col w-fit h-fit max-w-lg mx-auto divide-y rounded-md border-2 divide-gray-700 bg-white text-black">
-      <div className="flex justify-between p-3 gap-10">
-        <div className="flex space-x-4">
-          <img src={singleData?.featuredImg} alt="" className="object-cover w-12 h-12 rounded-full bg-gray-500" />
+    <div className="container flex flex-col w-full max-w-md mx-auto divide-y rounded-lg border border-gray-300 shadow-lg">
+      <div className="flex justify-between items-center p-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-t-lg">
+        <div className="flex items-center space-x-4">
+          <img src={singleData?.featuredImg} alt="" className="w-12 h-12 rounded-full bg-gray-200" />
           <div>
-            <h4 className="font-bold">Biodata Id : {singleData?.id}</h4> {/* Ensure singleData is not null before accessing properties */}
-            <span className="text-xs text-gray-400">Biodata Type : {singleData?.biodata_type}</span>
+            <h4 className="font-semibold text-white">Biodata Id: {singleData?.id}</h4>
+            <span className="text-sm text-gray-100">Type: {singleData?.biodata_type}</span>
           </div>
         </div>
-        <div className="flex items-center space-x-2 text-yellow-500">
-          <span className="text-xl font-bold">{isPremiumUser ? 'Premium' : 'Normal'}</span>
-          {!isPremiumUser && <button onClick={handleAddToFavorites} className="text-xl font-bold">Add to Favourites</button>}
-        </div>
       </div>
-      <div className="p-4 space-y-2 text-sm text-gray-400">
+      <div className="p-4 space-y-2 text-sm text-gray-600">
         <div>
-          <h3 className="text-lg font-bold mb-2">Details:</h3>
+          <h3 className="text-lg font-semibold mb-2 text-purple-600">Details:</h3>
           <table className="w-full">
             <tbody>
-              {rows.map((row, index) => (
-                <tr key={index}>
-                  <td className="font-semibold">{row.name}</td>
-                  <td>{row.value}</td>
-                </tr>
-              ))}
+              <tr>
+                <td className="font-semibold pr-4 text-purple-500 border border-gray-300">Name:</td>
+                <td className="border border-gray-300">{singleData?.name}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold pr-4 text-purple-500 border border-gray-300">Permanent Division:</td>
+                <td className="border border-gray-300">{singleData?.permanent_division}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold pr-4 text-purple-500 border border-gray-300">Age:</td>
+                <td className="border border-gray-300">{singleData?.age}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold pr-4 text-purple-500 border border-gray-300">Occupation:</td>
+                <td className="border border-gray-300">{singleData?.occupation}</td>
+              </tr>
             </tbody>
           </table>
         </div>
-        {/* Checkout button */}
         {!isPremiumUser && (
-          <button onClick={handleRequestContactInfo} className="btn btn-sm btn-outline hover:bg-red-800 border-0 border-b-2 mx-auto justify-center items-center text-center px-2 w-fit flex text-white bg-red-500 m-4">
-            Request Contact info.
+          <button onClick={handleAction} className="bg-blue-500 text-white p-1 rounded-md w-fit  btn-gradient justify-center mx-auto flex hover:bg-green-400">
+            Request Contact Info
           </button>
         )}
-        <button onClick={handleCheckout} className="btn btn-sm btn-outline hover:bg-red-800 border-0 border-b-2 mx-auto justify-center items-center text-center px-2 w-fit flex text-white bg-red-500 m-4">
-          Checkout
-        </button>
       </div>
+      {showCheckoutModal && <CheckoutModal onClose={() => setShowCheckoutModal(false)} userData={singleData} />}
     </div>
   );
 };

@@ -28,18 +28,16 @@ const BioDetails = () => {
         }
     }, [menu]);
 
-
-
     return (
         <div>
             <Helmet>
                 <title>Life Partner | Biodatas</title>
             </Helmet>
-            <section className="px-5 pt-14 pb-5">
+            <section className="pt-14 pb-5">
                 <SectionTitle heading={`Biodata Id: ${singleData ? singleData._id : ''}`} />
-                <div className="container grid grid-cols-12 gap-y-6 md:gap-10 mx-auto">
-                    <div className="col-span-12 md:col-span-3 pt-5 pl-4 flex flex-col justify-between py-2 space-y-8 md:space-y-16">
-                        <div className="space-y-8 md:space-y-12 flex flex-col">
+                <div className="container grid grid-cols-12 mx-auto justify-between">
+                    <div className="col-span-12 md:col-span-3 mt-5 pt-5 flex flex-col justify-between py-2">
+                        <div className="flex flex-col">
                             <BioDetailsData singleData={singleData} />
                         </div>
                     </div>
@@ -48,7 +46,7 @@ const BioDetails = () => {
                     </div>
                     <div className="relative col-span-12 md:col-span-8 lg:col-span-8 bg-center bg-no-repeat bg-cover min-h-96">
                         <p className="p-3 text-3xl font-semibold mx-auto text-center text-black">General Information</p>
-                        <div className="px-4 space-y-2 text-sm ">
+                        <div className="px-4 space-y-2 text-sm">
                             <div className="container p-1 mx-auto sm:p-4 text-gray-100">
                                 <div className="overflow-x-auto">
                                     <table className="min-w-full text-center text-md font-medium border">
@@ -60,10 +58,8 @@ const BioDetails = () => {
                                                 <td className="p-3 ">
                                                     <p>Date of Birth: {singleData?.date_of_birth}</p>
                                                 </td>
-
                                             </tr>
                                             <tr className="border-b border-opacity-20 border-gray-700 text-black ">
-
                                                 <td className="p-3 ">
                                                     <p>Height: {singleData?.height}</p>
                                                 </td>
