@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FaShoppingCart } from 'react-icons/fa';
-import useCart from "../../../hooks/useCart";
+import useCheckouts from "../../../hooks/useCheckouts";
 import useAdmin from "../../../hooks/useAdmin";
 import { Badge } from 'antd';
 import logo from '../../../assets/navbar/logo.png';
@@ -15,7 +15,7 @@ import { AuthContext } from "../../../providers/AuthProvider";
 
 
 export default function NavBar() {
-    const [cart] = useCart();
+    const [checkouts] = useCheckouts();
     const { user, logOut } = useContext(AuthContext);
     const [isAdmin] = useAdmin();
 
@@ -63,14 +63,14 @@ export default function NavBar() {
                             </div>
                         </div>
                         <div className="flex items-center">
-                            <button
+                            <Link to={"/dashboard/checkouts"}
                                 type="button"
                                 className="text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 "
                             >
-                                 <Badge count= {cart.length}>
+                                 <Badge count= {checkouts.length}>
                                    <FaShoppingCart className="w-6 h-6 text-white mr-2"/>
                                 </Badge>
-                            </button>
+                            </Link>
                             <Menu as="div" className="relative ml-3">
                                 <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                     <img

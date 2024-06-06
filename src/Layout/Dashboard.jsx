@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { FaHome, FaUtensils, FaListAlt, FaEdit, FaHeart, FaEnvelopeOpen, FaUsers, FaShoppingCart, FaHistory, FaSearch, FaBars, FaTimes, FaSignOutAlt, FaEnvelope } from "react-icons/fa";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import useCart from "../hooks/useCart";
+import useCheckouts from "../hooks/useCheckouts";
 import useAdmin from "../hooks/useAdmin";
 import useAuth from "../hooks/useAuth";
 
 const Dashboard = () => {
-    const [cart] = useCart();
+    const [checkouts] = useCheckouts();
     const [isAdmin] = useAdmin();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const { logOut } = useAuth();
@@ -20,7 +20,6 @@ const Dashboard = () => {
         logOut()
             .then()
             .catch()
-
         navigate("/login")
     }
 
@@ -138,9 +137,9 @@ const Dashboard = () => {
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="/dashboard/cart" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                    <NavLink to="/dashboard/checkouts" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
                                         <FaShoppingCart className="mr-2" />
-                                        My Checkout ({cart.length})
+                                        My Checkout ({checkouts.length})
                                     </NavLink>
                                 </li>
                                 <li>
@@ -160,19 +159,19 @@ const Dashboard = () => {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/order/salad" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                        <NavLink to="/biodatas" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
                             <FaSearch className="mr-2" />
-                            Menu
+                            All Biodatas
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/order/contact" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                        <NavLink to="/contactUs" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
                             <FaEnvelope className="mr-2" />
                             Contact
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink onClick={handleLogout} to="/order/contact" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                        <NavLink onClick={handleLogout} className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
                             <FaSignOutAlt className="mr-2" />
                             Logout
                         </NavLink>

@@ -2,7 +2,7 @@ import Swal from "sweetalert2";
 import useAuth from "../../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import useCart from "../../hooks/useCart";
+import useCheckouts from "../../hooks/useCheckouts";
 
 
 const FoodCard = ({ item }) => {
@@ -11,30 +11,30 @@ const FoodCard = ({ item }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const axiosSecure = useAxiosSecure();
-    const [, refetch] = useCart();
+    const [, refetch] = useCheckouts();
 
-    const handleAddToCart = () => {
+    const handleAddTocheckouts = () => {
         if (user && user.email) {
-            //send cart item to the database
-            const cartItem = {
+            //send checkouts item to the database
+            const checkoutsItem = {
                 menuId: _id,
                 email: user.email,
                 name,
                 image,
                 price
             }
-            axiosSecure.post('/checkouts', cartItem)
+            axiosSecure.post('/checkouts', checkoutsItem)
                 .then(res => {
                     console.log(res.data)
                     if (res.data.insertedId) {
                         Swal.fire({
                             position: "top-end",
                             icon: "success",
-                            title: `${name} added to your cart`,
+                            title: `${name} added to your checkouts`,
                             showConfirmButton: false,
                             timer: 1500
                         });
-                        // refetch cart to update the cart items count
+                        // refetch checkouts to update the checkouts items count
                         refetch();
                     }
 
@@ -43,7 +43,7 @@ const FoodCard = ({ item }) => {
         else {
             Swal.fire({
                 title: "You are not Logged In",
-                text: "Please login to add to the cart?",
+                text: "Please login to add to the checkouts?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
@@ -66,9 +66,9 @@ const FoodCard = ({ item }) => {
                 <p>{recipe}</p>
                 <div className="card-actions justify-end">
                     <button
-                        onClick={handleAddToCart}
+                        onClick={handleAddTocheckouts}
                         className="btn btn-outline bg-slate-100 border-0 border-b-4 border-orange-400 mt-4"
-                    >Add to Cart</button>
+                    >Add to checkouts</button>
                 </div>
             </div>
         </div>

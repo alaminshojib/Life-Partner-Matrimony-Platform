@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { FaHome, FaUtensils, FaListAlt, FaEdit, FaHeart, FaEnvelopeOpen, FaUsers, FaShoppingCart, FaHistory, FaSearch, FaBars, FaTimes } from "react-icons/fa";
+import { FaHome, FaUtensils, FaListAlt, FaEdit, FaHeart, FaEnvelopeOpen, FaUsers, FaShoppingcheckouts, FaHistory, FaSearch, FaBars, FaTimes } from "react-icons/fa";
 import { NavLink, Outlet, BrowserRouter as Router, Route, Switch } from "react-router-dom"; // Importing BrowserRouter, Route, Switch
-import useCart from "../hooks/useCart";
+import useCheckouts from "../hooks/useCheckouts";
 import useAdmin from "../hooks/useAdmin";
 
 const AdminDashboard = () => {
-    const [cart] = useCart();
+    const [checkouts] = useCheckouts();
     const [isAdmin] = useAdmin();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -113,9 +113,9 @@ const AdminDashboard = () => {
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="/dashboard/cart" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
-                                        <FaShoppingCart className="mr-2" />
-                                        My Checkout ({cart.length})
+                                    <NavLink to="/dashboard/checkouts" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                        <FaShoppingcheckouts className="mr-2" />
+                                        My Checkout ({checkouts.length})
                                     </NavLink>
                                 </li>
                                 <li>
@@ -161,7 +161,7 @@ const AdminDashboard = () => {
                         <Route path="/dashboard/view-biodata">View Biodata Content</Route>
                         <Route path="/dashboard/my-contact-request">My Contact Request Content</Route>
                         <Route path="/dashboard/my-favourites-biodata">My Favourites Biodata Content</Route>
-                        <Route path="/dashboard/cart">My Checkout Content</Route>
+                        <Route path="/dashboard/checkouts">My Checkout Content</Route>
                         <Route path="/dashboard/paymentHistory">Real Payment History Content</Route>
                     </Switch>
                 </div>

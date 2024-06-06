@@ -18,38 +18,56 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AuthContext } from "../../providers/AuthProvider";
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import Swal from 'sweetalert2';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import InputAdornment from '@mui/material/InputAdornment';
+import { IconButton } from "@mui/material";
 
+// Define default theme
 const defaultTheme = createTheme();
 
+// SignUp function component
 export default function SignUp() {
+    // Custom hook for Axios instance
     const axiosPublic = useAxiosPublic();
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    const navigate = useNavigate();
-    const { createUser, updateUserProfile, logout } = useContext(AuthContext);
-    const [successAlert, setSuccessAlert] = useState(false);
 
+    // React Hook Form setup
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+
+    // React Router navigation hook
+    const navigate = useNavigate();
+
+    // Authentication context for user creation
+    const { createUser, updateUserProfile, logout } = useContext(AuthContext);
+
+    // State for showing/hiding password
+    const [showPassword, setShowPassword] = useState(false);
+
+    // Form submission handler
     const onSubmit = data => {
         createUser(data.email, data.password)
             .then(result => {
                 const loggedUser = result.user;
-                console.log(loggedUser);
                 updateUserProfile(data.firstName + " " + data.lastName, data.photoURL)
                     .then(() => {
-                        // create user entry in the database
                         const userInfo = {
                             name: data.firstName + " " + data.lastName,
                             email: data.email
                         }
+                        // Create user entry in the database
                         axiosPublic.post('/users', userInfo)
                             .then(res => {
                                 if (res.data.insertedId) {
-                                    console.log('user added to the database')
                                     reset();
-                                    setSuccessAlert(true);
+                                    // Show SweetAlert on success
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'User created successfully',
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    });
+                                    // Navigate to login page
                                 }
                             })
                     })
@@ -58,9 +76,20 @@ export default function SignUp() {
             .catch(error => {
                 console.error(error);
                 // Handle error here
-            });
+            })
+            .finally(
+                navigate('/login')
+
+            )
+
     };
 
+    // Toggle password visibility
+    const togglePasswordVisibility = () => {
+        setShowPassword(prevShowPassword => !prevShowPassword);
+    };
+
+    // Render JSX
     return (
         <>
             <Helmet>
@@ -84,6 +113,7 @@ export default function SignUp() {
                             Sign up
                         </Typography>
                         <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
+                            {/* Form fields */}
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6}>
                                     <TextField
@@ -121,7 +151,6 @@ export default function SignUp() {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        required
                                         fullWidth
                                         id="photoURL"
                                         label="Photo URL"
@@ -137,7 +166,7 @@ export default function SignUp() {
                                         fullWidth
                                         name="password"
                                         label="Password"
-                                        type="password"
+                                        type={showPassword ? 'text' : 'password'}
                                         id="password"
                                         autoComplete="new-password"
                                         {...register("password", {
@@ -155,6 +184,18 @@ export default function SignUp() {
                                                 message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
                                             }
                                         })}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        onClick={togglePasswordVisibility}
+                                                        edge="end"
+                                                    >
+                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            )
+                                        }}
                                     />
                                     {errors.password && (
                                         <Typography variant="caption" color="error">
@@ -169,6 +210,7 @@ export default function SignUp() {
                                     />
                                 </Grid>
                             </Grid>
+                            {/* Submit button */}
                             <Button
                                 type="submit"
                                 fullWidth
@@ -177,10 +219,11 @@ export default function SignUp() {
                             >
                                 Sign Up
                             </Button>
+                            {/* Link to login page */}
                             <Grid container justifyContent="flex-end">
                                 <Grid item>
-                                    <Link to="/login" variant="body2">
-                                        Already have an account? Sign in
+                                    <Link href={"/login"} variant="body2">
+                                        {"Already have an account? Sign in"}
                                     </Link>
                                 </Grid>
                             </Grid>
@@ -188,25 +231,6 @@ export default function SignUp() {
                     </Box>
                 </Container>
             </ThemeProvider>
-            <Snackbar
-                open={successAlert}
-                autoHideDuration={6000}
-                onClose={() => setSuccessAlert(false)}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            >
-                <MuiAlert
-                    elevation={6}
-                    variant="filled"
-                    severity="success"
-                    action={
-                        <IconButton size="small" aria-label="close" color="inherit" onClick={() => setSuccessAlert(false)}>
-                            <CloseIcon fontSize="small" />
-                        </IconButton>
-                    }
-                >
-                    User created successfully.
-                </MuiAlert>
-            </Snackbar>
         </>
     );
 }

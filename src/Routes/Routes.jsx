@@ -9,7 +9,7 @@ import SignUp from "../pages/SignUp/SignUp";
 import PrivateRoute from "./PrivateRoute";
 import Secret from "../pages/Shared/Secret/Secret";
 import Dashboard from "../Layout/Dashboard";
-import Cart from "../pages/Dashboard/CheckoutPage/CheckoutPage";
+import checkouts from "../pages/Dashboard/CheckoutPage/CheckoutPage";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 import AddItems from "../pages/Dashboard/AddItems/AddItems";
 import AdminRoute from "./AdminRoute";
@@ -30,6 +30,7 @@ import MyFavouritesBiodata from "../pages/Dashboard/MyFavouritesBiodata/MyFavour
 import ManageUsers from "../pages/ManageUsers/ManageUsers";
 import ApprovedPremium from "../pages/ApprovedPremium/ApprovedPremium";
 import ApprovedContactRequest from "../pages/ApprovedContactRequest/ApprovedContactRequest";
+import CheckoutPage from "../pages/Dashboard/CheckoutPage/CheckoutPage";
 
 
   export const router = createBrowserRouter([
@@ -103,8 +104,8 @@ import ApprovedContactRequest from "../pages/ApprovedContactRequest/ApprovedCont
         },
        
         {
-          path: 'cart',
-          element: <Cart></Cart>
+          path: 'checkouts',
+          element: <CheckoutPage></CheckoutPage>
         },
         {
           path: 'payment',

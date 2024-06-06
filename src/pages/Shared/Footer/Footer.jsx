@@ -18,7 +18,7 @@ const Footer = () => {
                             <a rel="noopener noreferrer" href="#" className="hover:text-violet-400">Premium Member</a>
                         </li>
                         <li>
-                            <a rel="noopener noreferrer" href="#" className="hover:text-violet-400">Cart Payments</a>
+                            <a rel="noopener noreferrer" href="#" className="hover:text-violet-400">checkouts Payments</a>
                         </li>
                         <li>
                             <a rel="noopener noreferrer" href="#" className="hover:text-violet-400">Contact Us</a>

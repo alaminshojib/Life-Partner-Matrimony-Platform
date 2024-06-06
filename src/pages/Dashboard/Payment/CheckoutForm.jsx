@@ -1,7 +1,7 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import useCart from "../../../hooks/useCart";
+import useCheckouts from "../../../hooks/useCheckouts";
 import useAuth from "../../../hooks/useAuth";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -15,10 +15,10 @@ const CheckoutForm = () => {
     const elements = useElements();
     const axiosSecure = useAxiosSecure();
     const { user } = useAuth();
-    const [cart, refetch] = useCart();
+    const [checkouts, refetch] = useCheckouts();
     const navigate = useNavigate();
 
-    const totalPrice = cart.reduce((total, item) => total + item.price, 0)
+    const totalPrice = checkouts.reduce((total, item) => total + item.price, 0)
 
     useEffect(() => {
         if (totalPrice > 0) {
@@ -84,8 +84,8 @@ const CheckoutForm = () => {
                     price: totalPrice,
                     transactionId: paymentIntent.id,
                     date: new Date(), // utc date convert. use moment js to 
-                    cartIds: cart.map(item => item._id),
-                    menuItemIds: cart.map(item => item.menuId),
+                    checkoutsIds: checkouts.map(item => item._id),
+                    menuItemIds: checkouts.map(item => item.menuId),
                     status: 'pending'
                 }
 

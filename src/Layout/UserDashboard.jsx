@@ -2,7 +2,7 @@ import React from "react";
 import { FaHome, FaEdit, FaHeart, FaEnvelopeOpen, FaShoppingCart, FaHistory, FaSearch } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
-const UserDashboard = ({ cart }) => {
+const UserDashboard = ({ checkouts }) => {
     return (
         <>
             <li>
@@ -36,9 +36,9 @@ const UserDashboard = ({ cart }) => {
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/dashboard/cart" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                <NavLink to="/dashboard/checkouts" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
                     <FaShoppingCart className="mr-2" />
-                    My Checkout ({cart.length})
+                    My Checkout ({checkouts.length})
                 </NavLink>
             </li>
             <li>
