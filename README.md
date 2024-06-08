@@ -4,8 +4,7 @@
 - **Email:** admin@gmail.com
 - **Password:** Admin123$
 
-## Live Site URL:
-[Life Partner](https://life-partner-matrimon.web.app/)
+## Live Site URL: [Life Partner](https://life-partner-matrimon.web.app/)
 
 ## Features:
 1. **Responsive Design:** The website is optimized for mobile, tablet, and desktop views, ensuring a seamless user experience across devices.
