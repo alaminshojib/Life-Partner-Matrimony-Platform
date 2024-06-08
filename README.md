@@ -1,15 +1,20 @@
-# Bistro Boss Client with Aggregate
+# Life Partner-Matrimony Platform
 
-Server Repo Link: [Bistro Boss Server with Aggregate](https://github.com/ProgrammingHero1/bistro-boss-server-with-aggregate-part_8)
+## Admin Credentials:
+- **Email:** admin@gmail.com
+- **Password:** Admin123$
 
-## What We Did Today
+## Live Site URL:
+[Life Partner](https://life-partner-matrimon.web.app/)
 
-- **Different Dashboard Home Page for User and Admin**: Implemented distinct home pages for users and administrators to provide customized experiences based on roles.
-- **Fix Login Issue and API Race Condition**: Resolved issues related to user login and addressed race conditions in API requests to ensure smooth and reliable operations.
-- **Create Admin Dashboard Stats API**: Developed an API to fetch and display statistical data for the admin dashboard, providing insights into various metrics.
-- **Load Data and Display Stats on the Admin Home**: Loaded statistical data and displayed it on the admin home page to give administrators a quick overview of important metrics.
-- **High-Level Overview of Aggregate Pipeline**: Provided a high-level overview of the MongoDB aggregate pipeline for data aggregation and analysis.
-- **Get Order Quantity and Revenue by Category**: Used aggregate functions to calculate order quantities and revenue by category, enabling detailed financial insights.
-- **Display Custom Bar Chart and Custom Pie Chart**: Created custom bar and pie charts to visually represent data, making it easier to understand and analyze.
-- **Deploy Bistro Boss to Vercel and Firebase**: Deployed the Bistro Boss application to Vercel and Firebase for hosting, ensuring scalability and high availability.
-# b9a12-client-side-alaminshojib
+## Features:
+1. **Responsive Design:** The website is optimized for mobile, tablet, and desktop views, ensuring a seamless user experience across devices.
+2. **User Authentication:** Secure user authentication system with email/password and Google sign-in options. Registration page includes fields for name, email, password, and photo URL.
+3. **Premium Member Profiles:** Showcase premium member profiles with essential details like biodata ID, type, profile image, division, age, occupation, and a view profile button.
+4. **How it Works Section:** Informative section explaining the functioning of the website, helping users understand the platform's features and benefits.
+5. **Success Counter:** Display counters for total biodatas, male biodatas, female biodatas, and successful marriages facilitated by the platform.
+6. **Success Stories:** Share inspiring success stories of couples who found their life partners through the platform, including images, marriage dates, star ratings, and success stories.
+7. **Biodatas Page:** Filter biodatas based on age range, type (male/female), and division. Display biodatas with essential information and an option to view detailed profiles.
+8. **Biodata Details:** Private route displaying comprehensive biodata information. Users can add biodatas to their favorites and request contact information (for normal users).
+9. **Checkout Page:** Secure payment processing using Stripe for users to request contact information of biodatas. Admin verification ensures user privacy and security.
+10. **Admin/User Dashboard:** Personalized dashboard for registered admin/users with options to edit biodata, view biodata details, manage contact requests, view favorites, and logout.
