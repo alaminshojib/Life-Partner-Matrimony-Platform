@@ -15,9 +15,12 @@ const ApprovedContactRequest = () => {
         }
     });
 
+    const handleSearch = () => {
+        refetch();
+    };
+
     const handleApproveContact = async (contactRequest) => {
         try {
-            // Assuming there's an endpoint to approve contact requests
             const res = await axiosSecure.patch(`/biodatas/contact-requests/approve/${contactRequest._id}`);
             if (res.data.success) {
                 refetch();
@@ -59,15 +62,29 @@ const ApprovedContactRequest = () => {
         });
     };
 
-    // Filter contact requests based on the search term
     const filteredContactRequests = contactRequests.filter(contactRequest =>
         contactRequest.name && contactRequest.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
-        <div className="container mx-auto">
-            <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Approved Contact Requests:</h1>
-            <table className="table table-striped w-full shadow-lg rounded-lg overflow-hidden">
+        <div className="container mx-auto ">
+            <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Approved Contact Requests</h1>
+            <div className="flex justify-center mb-6">
+                <input
+                    type="text"
+                    placeholder="Search by name"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="border border-gray-300 rounded-full px-4 py-2 mr-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                    onClick={handleSearch}
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow focus:outline-none transition duration-200"
+                >
+                    Search
+                </button>
+            </div>
+            <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
                 <thead className="bg-gradient-to-r from-blue-500 to-blue-700 text-white">
                     <tr>
                         <th className="py-3 px-4 text-center">#</th>
@@ -78,10 +95,10 @@ const ApprovedContactRequest = () => {
                         <th className="py-3 px-4 text-center">Action</th>
                     </tr>
                 </thead>
-                <tbody className="bg-white border-b transition duration-200 hover:bg-gray-100">
+                <tbody className="bg-white">
                     {filteredContactRequests.length > 0 ? (
                         filteredContactRequests.map((contactRequest, index) => (
-                            <tr key={contactRequest._id} className='border-2'>
+                            <tr key={contactRequest._id} className="border-b transition duration-200 hover:bg-gray-100">
                                 <th className="py-3 px-4 text-center">{index + 1}</th>
                                 <td className="py-3 px-4 text-center">{contactRequest.name}</td>
                                 <td className="py-3 px-4 text-center">{contactRequest.email}</td>
@@ -96,13 +113,13 @@ const ApprovedContactRequest = () => {
                                 <td className="py-3 px-4 text-center">
                                     <button
                                         onClick={() => handleApproveContact(contactRequest)}
-                                        className="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600 transition duration-200"
+                                        className="bg-green-500 text-white p-2 rounded-full hover:bg-green-600 transition duration-200"
                                     >
                                         Approve
                                     </button>
                                     <button
                                         onClick={() => handleDeleteContactRequest(contactRequest)}
-                                        className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition duration-200 ml-2"
+                                        className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition duration-200 ml-2"
                                     >
                                         Delete
                                     </button>

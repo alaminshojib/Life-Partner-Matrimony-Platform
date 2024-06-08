@@ -5,9 +5,9 @@ import useAuth from "../../../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useCheckout from "../../../hooks/useCheckouts";
-import Alert from '@mui/material/Alert'; // Import Material-UI Alert component
-import IconButton from '@mui/material/IconButton'; // Import IconButton for closing alerts
-import CloseIcon from '@mui/icons-material/Close'; // Import CloseIcon for closing alerts
+import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import Swal from "sweetalert2";
 import useMenu from "../../../hooks/useMenu";
 
@@ -296,3 +296,4 @@ const BioDetailsData = ({ singleData, isPremiumUser, isApprove }) => {
 };
 
 export default BioDetailsData;
+

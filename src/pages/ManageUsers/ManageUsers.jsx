@@ -79,30 +79,29 @@ const ManageUsers = () => {
         });
     };
 
-    // Filter users based on the search term
     const filteredUsers = users.filter(user =>
         user.name && user.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
-        <div className="container mx-auto">
-            <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Manage Users :</h1>
-            <div className="flex justify-center mb-4">
+        <div className="container mx-auto ">
+            <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Manage Users</h1>
+            <div className="flex justify-center mb-6">
                 <input
                     type="text"
                     placeholder="Search by name"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="border border-gray-300 rounded px-4 py-2 mr-2 focus:outline-none"
+                    className="border border-gray-300 rounded-full px-4 py-2 mr-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button
                     onClick={handleSearch}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none"
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow focus:outline-none transition duration-200"
                 >
                     Search
                 </button>
             </div>
-            <table className="table table-striped w-full shadow-lg rounded-lg overflow-hidden">
+            <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
                 <thead className="bg-gradient-to-r from-blue-500 to-blue-700 text-white">
                     <tr>
                         <th className="py-3 px-4 text-center">#</th>
@@ -113,10 +112,10 @@ const ManageUsers = () => {
                         <th className="py-3 px-4 text-center">Action</th>
                     </tr>
                 </thead>
-                <tbody className="bg-white border-b transition duration-200 hover:bg-gray-100">
+                <tbody className="bg-white">
                     {filteredUsers.length > 0 ? (
                         filteredUsers.map((user, index) => (
-                            <tr key={user._id} className='border-2'>
+                            <tr key={user._id} className="border-b transition duration-200 hover:bg-gray-100">
                                 <th className="py-3 px-4 text-center">{index + 1}</th>
                                 <td className="py-3 px-4 text-center">{user.name}</td>
                                 <td className="py-3 px-4 text-center">{user.email}</td>
@@ -126,9 +125,9 @@ const ManageUsers = () => {
                                     ) : (
                                         <button
                                             onClick={() => handleMakeAdmin(user)}
-                                            className="bg-orange-500 text-white p-2 rounded-lg hover:bg-orange-600 transition duration-200"
+                                            className="bg-orange-500 text-white p-2 rounded-full hover:bg-orange-600 transition duration-200"
                                         >
-                                            <FaUsers className="text-white text-2xl" />
+                                            <FaUsers className="text-white text-xl" />
                                         </button>
                                     )}
                                 </td>
@@ -138,18 +137,18 @@ const ManageUsers = () => {
                                     ) : (
                                         <button
                                             onClick={() => handleMakePremium(user)}
-                                            className="bg-yellow-500 text-white p-2 rounded-lg hover:bg-yellow-600 transition duration-200"
+                                            className="bg-yellow-500 text-white p-2 rounded-full hover:bg-yellow-600 transition duration-200"
                                         >
-                                            <FaCrown className="text-white text-2xl" />
+                                            <FaCrown className="text-white text-xl" />
                                         </button>
                                     )}
                                 </td>
                                 <td className="py-3 px-4 text-center">
                                     <button
                                         onClick={() => handleDeleteUser(user)}
-                                        className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition duration-200"
+                                        className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition duration-200"
                                     >
-                                        <FaTrashAlt className="text-white text-2xl" />
+                                        <FaTrashAlt className="text-white text-xl" />
                                     </button>
                                 </td>
                             </tr>

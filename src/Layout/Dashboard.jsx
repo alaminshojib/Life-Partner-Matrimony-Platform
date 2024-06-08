@@ -84,25 +84,6 @@ const Dashboard = () => {
                                 </NavLink>
                             </li>
 
-                            <li>
-                                <NavLink to="/dashboard/addItems" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
-                                    <FaUtensils className="mr-2" />
-                                    Add Items
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="/dashboard/manageItems" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
-                                    <FaListAlt className="mr-2" />
-                                    Manage Items
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="/dashboard/bookings" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
-                                    <FaHistory className="mr-2" />
-                                    Manage Bookings
-                                </NavLink>
-                            </li>
-
                         </>
                             :
                             <>

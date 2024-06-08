@@ -4,6 +4,7 @@ import SectionTitle from '../../../components/SectionTitle/SectionTitle';
 import BioDetailsData from './BioDetailsData';
 import useMenu from '../../../hooks/useMenu';
 import { useParams } from 'react-router-dom';
+import Biodata from './Biodata';
 
 const BioDetails = () => {
     const { id } = useParams();
@@ -36,7 +37,7 @@ const BioDetails = () => {
             <Helmet>
                 <title>Life Partner | Biodatas</title>
             </Helmet>
-            <section className="pt-14 pb-5 bg-gray-100">
+            <section className="pt-14 p-10 bg-gray-100">
                 <SectionTitle heading={`Biodata Id: ${singleData ? singleData._id : ''}`} textColor="text-gray-900" />
                 <div className="container grid grid-cols-12 gap-8 mx-auto justify-between">
                     <div className="col-span-12 md:col-span-4 mt-5 pt-5 flex flex-col justify-between py-2">
@@ -128,11 +129,11 @@ const BioDetails = () => {
                     {/* Conditionally render similar biodata based on selected biodata type */}
                     {singleData?.biodata_type === "Male" ? (
                         maleData.slice(0, 3).map((data) => (
-                            <BioDetailsData key={data._id} singleData={data} />
+                            <Biodata key={data._id} singleData={data} />
                         ))
                     ) : (
                         femaleData.slice(0, 3).map((data) => (
-                            <BioDetailsData key={data._id} singleData={data} />
+                            <Biodata key={data._id} singleData={data} />
                         ))
                     )}
                 </div>

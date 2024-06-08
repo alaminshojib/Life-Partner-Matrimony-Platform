@@ -1,4 +1,3 @@
-// BiodatasPage.js
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SectionTitle from '../../../components/SectionTitle/SectionTitle';
@@ -34,6 +33,13 @@ const BiodatasPage = () => {
         setSelectedDivision(event.target.value);
     };
 
+    const handleResetFilters = () => {
+        setSelectedMinAge('18');
+        setSelectedMaxAge('60');
+        setSelectedBiodataType('');
+        setSelectedDivision('');
+    };
+
     const filteredBiodatas = menu.filter((bio) => {
         const age = new Date().getFullYear() - new Date(bio.date_of_birth).getFullYear();
         return (
@@ -46,7 +52,7 @@ const BiodatasPage = () => {
 
     const totalItems = filteredBiodatas.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-    
+
     useEffect(() => {
         setCurrentPage(1); // Reset current page when filters change
     }, [selectedMinAge, selectedMaxAge, selectedBiodataType, selectedDivision]);
@@ -55,137 +61,117 @@ const BiodatasPage = () => {
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-
     return (
-        <div>
+        <div className="bg-blue-50 py-10">
             <Helmet>
                 <title>Life Partner | Biodatas</title>
             </Helmet>
 
-            <section className="px-5 pt-14 pb-5">
-                <SectionTitle heading="All Biodatas " ></SectionTitle>
+            <section>
+                <SectionTitle heading="All Biodatas" />
 
-                <div className="container grid grid-cols-12 gap-y-6 justify-between mx-auto">
-                    <div className="col-span-12 md:col-span-3 flex flex-col justify-between py-2 space-y-8 md:space-y-16">
-                        <div className="space-y-8 md:space-y-12 flex flex-col">
-                            <div className="space-y-2 flex flex-col">
-                                <h3 className="text-3xl font-semibold items-center space-x-2 ">
-                                    Filter options
-                                </h3>
-                                <p className="text-sm">Once you select the option here, the filter will be applied!</p>
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 px-10">
+                    <div className="md:col-span-3 bg-white rounded-lg shadow-md p-3">
+                        <div className="space-y-4">
+                            <div>
+                                <h3 className="text-2xl font-semibold mb-2">Filter options</h3>
+                                <p className="text-sm text-gray-600">Once you select the option here, the filter will be applied!</p>
                             </div>
-                            <div className="space-y-4">
-                                {/* Age Range */}
-                                <div className="flex space-x-4">
-                                    <div>
-                                        <label htmlFor="minAge" className="block text-sm font-medium text-gray-700">Min Age</label>
-                                        <select
-                                            id="minAge"
-                                            name="minAge"
-                                            value={selectedMinAge}
-                                            onChange={handleMinAgeChange}
-                                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm rounded-md"
-                                        >
-                                            {minAgeOptions.map((age, index) => (
-                                                <option key={index} value={age}>{age}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="maxAge" className="block text-sm font-medium text-gray-700">Max Age</label>
-                                        <select
-                                            id="maxAge"
-                                            name="maxAge"
-                                            value={selectedMaxAge}
-                                            onChange={handleMaxAgeChange}
-                                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm rounded-md"
-                                        >
-                                            {maxAgeOptions.map((age, index) => (
-                                                <option key={index} value={age}>{age}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                                {/* Biodata Type */}
-                                <div>
-                                    <label htmlFor="biodataType" className="block text-sm font-medium text-gray-700">Biodata Type</label>
-                                    <select
-                                        id="biodataType"
-                                        name="biodataType"
-                                        value={selectedBiodataType}
-                                        onChange={handleBiodataTypeChange}
-                                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm rounded-md"
-                                    >
-                                        <option value="">All</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                    </select>
-                                </div>
-                                {/* Division */}
-                                <div>
-                                    <label htmlFor="division" className="block text-sm font-medium text-gray-700">Division</label>
-                                    <select
-                                        id="division"
-                                        name="division"
-                                        value={selectedDivision}
-                                        onChange={handleDivisionChange}
-                                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm rounded-md"
-                                    >
-                                        <option value="">All</option>
-                                        {divisionNames.map((division, index) => (
-                                            <option key={index} value={division}>{division}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                            <div>
+                                <label htmlFor="minAge" className="block text-sm font-medium text-gray-700 mb-1">Min Age</label>
+                                <select
+                                    id="minAge"
+                                    name="minAge"
+                                    value={selectedMinAge}
+                                    onChange={handleMinAgeChange}
+                                    className="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-400"
+                                >
+                                    {minAgeOptions.map((age, index) => (
+                                        <option key={index} value={age}>{age}</option>
+                                    ))}
+                                </select>
                             </div>
-                        </div>
-                        <div className="space-y-2 w-full flex flex-col">
-                            <div className="flex w-full h-1 bg-violet-400 bg-opacity-10">
-                                <div className="w-1/2 h-full bg-violet-400"></div>
+                            <div>
+                                <label htmlFor="maxAge" className="block text-sm font-medium text-gray-700 mb-1">Max Age</label>
+                                <select
+                                    id="maxAge"
+                                    name="maxAge"
+                                    value={selectedMaxAge}
+                                    onChange={handleMaxAgeChange}
+                                    className="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-400"
+                                >
+                                    {maxAgeOptions.map((age, index) => (
+                                        <option key={index} value={age}>{age}</option>
+                                    ))}
+                                </select>
                             </div>
-                            <a href="#" className="flex justify-between items-center w-full">
-                                <span className="text-xs font-bold tracking-wider uppercase">See more exclusives</span>
-                                <svg className="w-4 stroke-current text-violet-400" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24">
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    <polyline points="12 5 19 12 12 19"></polyline>
-                                </svg>
-                            </a>
+                            <div>
+                                <label htmlFor="biodataType" className="block text-sm font-medium text-gray-700 mb-1">Biodata Type</label>
+                                <select
+                                    id="biodataType"
+                                    name="biodataType"
+                                    value={selectedBiodataType}
+                                    onChange={handleBiodataTypeChange}
+                                    className="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-400"
+                                >
+                                    <option value="">All</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label htmlFor="division" className="block text-sm font-medium text-gray-700 mb-1">Division</label>
+                                <select
+                                    id="division"
+                                    name="division"
+                                    value={selectedDivision}
+                                    onChange={handleDivisionChange}
+                                    className="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-400"
+                                >
+                                    <option value="">All</option>
+                                    {divisionNames.map((division, index) => (
+                                        <option key={index} value={division}>{division}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <button onClick={handleResetFilters} className="text-sm text-blue-500 underline">Reset Filters</button>
                         </div>
                     </div>
-                    <div className=" md:flex justify-center items-center">
-                        <div className="h-full border-l border-gray-300"></div>
-                    </div>
-                    <div className="relative col-span-12 md:col-span-8 lg:col-span-8 bg-center bg-no-repeat bg-cover min-h-96">
-                        <div className=" bg-fixed text-white ">
-                            <div className="grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 gap-2 justify-around">
-                                {currentBiodatas.map((bio, index) => (
-                                    <Biodata key={index} bio={bio} />
-                                ))}
-                            </div>
-                            {totalPages > 1 && (
-                                <div className="flex justify-center mt-4">
-                                    <ul className="flex space-x-2">
-                                        {Array.from({ length: totalPages }, (_, i) => (
-                                            <li key={i}>
-                                                <button
-                                                    onClick={() => paginate(i + 1)}
-                                                    className={`px-4 py-2 rounded-md ${
-                                                        currentPage === i + 1 ? 'bg-gray-800 text-white' : 'bg-gray-300 text-gray-800'
-                                                    }`}
-                                                >
-                                                    {i + 1}
-                                                </button>
-                                            </li>
-                                        ))}
-                                    </ul>
+                    <div className="md:col-span-9 bg-white rounded-lg shadow-md p-6">
+                        {totalItems === 0 ? (
+                            <p className="text-red-500 text-center mt-10 text-2xl font-semibold">No matching Biodata found at this time.</p>
+                        ) : (
+                            <>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+                                    {currentBiodatas.map((bio, index) => (
+                                        <Biodata key={index} singleData={bio} />
+                                    ))}
                                 </div>
+                                {totalPages > 1 && (
+                                    <div className="flex justify-center mt-4">
+                                        <ul className="flex space-x-2">
+                                            {Array.from({ length: totalPages }, (_, i) => (
+                                                <li key={i}>
+                                                    <button
+                                                        onClick={() => paginate(i + 1)}
+                                                       
+                                                        className={`px-4 py-2 rounded-md ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-blue-300 text-gray-800'}`}
+                                                        >
+                                                            {i + 1}
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </>
                             )}
-                            </div>
+                        </div>
                     </div>
-                </div>
-            </section>
-        </div>
-    );
-};
-
-export default BiodatasPage;
+                </section>
+            </div>
+        );
+    };
+    
+    export default BiodatasPage;
+    
