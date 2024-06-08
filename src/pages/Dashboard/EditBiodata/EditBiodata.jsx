@@ -13,25 +13,25 @@ const EditBiodata = () => {
   const axiosSecure = useAxiosSecure();
 
   const defaultFormData = {
-    biodataType: '',
+    biodata_type: '',
     name: '',
-    profileImage: '',
-    dob: '',
+    profile_image: '',
+    date_of_birth: '',
     height: '',
     weight: '',
     age: '',
     occupation: '',
     race: '',
-    fathersName: '',
-    mothersName: '',
-    permanentDivision: '',
-    presentDivision: '',
-    expectedPartnerAge: '',
-    expectedPartnerHeight: '',
-    expectedPartnerWeight: '',
-    contactEmail: user.email,
+    fathers_name: '',
+    mothers_name: '',
+    permanent_division: '',
+    present_division: '',
+    expected_partner_age: '',
+    expected_partner_height: '',
+    expected_partner_weight: '',
+    contact_email: user.email,
     mobileCountryCode: 'BD',
-    mobileNumber: '',
+    mobile_number: '',
   };
 
   const [formData, setFormData] = useState(defaultFormData);
@@ -59,8 +59,8 @@ const EditBiodata = () => {
     setLoading(true);
 
     try {
-      const formDataWithContactEmail = { ...formData, contactEmail: user.email };
-      const response = await axiosSecure.post('/biodatas', formDataWithContactEmail);
+      const formDataWithcontact_email = { ...formData, contact_email: user.email };
+      const response = await axiosSecure.post('/biodatas', formDataWithcontact_email);
       Swal.fire({
         icon: 'success',
         title: 'Success!',
@@ -84,7 +84,7 @@ const EditBiodata = () => {
     setLoading(true);
 
     try {
-      const existingData = await axiosSecure.get(`/biodatas/${formData.contactEmail}`);
+      const existingData = await axiosSecure.get(`/biodatas/${formData.contact_email}`);
       const existingFormData = existingData.data;
       const hasChanges = JSON.stringify(existingFormData) !== JSON.stringify(formData);
 
@@ -97,7 +97,7 @@ const EditBiodata = () => {
         return;
       }
 
-      const response = await axiosSecure.patch(`/biodatas/${formData.contactEmail}`, formData);
+      const response = await axiosSecure.patch(`/biodatas/${formData.contact_email}`, formData);
       Swal.fire({
         icon: 'success',
         title: 'Success!',
@@ -126,8 +126,8 @@ const EditBiodata = () => {
             <label className="block text-sm font-medium text-gray-700">Biodata Type :</label>
             <select
               required
-              name="biodataType"
-              value={formData.biodataType}
+              name="biodata_type"
+              value={formData.biodata_type}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
@@ -154,8 +154,8 @@ const EditBiodata = () => {
             <input
               required
               type="text"
-              name="profileImage"
-              value={formData.profileImage}
+              name="profile_image"
+              value={formData.profile_image}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
@@ -166,8 +166,8 @@ const EditBiodata = () => {
             <input
               required
               type="date"
-              name="dob"
-              value={formData.dob}
+              name="date_of_birth"
+              value={formData.date_of_birth}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
@@ -270,8 +270,8 @@ const EditBiodata = () => {
             <input
               required
               type="text"
-              name="fathersName"
-              value={formData.fathersName}
+              name="fathers_name"
+              value={formData.fathers_name}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
@@ -282,8 +282,8 @@ const EditBiodata = () => {
             <input
               required
               type="text"
-              name="mothersName"
-              value={formData.mothersName}
+              name="mothers_name"
+              value={formData.mothers_name}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
@@ -292,8 +292,8 @@ const EditBiodata = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700">Permanent Division :</label>
             <select
-              name="permanentDivision"
-              value={formData.permanentDivision}
+              name="permanent_division"
+              value={formData.permanent_division}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               required // Adding required attribute to make it mandatory to select one option
@@ -315,8 +315,8 @@ const EditBiodata = () => {
             <label className="block text-sm font-medium text-gray-700">Present Division :</label>
             <select
               required
-              name="presentDivision"
-              value={formData.presentDivision}
+              name="present_division"
+              value={formData.present_division}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
@@ -339,8 +339,8 @@ const EditBiodata = () => {
             <label className="block text-sm font-medium text-gray-700">Expected Partner Age :</label>
             <select
               required
-              name="expectedPartnerAge"
-              value={formData.expectedPartnerAge}
+              name="expected_partner_age"
+              value={formData.expected_partner_age}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
@@ -360,8 +360,8 @@ const EditBiodata = () => {
             <label className="block text-sm font-medium text-gray-700">Expected Partner Height :</label>
             <select
               required
-              name="expectedPartnerHeight"
-              value={formData.expectedPartnerHeight}
+              name="expected_partner_height"
+              value={formData.expected_partner_height}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
@@ -379,8 +379,8 @@ const EditBiodata = () => {
             <label className="block text-sm font-medium text-gray-700">Expected Partner Weight :</label>
             <select
               required
-              name="expectedPartnerWeight"
-              value={formData.expectedPartnerWeight}
+              name="expected_partner_weight"
+              value={formData.expected_partner_weight}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
@@ -398,8 +398,8 @@ const EditBiodata = () => {
             <input
               readOnly
               type="email"
-              name="contactEmail"
-              value={formData.contactEmail}
+              name="contact_email"
+              value={formData.contact_email}
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
@@ -429,9 +429,9 @@ const EditBiodata = () => {
               <input
                 required
                 type="tel"
-                name="mobileNumber"
-                id="mobileNumber"
-                value={formData.mobileNumber}
+                name="mobile_number"
+                id="mobile_number"
+                value={formData.mobile_number}
                 onChange={handleChange}
                 className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Mobile Number"

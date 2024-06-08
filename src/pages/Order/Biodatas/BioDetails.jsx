@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SectionTitle from '../../../components/SectionTitle/SectionTitle';
@@ -8,27 +6,30 @@ import useMenu from '../../../hooks/useMenu';
 import { useParams } from 'react-router-dom';
 
 const BioDetails = () => {
+    const { id } = useParams();
     const [singleData, setSingleData] = useState(null);
-    const [menu] = useMenu();
     const [maleData, setMaleData] = useState([]);
     const [femaleData, setFemaleData] = useState([]);
-    const { id } = useParams();
+    const [menu] = useMenu();
 
     useEffect(() => {
         if (menu) {
             const signData = menu.find((bio) => bio._id === id);
             setSingleData(signData);
         }
-    }, [id, menu]);
+    }, [id, menu]); 
 
     useEffect(() => {
-        if (menu) {
-            const maleData = menu.filter((item) => item.biodata_type === "Male");
-            const femaleData = menu.filter((item) => item.biodata_type === "Female");
-            setMaleData(maleData);
-            setFemaleData(femaleData);
-        }
-    }, [menu]);
+        if (!menu) return;
+
+        const maleBiodatas = menu.filter((item) => item.biodata_type === 'Male');
+        const femaleBiodatas = menu.filter((item) => item.biodata_type === 'Female');
+
+        setMaleData([...maleBiodatas]); // Use spread operator to create a new array
+        setFemaleData([...femaleBiodatas]); // Use spread operator to create a new array
+    }, [menu]); 
+
+
 
     return (
         <div>

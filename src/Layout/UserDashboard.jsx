@@ -32,7 +32,7 @@ const UserDashboard = ({ checkouts }) => {
             <li>
                 <NavLink to="/dashboard/my-favourites-biodata" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
                     <FaHeart className="mr-2" />
-                    My Favourites Biodata
+                    My favourites Biodata
                 </NavLink>
             </li>
             <li>

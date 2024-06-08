@@ -3,13 +3,11 @@ import {
   } from "react-router-dom";
 import Main from "../Layout/Main";
 import Home from "../pages/Home/Home/Home";
-import Order from "../pages/Order/Order/Order";
 import Login from "../pages/Login/Login";
 import SignUp from "../pages/SignUp/SignUp";
 import PrivateRoute from "./PrivateRoute";
 import Secret from "../pages/Shared/Secret/Secret";
 import Dashboard from "../Layout/Dashboard";
-import checkouts from "../pages/Dashboard/CheckoutPage/CheckoutPage";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 import AddItems from "../pages/Dashboard/AddItems/AddItems";
 import AdminRoute from "./AdminRoute";
@@ -26,7 +24,7 @@ import About from "../pages/About/About";
 import Contact from "../pages/Contact/Contact";
 import ViewBiodata from "../pages/Dashboard/ViewBiodata/ViewBiodata";
 import MyContactRequest from "../pages/Dashboard/MyContactRequest/MyContactRequest";
-import MyFavouritesBiodata from "../pages/Dashboard/MyFavouritesBiodata/MyFavouritesBiodata";
+import MyfavouritesBiodata from "../pages/Dashboard/MyfavouritesBiodata/MyfavouritesBiodata";
 import ManageUsers from "../pages/ManageUsers/ManageUsers";
 import ApprovedPremium from "../pages/ApprovedPremium/ApprovedPremium";
 import ApprovedContactRequest from "../pages/ApprovedContactRequest/ApprovedContactRequest";
@@ -43,10 +41,7 @@ import CheckoutPage from "../pages/Dashboard/CheckoutPage/CheckoutPage";
             element: <Home></Home>
         }, 
         
-        {
-          path: 'order/:category',
-          element: <Order></Order>
-        },
+     
         {
           path: 'biodatas',
           element: <BiodatasPage></BiodatasPage>
@@ -100,7 +95,7 @@ import CheckoutPage from "../pages/Dashboard/CheckoutPage/CheckoutPage";
         },
         {
           path: 'my-favourites-biodata',
-          element: <MyFavouritesBiodata></MyFavouritesBiodata>
+          element: <MyfavouritesBiodata></MyfavouritesBiodata>
         },
        
         {

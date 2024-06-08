@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import CheckoutModal from './CheckoutModal';
 import useAuth from "../../../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
@@ -10,6 +9,7 @@ import Alert from '@mui/material/Alert'; // Import Material-UI Alert component
 import IconButton from '@mui/material/IconButton'; // Import IconButton for closing alerts
 import CloseIcon from '@mui/icons-material/Close'; // Import CloseIcon for closing alerts
 import Swal from "sweetalert2";
+import useMenu from "../../../hooks/useMenu";
 
 const BioDetailsData = ({ singleData, isPremiumUser, isApprove }) => {
   const [showFavouriteModal, setShowFavouriteModal] = useState(false);
@@ -19,7 +19,9 @@ const BioDetailsData = ({ singleData, isPremiumUser, isApprove }) => {
   const location = useLocation();
   const axiosSecure = useAxiosSecure();
   const [checkouts, refetch] = useCheckout();
+  const [menu] = useMenu();
   const [alert, setAlert] = useState(null);
+  
 
   useEffect(() => {
     if (alert) {
@@ -38,11 +40,14 @@ const BioDetailsData = ({ singleData, isPremiumUser, isApprove }) => {
       }
 
       const checkoutsItem = {
-        menuId: singleData._id,
-        email: user.email,
-        name: singleData.name,
-        image: singleData.image,
-        price: singleData.price
+        menuId: singleData?._id,
+        email: user?.email,
+        name: singleData?.name,
+        image: singleData?.image,
+        contact_email: singleData?.contact_email,
+        mobile_number: singleData?.mobile_number,
+
+
       };
 
       const alreadyInCheckouts = checkouts.some(item => item.menuId === checkoutsItem.menuId);
@@ -103,9 +108,75 @@ const BioDetailsData = ({ singleData, isPremiumUser, isApprove }) => {
     }
   }
 
-  const handleAddToFavorites = () => {
+  const handleAddToFavorites = async () => {
     setShowFavouriteModal(true);
+    try {
+      if (!user || !user.email) {
+        throw new Error("User not logged in");
+      }
+  
+      const favouritesItem = {
+        menuId: singleData?._id,
+        email: user?.email,
+        name: singleData?.name,
+        occupation: singleData?.occupation,
+        contact_email: singleData?.contact_email,
+        permanent_division: singleData?.permanent_division
+      };
+  
+      const res = await axiosSecure.post('/favourites', favouritesItem);
+      if (res?.data && res?.data?.message === 'Favourite item saved successfully') {
+        setAlert(
+          <Alert
+            severity="success"
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setAlert(null);
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+            sx={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999 }}
+          >
+            {`${singleData.name} added to your favourites`}
+          </Alert>
+        );
+        refetch();
+      } else {
+        throw new Error(`${singleData.name} already exists in favourites`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setAlert(
+        <Alert
+          severity="error"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setAlert(null);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999 }}
+        >
+          {error.message|| 'Already Added in Favourites Lists'}
+        </Alert>
+      );
+    } finally {
+      setShowFavouriteModal(false);
+    }
   };
+  
 
   const handleConfirmation = () => {
     setShowConfirmationModal(true);
@@ -207,7 +278,6 @@ const BioDetailsData = ({ singleData, isPremiumUser, isApprove }) => {
           </button>
         )}
       </div>
-      {showFavouriteModal && <CheckoutModal onClose={() => setShowFavouriteModal(false)} userData={singleData} />}
       {alert}
       {/* Confirmation Modal */}
       {showConfirmationModal && (

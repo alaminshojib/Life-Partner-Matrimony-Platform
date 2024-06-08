@@ -1,28 +1,23 @@
 // BiodatasPage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SectionTitle from '../../../components/SectionTitle/SectionTitle';
 import useMenu from '../../../hooks/useMenu';
 import Biodata from './Biodata';
 
 const BiodatasPage = () => {
-    // State for selected filter options
-    const [selectedMinAge, setSelectedMinAge] = useState('18'); // Initial min age
-    const [selectedMaxAge, setSelectedMaxAge] = useState('60'); // Initial max age
-    const [selectedBiodataType, setSelectedBiodataType] = useState(''); // Initial biodata type
-    const [selectedDivision, setSelectedDivision] = useState(''); // Initial division
-    const [currentPage, setCurrentPage] = useState(1); // State for current page
+    const [selectedMinAge, setSelectedMinAge] = useState('18');
+    const [selectedMaxAge, setSelectedMaxAge] = useState('60');
+    const [selectedBiodataType, setSelectedBiodataType] = useState('');
+    const [selectedDivision, setSelectedDivision] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
 
     const [menu] = useMenu();
-
-    // Division names
     const divisionNames = ['Dhaka', 'Chattogram', 'Rangpur', 'Barishal', 'Khulna', 'Mymensingh', 'Sylhet'];
-
-    // Age range options
     const minAgeOptions = Array.from({ length: 100 - 18 + 1 }, (_, i) => (18 + i).toString());
     const maxAgeOptions = Array.from({ length: 100 - 18 + 1 }, (_, i) => (18 + i).toString());
+    const itemsPerPage = 6;
 
-    // Handle filter change functions
     const handleMinAgeChange = (event) => {
         setSelectedMinAge(event.target.value);
     };
@@ -39,7 +34,6 @@ const BiodatasPage = () => {
         setSelectedDivision(event.target.value);
     };
 
-    // Filter biodatas based on selected filter options
     const filteredBiodatas = menu.filter((bio) => {
         const age = new Date().getFullYear() - new Date(bio.date_of_birth).getFullYear();
         return (
@@ -50,16 +44,17 @@ const BiodatasPage = () => {
         );
     });
 
-    // Number of items to display per page
-    const itemsPerPage = 6;
-    // Calculate the index of the first and last item to display
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    // Slice the array of biodatas to display only the items for the current page
-    const currentBiodatas = filteredBiodatas.slice(indexOfFirstItem, indexOfLastItem);
+    const totalItems = filteredBiodatas.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    
+    useEffect(() => {
+        setCurrentPage(1); // Reset current page when filters change
+    }, [selectedMinAge, selectedMaxAge, selectedBiodataType, selectedDivision]);
 
-    // Change page
+    const currentBiodatas = filteredBiodatas.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 
     return (
         <div>
@@ -167,11 +162,10 @@ const BiodatasPage = () => {
                                     <Biodata key={index} bio={bio} />
                                 ))}
                             </div>
-                            {/* Pagination */}
-                            <div className="flex justify-center mt-4">
-                                {filteredBiodatas.length > itemsPerPage && (
+                            {totalPages > 1 && (
+                                <div className="flex justify-center mt-4">
                                     <ul className="flex space-x-2">
-                                        {Array.from({ length: Math.ceil(filteredBiodatas.length / itemsPerPage) }, (_, i) => (
+                                        {Array.from({ length: totalPages }, (_, i) => (
                                             <li key={i}>
                                                 <button
                                                     onClick={() => paginate(i + 1)}
@@ -184,9 +178,9 @@ const BiodatasPage = () => {
                                             </li>
                                         ))}
                                     </ul>
-                                )}
+                                </div>
+                            )}
                             </div>
-                        </div>
                     </div>
                 </div>
             </section>

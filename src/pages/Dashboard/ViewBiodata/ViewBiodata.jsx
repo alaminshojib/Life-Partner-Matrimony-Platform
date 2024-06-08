@@ -85,18 +85,18 @@ const ViewBiodata = () => {
           <div>
             <h3 className="text-xl font-semibold mb-4">Personal Information :</h3>
             <div className="space-y-2">
-              <InfoRow label="Biodata Type" value={biodata.biodataType} />
+              <InfoRow label="Biodata Type" value={biodata.biodata_type} />
               <InfoRow label="Name" value={biodata.name} />
-              <InfoRow label="Father's Name" value={biodata.fathersName} />
-              <InfoRow label="Mother's Name" value={biodata.mothersName} />
+              <InfoRow label="Father's Name" value={biodata.fathers_name} />
+              <InfoRow label="Mother's Name" value={biodata.mothers_name} />
               <InfoRow label="Age" value={biodata.age} />
-              <InfoRow label="Date of Birth" value={biodata.dob} />
+              <InfoRow label="Date of Birth" value={biodata.date_of_birth} />
               <InfoRow label="Occupation" value={biodata.occupation} />
               <InfoRow label="Race" value={biodata.race} />
-              <InfoRow label="Permanent Division" value={biodata.permanentDivision} />
-              <InfoRow label="Present Division" value={biodata.presentDivision} />
-              <InfoRow label="Contact Email" value={biodata.contactEmail} />
-              <InfoRow label="Mobile Number" value={biodata.mobileNumber} />
+              <InfoRow label="Permanent Division" value={biodata.permanent_division} />
+              <InfoRow label="Present Division" value={biodata.present_division} />
+              <InfoRow label="Contact Email" value={biodata.contact_email} />
+              <InfoRow label="Mobile Number" value={biodata.mobile_number} />
             </div>
           </div>
           <div>
@@ -104,9 +104,9 @@ const ViewBiodata = () => {
             <div className="space-y-2">
               <InfoRow label="Height" value={biodata.height} />
               <InfoRow label="Weight" value={biodata.weight} />
-              <InfoRow label="Expected Partner Age" value={biodata.expectedPartnerAge} />
-              <InfoRow label="Expected Partner Height" value={biodata.expectedPartnerHeight} />
-              <InfoRow label="Expected Partner Weight" value={biodata.expectedPartnerWeight} />
+              <InfoRow label="Expected Partner Age" value={biodata.expected_partner_age} />
+              <InfoRow label="Expected Partner Height" value={biodata.expected_partner_height} />
+              <InfoRow label="Expected Partner Weight" value={biodata.expected_partner_weight} />
             </div>
           </div>
         </div>
