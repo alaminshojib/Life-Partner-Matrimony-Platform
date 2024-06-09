@@ -2,17 +2,30 @@ import React from 'react';
 import Modal from 'react-modal';
 import CheckoutForm from './CheckoutForm';
 
-const PaymentModal = ({ isOpen, onClose, totalPrice }) => {
+const PaymentModal = ({ isOpen, onClose, totalPrice, items , refetch}) => {
     return (
         <Modal
             isOpen={isOpen}
             onRequestClose={onClose}
-            contentLabel="Payment Modal"
             className="modal"
-            overlayClassName="overlay"
+            style={{
+                overlay: {
+                    display: 'flex',
+                    alignItems: 'center', // Vertically center
+                    justifyContent: 'center', // Horizontally center
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black overlay
+                },
+                content: {
+                    position: 'relative',
+                    maxWidth: '600px',
+                    margin: 'auto',
+                    border: 'none',
+                    background: '#fff', // Set background color of modal content
+                    
+                },
+            }}
         >
-            <h2 className="text-2xl mb-4">Complete Your Payment</h2>
-            <CheckoutForm totalPrice={totalPrice} onClose={onClose} />
+            <CheckoutForm totalPrice={totalPrice} onClose={onClose} items={items} refetch={refetch}/>
         </Modal>
     );
 };

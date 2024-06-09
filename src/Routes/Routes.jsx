@@ -29,6 +29,8 @@ import ManageUsers from "../pages/ManageUsers/ManageUsers";
 import ApprovedPremium from "../pages/ApprovedPremium/ApprovedPremium";
 import ApprovedContactRequest from "../pages/ApprovedContactRequest/ApprovedContactRequest";
 import CheckoutPage from "../pages/Dashboard/CheckoutPage/CheckoutPage";
+import GotMarried from "../pages/Dashboard/GotMarried/GotMarried";
+import PaymentModal from "../components/Payments/PaymentModal";
 
 
   export const router = createBrowserRouter([
@@ -66,10 +68,7 @@ import CheckoutPage from "../pages/Dashboard/CheckoutPage/CheckoutPage";
           path: 'signup',
           element: <SignUp></SignUp>
         },
-        {
-          path: 'secret',
-          element: <PrivateRoute><Secret></Secret></PrivateRoute>
-        }
+       
       ]
     },
     {
@@ -144,6 +143,14 @@ import CheckoutPage from "../pages/Dashboard/CheckoutPage/CheckoutPage";
         {
           path: 'approvedContactRequest',
           element: <AdminRoute><ApprovedContactRequest></ApprovedContactRequest></AdminRoute>
+        },
+        {
+          path: 'success-story',
+          element: <GotMarried></GotMarried>
+        },
+        {
+          path: 'payments',
+          element: <PaymentModal></PaymentModal>
         }
 
       ]

@@ -38,23 +38,22 @@ const BioDetailsData = ({ singleData, isPremiumUser, isApprove }) => {
       if (!user || !user.email) {
         throw new Error("User not logged in");
       }
-
+  
       const checkoutsItem = {
-        menuId: singleData?._id,
+        biodataId: singleData?.biodataId,
         email: user?.email,
         name: singleData?.name,
         image: singleData?.image,
         contact_email: singleData?.contact_email,
         mobile_number: singleData?.mobile_number,
-
-
+        status: 'Pending', // Adding status field
       };
-
-      const alreadyInCheckouts = checkouts.some(item => item.menuId === checkoutsItem.menuId);
+  
+      const alreadyInCheckouts = checkouts.some(item => item.biodataId === checkoutsItem.biodataId);
       if (alreadyInCheckouts) {
         throw new Error(`${singleData.name} is already in your checkouts`);
       }
-
+  
       const res = await axiosSecure.post('/checkouts', checkoutsItem);
       if (res.data && res.data.message === 'Checkout item saved successfully') {
         setAlert(
@@ -103,10 +102,11 @@ const BioDetailsData = ({ singleData, isPremiumUser, isApprove }) => {
           {error.message || 'Failed to add to your checkouts'}
         </Alert>
       );
-    }finally{
-      navigate("/dashboard/checkouts")
+    } finally {
+      navigate("/dashboard/checkouts");
     }
-  }
+  };
+  
 
   const handleAddToFavorites = async () => {
     setShowFavouriteModal(true);
@@ -116,7 +116,7 @@ const BioDetailsData = ({ singleData, isPremiumUser, isApprove }) => {
       }
   
       const favouritesItem = {
-        menuId: singleData?._id,
+        biodataId: singleData?.biodataId,
         email: user?.email,
         name: singleData?.name,
         occupation: singleData?.occupation,
@@ -246,7 +246,7 @@ const BioDetailsData = ({ singleData, isPremiumUser, isApprove }) => {
         ) : (
           <button
             onClick={() => {
-              const alreadyInCheckouts = checkouts.some(item => item.menuId === singleData._id);
+              const alreadyInCheckouts = checkouts.some(item => item.biodataId === singleData._id);
               if (!alreadyInCheckouts) {
                 handleConfirmation();
               } else {

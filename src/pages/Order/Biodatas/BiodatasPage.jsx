@@ -10,12 +10,21 @@ const BiodatasPage = () => {
     const [selectedBiodataType, setSelectedBiodataType] = useState('');
     const [selectedDivision, setSelectedDivision] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(true);
 
     const [menu] = useMenu();
     const divisionNames = ['Dhaka', 'Chattogram', 'Rangpur', 'Barishal', 'Khulna', 'Mymensingh', 'Sylhet'];
     const minAgeOptions = Array.from({ length: 100 - 18 + 1 }, (_, i) => (18 + i).toString());
     const maxAgeOptions = Array.from({ length: 100 - 18 + 1 }, (_, i) => (18 + i).toString());
     const itemsPerPage = 6;
+
+    useEffect(() => {
+        setLoading(true);
+        // Simulate data fetching
+        setTimeout(() => {
+            setLoading(false);
+        }, 1000); // Replace with actual data fetching
+    }, [selectedMinAge, selectedMaxAge, selectedBiodataType, selectedDivision]);
 
     const handleMinAgeChange = (event) => {
         setSelectedMinAge(event.target.value);
@@ -138,40 +147,44 @@ const BiodatasPage = () => {
                         </div>
                     </div>
                     <div className="md:col-span-9 bg-white rounded-lg shadow-md p-6">
-                        {totalItems === 0 ? (
-                            <p className="text-red-500 text-center mt-10 text-2xl font-semibold">No matching Biodata found at this time.</p>
+                        {loading ? (
+                            <p className="text-center text-blue-600 text-xl">Loading...</p>
                         ) : (
                             <>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-                                    {currentBiodatas.map((bio, index) => (
-                                        <Biodata key={index} singleData={bio} />
-                                    ))}
-                                </div>
-                                {totalPages > 1 && (
-                                    <div className="flex justify-center mt-4">
-                                        <ul className="flex space-x-2">
-                                            {Array.from({ length: totalPages }, (_, i) => (
-                                                <li key={i}>
-                                                    <button
-                                                        onClick={() => paginate(i + 1)}
-                                                       
-                                                        className={`px-4 py-2 rounded-md ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-blue-300 text-gray-800'}`}
-                                                        >
-                                                            {i + 1}
-                                                        </button>
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                {totalItems === 0 ? (
+                                    <p className="text-red-500 text-center mt-10 text-2xl font-semibold">No matching Biodata found at this time.</p>
+                                ) : (
+                                    <>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+                                            {currentBiodatas.map((bio, index) => (
+                                                <Biodata key={index} singleData={bio} />
+                                            ))}
                                         </div>
-                                    )}
-                                </>
-                            )}
-                        </div>
+                                        {totalPages > 1 && (
+                                            <div className="flex justify-center mt-4">
+                                                <ul className="flex space-x-2">
+                                                    {Array.from({ length: totalPages }, (_, i) => (
+                                                        <li key={i}>
+                                                            <button
+                                                                onClick={() => paginate(i + 1)}
+                                                                className={`px-4 py-2 rounded-md ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-blue-300 text-gray-800'}`}
+                                                            >
+                                                                {i + 1}
+                                                            </button>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </>
+                        )}
                     </div>
-                </section>
-            </div>
-        );
-    };
-    
-    export default BiodatasPage;
-    
+                </div>
+            </section>
+        </div>
+    );
+};
+
+export default BiodatasPage;

@@ -80,10 +80,10 @@ const MyFavouritesBiodata = () => {
             <tbody>
               {favourites.map((favourite) => (
                 <tr key={favourite._id} className="border-b border-gray-300">
-                  <td className="px-4 py-2">{favourite.name}</td>
-                  <td className="px-4 py-2">{favourite.menuId}</td>
-                  <td className="px-4 py-2">{favourite.permanent_division}</td>
-                  <td className="px-4 py-2">{favourite.occupation}</td>
+                  <td className="px-4 py-2">{favourite?.name}</td>
+                  <td className="px-4 py-2">{favourite?.biodataId}</td>
+                  <td className="px-4 py-2">{favourite?.permanent_division}</td>
+                  <td className="px-4 py-2">{favourite?.occupation}</td>
                   <td className="px-4 py-2">
                     <button
                       onClick={() => handleDeleteFavourite(favourite._id)}

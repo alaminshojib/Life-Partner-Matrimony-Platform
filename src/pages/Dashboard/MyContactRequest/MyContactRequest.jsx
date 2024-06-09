@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { AiFillDelete } from 'react-icons/ai';
 import Swal from 'sweetalert2';
+import axios from 'axios'; // Import Axios
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const MyContactRequest = () => {
@@ -14,41 +14,52 @@ const MyContactRequest = () => {
 
   const fetchContactRequests = async () => {
     try {
-      const response = await axiosSecure.get('/checkouts');
+      const response = await axiosSecure.get('/payments');
       setContactRequests(response.data);
     } catch (error) {
       console.error('Error fetching contact requests:', error);
     }
   };
 
-  const handleDeleteRequest = async (id) => {
+
+  
+  const handleDeleteRequest = async (requestId, biodataId) => {
     try {
-      const result = await axiosSecure.delete(`/checkouts/${id}`);
-      if (result.status === 200) {
-        // Remove the deleted contact request from the state
-        setContactRequests((prevRequests) =>
-          prevRequests.filter((request) => request?._id !== id)
-        );
-        // Show success message
+      // Send a DELETE request to the server endpoint with the biodataId
+      const response = await axios.delete(`/payments/${biodataId}`);
+      
+      // If the deletion is successful, update the state to reflect the changes
+      if (response.status === 200) {
+        // Filter out the deleted item from the contactRequests array
+        const updatedRequests = requestId.map(request => ({
+          ...request,
+          items: request.items.filter(item => item.biodataId !== biodataId)
+        }));
+        
+        // Update the state with the modified contact requests
+        setContactRequests(updatedRequests);
+  
+        // Show a success message to the user
         Swal.fire({
           icon: 'success',
           title: 'Success',
-          text: 'Contact request deleted successfully!',
+          text: 'Item deleted successfully',
         });
-      } else {
-        throw new Error('Failed to delete contact request');
       }
     } catch (error) {
-      console.error('Error deleting contact request:', error);
-      // Show error message
+      // Handle errors if the deletion fails
+      console.error('Error deleting item:', error);
+      
+      // Show an error message to the user
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'Failed to delete contact request',
+        text: 'Failed to delete item. Please try again later.',
       });
     }
   };
-
+  
+  
   return (
     <div className="container mx-auto px-4">
       <h2 className="text-3xl font-semibold text-gray-800 mb-4">My Contact Requests</h2>
@@ -65,27 +76,28 @@ const MyContactRequest = () => {
             </tr>
           </thead>
           <tbody>
-            {contactRequests.map((request) => (
-              <tr key={request?._id} className="border-b border-gray-300">
-                <td className="px-4 py-2">{request?.name || 'N/A'}</td>
-                <td className="px-4 py-2">{request?._id || 'N/A'}</td>
-                <td className="px-4 py-2">
-                  {request?.status === 'Approved' ? request?.email || 'N/A' : 'Pending'}
-                </td>
-                <td className="px-4 py-2">{request?.mobile_number || 'N/A'}</td>
-                {/* <td className="px-4 py-2">{(request?.status === 'Approved')? request?.mobile_number : 'N/A'}</td> */}
-
-                <td className="px-4 py-2">{request?.contact_email || 'N/A'}</td>
-                <td className="px-4 py-2">
-                  <button
-                    onClick={() => handleDeleteRequest(request?._id)}
-                    className="text-red-500 hover:text-red-700 focus:outline-none"
-                  >
-                    <AiFillDelete />
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {contactRequests.map(request =>
+              request.items.map((item, index) => (
+                <tr key={`${request._id}-${index}`} className="border-b border-gray-300">
+                  <td className="px-4 py-2">{item.name || 'N/A'}</td>
+                  <td className="px-4 py-2">{item.biodataId || 'N/A'}</td>
+                  <td className="px-4 py-2">
+                    {request.status === 'Approved' ? request.email || 'N/A' : 'Pending'}
+                  </td>
+                  <td className="px-4 py-2">{item.mobile_number || 'N/A'}</td>
+                  <td className="px-4 py-2">{item.contact_email || 'N/A'}</td>
+                  
+                  <td className="px-4 py-2">
+                    <button
+                      onClick={() => handleDeleteRequest(request._id, item.biodataId)}
+                      className="text-red-500 hover:text-red-700 focus:outline-none"
+                    >
+                      <AiFillDelete />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

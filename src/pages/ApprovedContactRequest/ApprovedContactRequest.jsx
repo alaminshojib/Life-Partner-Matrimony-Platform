@@ -1,19 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
 import Swal from 'sweetalert2';
-import { FaCheck, FaTimes } from "react-icons/fa";
+import { FaCheck, FaTimes } from 'react-icons/fa';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 
-const ApprovedContactRequest = () => {
-    const [searchTerm, setSearchTerm] = useState('');
+const ApprovedContactRequest = ({ searchTerm }) => {
+    const [contactRequests, setContactRequests] = useState([]);
+    const [searchTerms, setSearchTerms] = useState('');
     const axiosSecure = useAxiosSecure();
-    const { data: contactRequests = [], refetch } = useQuery({
-        queryKey: ['contactRequests'],
-        queryFn: async () => {
-            const res = await axiosSecure.get('/biodatas/contact-requests');
-            return res.data;
+    const { refetch } = useQuery('contactRequests', fetchContactRequests);
+
+    useEffect(() => {
+        fetchContactRequests();
+    }, []);
+
+    const fetchContactRequests = async () => {
+        try {
+            const response = await axiosSecure.get('/payments');
+            setContactRequests(response.data);
+        } catch (error) {
+            console.error('Error fetching contact requests:', error);
         }
-    });
+    };
 
     const handleSearch = () => {
         refetch();
@@ -21,14 +29,14 @@ const ApprovedContactRequest = () => {
 
     const handleApproveContact = async (contactRequest) => {
         try {
-            const res = await axiosSecure.patch(`/biodatas/contact-requests/approve/${contactRequest._id}`);
+            const res = await axiosSecure.patch(`/payments/${contactRequest._id}`);
             if (res.data.success) {
-                refetch();
+                await refetch();
                 Swal.fire({
                     icon: 'success',
                     title: 'Contact request approved!',
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
                 });
             }
         } catch (error) {
@@ -38,14 +46,14 @@ const ApprovedContactRequest = () => {
 
     const handleDeleteContactRequest = async (contactRequest) => {
         try {
-            const res = await axiosSecure.delete(`/contact-requests/${contactRequest._id}`);
+            const res = await axiosSecure.delete(`/payments/${contactRequest._id}`);
             if (res.data.deletedCount > 0) {
                 refetch();
                 Swal.fire({
                     icon: 'success',
                     title: 'Contact request deleted successfully!',
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
                 });
             }
         } catch (error) {
@@ -62,7 +70,7 @@ const ApprovedContactRequest = () => {
         });
     };
 
-    const filteredContactRequests = contactRequests.filter(contactRequest =>
+    const filteredContactRequests = contactRequests.filter((contactRequest) =>
         contactRequest.name && contactRequest.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -113,9 +121,12 @@ const ApprovedContactRequest = () => {
                                 <td className="py-3 px-4 text-center">
                                     <button
                                         onClick={() => handleApproveContact(contactRequest)}
-                                        className="bg-green-500 text-white p-2 rounded-full hover:bg-green-600 transition duration-200"
+                                        className={`bg-green-500 text-white p-2 rounded-full hover:bg-green-600 transition duration-200 ${
+                                            contactRequest.approved ? 'opacity-50 cursor-not-allowed' : ''
+                                        }`}
+                                        disabled={contactRequest.approved}
                                     >
-                                        Approve
+                                        {contactRequest.approved ? 'Approved' : 'Approve'}
                                     </button>
                                     <button
                                         onClick={() => handleDeleteContactRequest(contactRequest)}

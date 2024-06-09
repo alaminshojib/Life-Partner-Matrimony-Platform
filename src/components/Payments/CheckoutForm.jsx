@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import Swal from 'sweetalert2';
 import useAuth from '../../hooks/useAuth';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
-import useCheckouts from '../../hooks/useCheckouts';
 
-const CheckoutForm = ({ totalPrice, onClose }) => {
+const CheckoutForm = ({ totalPrice, onClose, items, refetch}) => {
     const stripe = useStripe();
     const elements = useElements();
     const { user } = useAuth();
@@ -14,31 +13,33 @@ const CheckoutForm = ({ totalPrice, onClose }) => {
     const [error, setError] = useState('');
     const [clientSecret, setClientSecret] = useState('');
     const [transactionId, setTransactionId] = useState('');
-    const [checkouts, refetch] = useCheckouts();
-
-    const fetchClientSecret = async () => {
-        try {
-            const response = await axiosSecure.post('/create-payment-intent', { amount: totalPrice * 100 }); // Stripe expects amount in cents
-            setClientSecret(response.data.clientSecret);
-        } catch (error) {
-            console.error('Error fetching client secret:', error);
-            setError('Failed to fetch payment details. Please try again.');
-        }
-    };
 
     useEffect(() => {
+        const fetchClientSecret = async () => {
+            try {
+                const response = await axiosSecure.post('/create-payment-intent', { amount: totalPrice * 100 }); // Stripe expects amount in cents
+                setClientSecret(response.data.clientSecret);
+            } catch (error) {
+                console.error('Error fetching client secret:', error);
+                setError('Failed to fetch payment details. Please try again.');
+            }
+        };
+
         if (totalPrice > 0) fetchClientSecret();
-    }, [totalPrice]);
+    }, [totalPrice, axiosSecure]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!stripe || !elements) return;
+        if (!stripe || !elements) {
+            return;
+        }
 
         setLoading(true);
         setError('');
 
         const cardElement = elements.getElement(CardElement);
+
         const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
             type: 'card',
             card: cardElement,
@@ -75,43 +76,38 @@ const CheckoutForm = ({ totalPrice, onClose }) => {
                 return;
             }
 
-            if (paymentIntent.status == 'succeeded') {
-                setTransactionId(paymentIntent.id);
+            if (paymentIntent.status === 'succeeded') {
+                // Payment succeeded, proceed to post payment details to your backend
                 const paymentData = {
                     email: user.email,
                     price: totalPrice,
                     transactionId: paymentIntent.id,
                     date: new Date(),
-                    Status: 'Successful',
+                    status: 'Pending', // Assuming this is the status you want to set
+                    items: items.map(item => ({
+                        name: item?.name,
+                        occupation: item?.occupation,
+                        biodataId: item?.biodataId,
+                        mobile_number: item?.mobile_number,
+                        contact_email: item?.contact_email
+                    })),
+                    // Add any additional data you want to send
                 };
 
+                // Post payment data to your backend API
                 await axiosSecure.post('/payments', paymentData);
 
-                // Post all items to /confirm-payment
-                const confirmPaymentData = checkouts.map((item) => ({
-                    ...item,
-                    transactionId: paymentIntent.id,
-                }));
-
-                await axiosSecure.post('/confirm-payment', { items: confirmPaymentData });
-
-                // Delete all items
-                const deletePromises = checkouts.map((item) =>
-                    axiosSecure.delete(`/checkouts/${item.id}`)
-                );
-                await Promise.all(deletePromises);
-
+                // Show success alert
                 Swal.fire({
-                    position: 'top-end',
                     icon: 'success',
-                    title: 'Payment successful!',
-                    showConfirmButton: false,
-                    timer: 1500,
+                    title: 'Payment Successful',
+                    text: 'Your payment was successful!',
                 });
 
-                refetch(); // Refetch the checkouts to update the state
+                // Reset form state and close modal
+                setTransactionId(paymentIntent.id);
                 onClose();
-                setTransactionId(''); // Reset transaction ID
+                refetch();
             } else {
                 setError('Payment failed');
                 Swal.fire({
@@ -138,22 +134,28 @@ const CheckoutForm = ({ totalPrice, onClose }) => {
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Complete Your Payment</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                    <CardElement options={{
-                        style: {
-                            base: {
-                                fontSize: '16px',
-                                color: '#424770',
-                                '::placeholder': {
-                                    color: '#aab7c4',
+                    <CardElement
+                        options={{
+                            style: {
+                                base: {
+                                    fontSize: '16px',
+                                    color: '#424770',
+                                    '::placeholder': {
+                                        color: '#aab7c4',
+                                    },
+                                },
+                                invalid: {
+                                    color: '#9e2146',
                                 },
                             },
-                            invalid: {
-                                color: '#9e2146',
-                            },
-                        },
-                    }} />
+                        }}
+                    />
                 </div>
-                <button type="submit" disabled={!stripe || !clientSecret || loading} className="w-full btn btn-primary mt-4 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out">
+                <button
+                    type="submit"
+                    disabled={!stripe || !clientSecret || loading}
+                    className="w-full btn btn-primary mt-4 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
+                >
                     {loading ? 'Processing...' : 'Pay'}
                 </button>
                 {error && <p className="text-red-600 mt-2">{error}</p>}

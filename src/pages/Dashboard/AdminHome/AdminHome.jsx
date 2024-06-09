@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import useAuth from '../../../hooks/useAuth';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { FaBook, FaDollarSign, FaUsers } from 'react-icons/fa';
+import { Pie } from 'react-chartjs-2';
+import 'chart.js/auto';
 
 const AdminHome = () => {
     const { user } = useAuth();
@@ -27,6 +29,16 @@ const AdminHome = () => {
             <div className="text-xl font-bold text-red-500">Error loading stats</div>
         </div>;
     }
+
+    const pieData = {
+        labels: ['Total Biodata', 'Male Biodata', 'Female Biodata', 'Premium Biodata'],
+        datasets: [
+            {
+                data: [stats.totalBiodata, stats.maleBiodata, stats.femaleBiodata, stats.premiumBiodata],
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+            },
+        ],
+    };
 
     return (
         <div className="container mx-auto">
@@ -69,6 +81,9 @@ const AdminHome = () => {
                     <div className="text-center text-2xl font-bold text-white">Total Revenue</div>
                     <div className="text-center text-3xl font-bold text-white">${stats.totalRevenue}</div>
                 </div>
+            </div>
+            <div className="mt-8">
+                <Pie data={pieData} />
             </div>
         </div>
     );

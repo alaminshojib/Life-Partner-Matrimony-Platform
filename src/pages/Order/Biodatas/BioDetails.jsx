@@ -38,7 +38,7 @@ const BioDetails = () => {
                 <title>Life Partner | Biodatas</title>
             </Helmet>
             <section className="pt-14 p-10 bg-gray-100">
-                <SectionTitle heading={`Biodata Id: ${singleData ? singleData._id : ''}`} textColor="text-gray-900" />
+                <SectionTitle heading={`Biodata Id: ${singleData ? singleData?.biodataId : ''}`} textColor="text-gray-900" />
                 <div className="container grid grid-cols-12 gap-8 mx-auto justify-between">
                     <div className="col-span-12 md:col-span-4 mt-5 pt-5 flex flex-col justify-between py-2">
                         <div className="flex flex-col">

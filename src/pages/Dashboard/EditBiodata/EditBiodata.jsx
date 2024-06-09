@@ -1,15 +1,12 @@
-
-
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import useAuth from '../../../hooks/useAuth';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import useAxiosPublic from '../../../hooks/useAxiosPublic';
 import countryData from 'country-flag-icons/react/3x2';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import useMenu from '../../../hooks/useMenu';
 
 const EditBiodata = () => {
   const { user } = useAuth();
-  const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
 
   const defaultFormData = {
@@ -59,14 +56,14 @@ const EditBiodata = () => {
     setLoading(true);
 
     try {
-      const formDataWithcontact_email = { ...formData, contact_email: user.email };
-      const response = await axiosSecure.post('/biodatas', formDataWithcontact_email);
+      const response = await axiosSecure.post('/biodatas', formData);
       Swal.fire({
         icon: 'success',
         title: 'Success!',
         text: 'Your biodata has been saved successfully.',
       });
       setFormData(defaultFormData);
+      window.location.reload();
     } catch (error) {
       console.error('Error:', error);
       Swal.fire({
@@ -106,14 +103,15 @@ const EditBiodata = () => {
     } catch (error) {
       console.error('Error:', error);
       Swal.fire({
-        icon: 'error',
+        icon: 'info',
         title: 'Oops...',
-        text: 'Failed to update biodata',
+        text: 'You have no posted biodata!',
       });
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="container mx-auto px-4">
@@ -320,7 +318,6 @@ const EditBiodata = () => {
               onChange={handleChange}
               className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
-
               <option value="">Select Present Division</option>
               <option value="Dhaka">Dhaka</option>
               <option value="Rajshahi">Rajshahi</option>
@@ -332,7 +329,6 @@ const EditBiodata = () => {
               <option value="Sylhet">Sylhet</option>
               {/* Add more options as needed */}
             </select>
-
           </div>
 
           <div>
@@ -433,29 +429,40 @@ const EditBiodata = () => {
                 id="mobile_number"
                 value={formData.mobile_number}
                 onChange={handleChange}
-                className="mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Mobile Number"
+                className="flex-1 mt-1 p-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Enter your mobile number"
               />
             </div>
           </div>
         </div>
-        {/* Buttons */}
+
+        {/* Action buttons */}
         <div className="flex justify-end">
           <button
-            type="button"
-            disabled={!formData}
-            onClick={handleSave}
-            className="bg-gray-500 text-white py-2 px-4 rounded-md mr-2 hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
+            type="submit"
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            disabled={loading}
           >
-            Edit & Save
+            {loading ? (
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.96 7.96 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647zM20 12c0-3.042-1.135-5.824-3-7.938l-3 2.647A7.96 7.96 0 0116 12h4zm-9-6.291A7.96 7.96 0 0112 4v4c1.124 0 2.16.231 3.113.647l-2.647 3zM12 20a7.96 7.96 0 01-3.113-.647l2.647-3A7.96 7.96 0 0112 16v4zm4-9.709V7.41A8.013 8.013 0 0116.709 11H16zM7.291 11H8a8.013 8.013 0 01.709-3.59L7.291 11zM12 8a4 4 0 00-4 4h2a2 2 0 012-2v-2z"></path>
+              </svg>
+            ) : null}
+            Publish
           </button>
           <button
-            type="submit"
-            onSubmit={handlePublish}
-            className={`bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600 ${!formData ? 'opacity-50 cursor-not-allowed' : ''}`}
-            disabled={!formData}
+            onClick={handleSave}
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ml-2"
+            disabled={loading}
           >
-            Publish
+            {loading ? (
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.96 7.96 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647zM20 12c0-3.042-1.135-5.824-3-7.938l-3 2.647A7.96 7.96 0 0116 12h4zm-9-6.291A7.96 7.96 0 0112 4v4c1.124 0 2.16.231 3.113.647l-2.647 3zM12 20a7.96 7.96 0 01-3.113-.647l2.647-3A7.96 7.96 0 0112 16v4zm4-9.709V7.41A8.013 8.013 0 0116.709 11H16zM7.291 11H8a8.013 8.013 0 01.709-3.59L7.291 11zM12 8a4 4 0 00-4 4h2a2 2 0 012-2v-2z"></path>
+              </svg>
+            ) : null}
+            Save
           </button>
         </div>
       </form>
@@ -463,12 +470,6 @@ const EditBiodata = () => {
   );
 };
 
-// Loading spinner component
-const Spinner = () => (
-  <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c4.418 0 8 3.582 8 8s-3.582 8-8 8-8-3.582-8-8z"></path>
-  </svg>
-);
-
 export default EditBiodata;
+
+

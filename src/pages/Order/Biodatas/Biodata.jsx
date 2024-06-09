@@ -117,7 +117,7 @@ const Biodata = ({ singleData }) => {
       }
 
       const favouritesItem = {
-        menuId: singleData?._id,
+        biodataId: singleData?.biodataId,
         email: user?.email,
         name: singleData?.name,
         occupation: singleData?.occupation,
@@ -196,9 +196,9 @@ const Biodata = ({ singleData }) => {
     <div className="container flex flex-col min-w-64 min-h-fit max-w-md mx-auto divide-y rounded-lg border border-gray-300 shadow-lg">
       <div className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-400 to-blue-600 rounded-t-lg">
         <div className="flex items-center space-x-4">
-          <img src={singleData?.featuredImg} alt="" className="w-12 h-12 rounded-full bg-gray-200" />
+          <img src={singleData?.profile_image} alt="" className="w-12 h-12 rounded-full bg-gray-200" />
           <div>
-            <h4 className="font-semibold text-white">Biodata Id: {singleData?.id}</h4>
+            <h4 className="font-semibold text-white">Biodata Id: {singleData?.biodataId}</h4>
             <span className="text-sm text-gray-100">Type: {singleData?.biodata_type}</span>
           </div>
         </div>

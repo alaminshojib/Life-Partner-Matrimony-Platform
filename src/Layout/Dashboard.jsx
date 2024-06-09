@@ -117,6 +117,12 @@ const Dashboard = () => {
                                         My favourites Biodata
                                     </NavLink>
                                 </li>
+                                <li>
+                                    <NavLink to="/dashboard/success-story" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                        <FaHeart className="mr-2" />
+                                       Got Married
+                                    </NavLink>
+                                </li>
 
                                 <li>
                                     <NavLink to="/dashboard/checkouts" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
