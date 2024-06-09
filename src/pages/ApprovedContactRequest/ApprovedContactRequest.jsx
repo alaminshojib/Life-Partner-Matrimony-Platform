@@ -1,27 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
 import Swal from 'sweetalert2';
-import { FaCheck, FaTimes } from 'react-icons/fa';
+import { FaCheck, FaTimes } from "react-icons/fa";
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 
-const ApprovedContactRequest = ({ searchTerm }) => {
-    const [contactRequests, setContactRequests] = useState([]);
-    const [searchTerms, setSearchTerms] = useState('');
+const ApprovedContactRequest = () => {
+    const [searchTerm, setSearchTerm] = useState('');
     const axiosSecure = useAxiosSecure();
-    const { refetch } = useQuery('contactRequests', fetchContactRequests);
-
-    useEffect(() => {
-        fetchContactRequests();
-    }, []);
-
-    const fetchContactRequests = async () => {
-        try {
-            const response = await axiosSecure.get('/payments');
-            setContactRequests(response.data);
-        } catch (error) {
-            console.error('Error fetching contact requests:', error);
+    const { data: contactRequests = [], refetch } = useQuery({
+        queryKey: ['payments'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('/payments');
+            return res.data;
         }
-    };
+    });
 
     const handleSearch = () => {
         refetch();
@@ -36,7 +28,7 @@ const ApprovedContactRequest = ({ searchTerm }) => {
                     icon: 'success',
                     title: 'Contact request approved!',
                     showConfirmButton: false,
-                    timer: 1500,
+                    timer: 1500
                 });
             }
         } catch (error) {
@@ -53,7 +45,7 @@ const ApprovedContactRequest = ({ searchTerm }) => {
                     icon: 'success',
                     title: 'Contact request deleted successfully!',
                     showConfirmButton: false,
-                    timer: 1500,
+                    timer: 1500
                 });
             }
         } catch (error) {
@@ -70,7 +62,7 @@ const ApprovedContactRequest = ({ searchTerm }) => {
         });
     };
 
-    const filteredContactRequests = contactRequests.filter((contactRequest) =>
+    const filteredContactRequests = contactRequests.filter(contactRequest =>
         contactRequest.name && contactRequest.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
