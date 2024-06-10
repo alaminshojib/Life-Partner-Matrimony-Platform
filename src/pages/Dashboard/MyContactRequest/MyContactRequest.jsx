@@ -67,11 +67,13 @@ const MyContactRequest = () => {
         <table className="table-auto w-full border-collapse border border-gray-300">
           <thead>
             <tr className="bg-gray-200">
-              <th className="px-4 py-2 text-left">Name</th>
               <th className="px-4 py-2 text-left">Biodata Id</th>
-              <th className="px-4 py-2 text-left">Status</th>
+              <th className="px-4 py-2 text-left">Name</th>
+
               <th className="px-4 py-2 text-left">Mobile No</th>
               <th className="px-4 py-2 text-left">Email</th>
+              <th className="px-4 py-2 text-left">Status</th>
+
               <th className="px-4 py-2 text-left">Delete</th>
             </tr>
           </thead>
@@ -79,13 +81,15 @@ const MyContactRequest = () => {
             {contactRequests.map(request =>
               request.items.map((item, index) => (
                 <tr key={`${request._id}-${index}`} className="border-b border-gray-300">
-                  <td className="px-4 py-2">{item.name || 'N/A'}</td>
                   <td className="px-4 py-2">{item.biodataId || 'N/A'}</td>
+                  <td className="px-4 py-2">{item.name || 'N/A'}</td>
+
+                 
+                  <td className="px-4 py-2">{request.status === 'Approved' ? item.mobile_number || 'N/A' : 'N/A'}</td>
+                  <td className="px-4 py-2">{request.status === 'Approved' ? item.contact_email || 'N/A' : 'N/A'}</td>
                   <td className="px-4 py-2">
-                    {request.status === 'Approved' ? request.email || 'N/A' : 'Pending'}
+                    {request.status === 'Approved' ? request.status || 'N/A' : 'Pending'}
                   </td>
-                  <td className="px-4 py-2">{item.mobile_number || 'N/A'}</td>
-                  <td className="px-4 py-2">{item.contact_email || 'N/A'}</td>
                   <td className="px-4 py-2">
                     <button
                       onClick={() => handleDeleteRequest(request._id, item.biodataId)}

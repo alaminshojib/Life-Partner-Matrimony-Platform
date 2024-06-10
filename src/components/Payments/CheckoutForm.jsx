@@ -132,6 +132,10 @@ const CheckoutForm = ({ totalPrice, onClose, items, refetch}) => {
     return (
         <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Complete Your Payment</h2>
+            <div className="mb-4">
+                <p className="text-gray-700 mb-2">User Email: {user.email}</p>
+                <p className="text-gray-700 mb-2">User BiodataId: {user.biodataId}</p>
+            </div>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <CardElement
@@ -163,6 +167,7 @@ const CheckoutForm = ({ totalPrice, onClose, items, refetch}) => {
             </form>
         </div>
     );
+    
 };
 
 export default CheckoutForm;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import useAxiosPublic from '../../../hooks/useAxiosPublic';
 import { styled } from '@mui/material/styles';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -24,14 +24,15 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const FeaturedGrid = () => {
   const axiosPublic = useAxiosPublic();
-  const [premiumBiodatas, setPremiumBiodatas] = React.useState([]);
+  const [premiumBiodatas, setPremiumBiodatas] = useState([]);
+  const [sortOrder, setSortOrder] = useState('ascending');
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchPremiumBiodata = async () => {
       try {
         // Make a GET request to fetch all premium biodata
         const response = await axiosPublic.get(`/biodatas`);
-        const premiumData = response.data.filter(biodata => biodata.isPremium);
+        const premiumData = response.data.filter(biodata => biodata?.isPremium);
         setPremiumBiodatas(premiumData);
       } catch (error) {
         console.error('Error fetching premium biodata:', error);
@@ -41,14 +42,32 @@ const FeaturedGrid = () => {
     fetchPremiumBiodata();
   }, [axiosPublic]); // Include axiosPublic in dependencies
 
-  return (
-    <div className="featured-item  bg-fixed  py-5">
-      <SectionTitle heading="Some premium Members!" ></SectionTitle>
-      <div className="grid grid-cols-1  sm:grid-cols-2  lg:grid-cols-3 gap-4 justify-around px-5 pt-3">
-        {premiumBiodatas.map(premiumBiodata => (
+  // Sorting the premiumBiodatas based on the selected order
+  const sortedPremiumBiodatas = [...premiumBiodatas].sort((a, b) => {
+    if (sortOrder === 'ascending') {
+      return a?.age - b?.age;
+    } else {
+      return b?.age - a?.age;
+    }
+  });
 
-<Biodata key={premiumBiodata._id} singleData={premiumBiodata} />
-))}
+  return (
+    <div className="featured-item bg-fixed py-5">
+      <SectionTitle heading="Some premium Members!" />
+      <div className="flex justify-end mb-4">
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+          className="border border-gray-300 rounded p-2"
+        >
+          <option value="ascending">Age: Ascending</option>
+          <option value="descending">Age: Descending</option>
+        </select>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-around px-5 pt-3">
+        {sortedPremiumBiodatas.map((premiumBiodata) => (
+          <Biodata key={premiumBiodata._id} singleData={premiumBiodata} />
+        ))}
       </div>
     </div>
   );

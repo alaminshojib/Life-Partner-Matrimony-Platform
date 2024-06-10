@@ -5,6 +5,7 @@ import BioDetailsData from './BioDetailsData';
 import useMenu from '../../../hooks/useMenu';
 import { useParams } from 'react-router-dom';
 import Biodata from './Biodata';
+import useAuth from '../../../hooks/useAuth';
 
 const BioDetails = () => {
     const { id } = useParams();
@@ -12,14 +13,22 @@ const BioDetails = () => {
     const [maleData, setMaleData] = useState([]);
     const [femaleData, setFemaleData] = useState([]);
     const [menu] = useMenu();
+    const { user } = useAuth();
+    const [isPremium, setIsPremium] = useState(false); // State to track premium status
 
     useEffect(() => {
-        if (menu) {
+        if (menu && user) {
             const signData = menu.find((bio) => bio._id === id);
             setSingleData(signData);
+            // Check if user email matches premium data
+            if (signData && user.email && signData.isPremium) {
+                setIsPremium(true);
+            } else {
+                setIsPremium(false); // Reset premium status if not premium
+            }
         }
-    }, [id, menu]); 
-
+    }, [id, menu, user]); // Include user in dependency array
+console.log(isPremium)
     useEffect(() => {
         if (!menu) return;
 
@@ -29,8 +38,6 @@ const BioDetails = () => {
         setMaleData([...maleBiodatas]); // Use spread operator to create a new array
         setFemaleData([...femaleBiodatas]); // Use spread operator to create a new array
     }, [menu]); 
-
-
 
     return (
         <div>
@@ -42,7 +49,8 @@ const BioDetails = () => {
                 <div className="container grid grid-cols-12 gap-8 mx-auto justify-between">
                     <div className="col-span-12 md:col-span-4 mt-5 pt-5 flex flex-col justify-between py-2">
                         <div className="flex flex-col">
-                            <BioDetailsData singleData={singleData} />
+                            {/* Pass isPremium prop to BioDetailsData component */}
+                            <BioDetailsData singleData={singleData} isPremium={isPremium}/>
                         </div>
                     </div>
                     <div className="col-span-12 md:col-span-8 lg:col-span-8">

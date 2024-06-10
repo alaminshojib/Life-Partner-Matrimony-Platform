@@ -50,7 +50,7 @@ import MarriedSuccess from "../pages/Shared/MarriedSuccess/MarriedSuccess";
         },
         {
           path: 'bioDetails/:id',
-          element: <BioDetails></BioDetails>
+          element: <PrivateRoute><BioDetails></BioDetails></PrivateRoute>
         },
         {
           path: 'login',

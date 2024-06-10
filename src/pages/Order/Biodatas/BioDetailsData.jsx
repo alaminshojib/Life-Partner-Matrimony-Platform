@@ -11,7 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Swal from "sweetalert2";
 import useMenu from "../../../hooks/useMenu";
 
-const BioDetailsData = ({ singleData, isPremiumUser, isApprove }) => {
+const BioDetailsData = ({ singleData, isPremium }) => {
   const [showFavouriteModal, setShowFavouriteModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const { user } = useAuth();
@@ -233,7 +233,7 @@ const BioDetailsData = ({ singleData, isPremiumUser, isApprove }) => {
             </tbody>
           </table>
         </div>
-        {(isPremiumUser && isApprove) ? (
+        {(isPremium) ? (
           <div className="flex flex-col gap-2 p-4 space-y-2 text-sm text-gray-600 border shadow-md">
             <div><p className="font-bold pr-4 text-md text-blue-500">Premium/Approved Contact User can see this :</p></div>
             <div>
