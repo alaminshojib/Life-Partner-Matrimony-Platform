@@ -13,7 +13,12 @@ const ApprovedPremium = () => {
         const usersEmails = usersResponse.data.map(user => user.contact_email);
 
         const biodatasResponse = await axiosSecure.get('/biodatas');
-        const filteredBiodatas = biodatasResponse.data.filter(user => usersEmails.includes(user.contact_email));
+        // Filter the biodatas based on conditions
+        const filteredBiodatas = biodatasResponse.data.filter(biodata => {
+            // Add your conditions here
+            // For example, to get all biodatas with isPremium set to true
+            return biodata.isPremium === true;
+        });
 
         return filteredBiodatas;
     });

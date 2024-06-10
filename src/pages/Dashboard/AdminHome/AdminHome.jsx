@@ -1,13 +1,11 @@
 import React from "react";
 import { useQuery } from '@tanstack/react-query';
-import useAuth from '../../../hooks/useAuth';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { FaBook, FaDollarSign, FaUsers } from 'react-icons/fa';
 import { Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 
 const AdminHome = () => {
-    const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
 
     const { data: stats = {}, isLoading, isError } = useQuery({

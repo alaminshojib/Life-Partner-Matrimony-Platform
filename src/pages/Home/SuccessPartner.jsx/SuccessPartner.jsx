@@ -1,7 +1,4 @@
 import React from 'react';
-import { BiMessageAltCheck } from "react-icons/bi";
-import { BsSearchHeart } from "react-icons/bs";
-import { FaUserPlus } from "react-icons/fa6";
 
 import SectionTitle from '../../../components/SectionTitle/SectionTitle';
 
@@ -9,9 +6,27 @@ import logo from '../../../assets/SuccessPartner/dp_logo.svg';
 import patropatri from '../../../assets/SuccessPartner/patropatri.svg';
 import patro from '../../../assets/SuccessPartner/patro.svg';
 import patri from '../../../assets/SuccessPartner/patri.svg';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import { useQuery } from '@tanstack/react-query';
 
 
 const SuccessPartner = () => {
+
+    const axiosSecure = useAxiosSecure();
+
+    const { data: stats = {}, isLoading, isError } = useQuery({
+        queryKey: ['admin-stats'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('/admin-stats');
+            return res.data;
+        }
+    });
+
+
+
+
+
+
     return (
         <div>
             <SectionTitle heading="Devoted partner success" ></SectionTitle>
@@ -27,7 +42,7 @@ const SuccessPartner = () => {
                             <div className='text-center w-sm p-2'><h2 className='font-bold text-2xl mb-2'>Total marriage completed :
                             </h2>
                                 <p className='text-3xl font-bold'>
-                                    86+
+                                    {stats.successStoriesData}
                                 </p>
                             </div>
                         </div>
@@ -37,7 +52,7 @@ const SuccessPartner = () => {
                             <div className='text-center w-sm p-2'><h2 className='font-bold text-2xl mb-2'>Biodata of total bridegroom :
                             </h2>
                                 <p className='text-3xl font-bold'>
-                                    48+
+                                    {stats.totalBiodata}
                                 </p>
                             </div>
                         </div>
@@ -48,7 +63,7 @@ const SuccessPartner = () => {
                             <div className='text-center w-sm p-2'><h2 className='font-bold text-2xl mb-2'>Total container biodata :
 </h2>
                                 <p className='text-3xl font-bold'>
-                                    123+
+                                    {stats.maleBiodata}
                                 </p>
                             </div>
                         </div>
@@ -58,7 +73,7 @@ const SuccessPartner = () => {
                             <div className='text-center w-sm p-2'><h2 className='font-bold text-2xl mb-2'>Total bride biodata :
 </h2>
                                 <p className='text-3xl font-bold'>
-                                    76+
+                                    {stats.femaleBiodata}
                                 </p>
                                 </div>
                             </div>

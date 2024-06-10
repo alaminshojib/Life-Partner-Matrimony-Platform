@@ -3,7 +3,7 @@ import Banner from "../Banner/Banner";
 import FeaturedGrid from "../Featured/FeaturedGrid";
 import HowWorks from "../HowWorks/HowWorks";
 import SuccessPartner from "../SuccessPartner.jsx/SuccessPartner";
-import SuccessHistory from "../SuccessHistory/SuccessHistory";
+import SuccessStory from "../SuccessHistory/SuccessStory";
 
 const Home = () => {
     return (
@@ -15,7 +15,7 @@ const Home = () => {
             <FeaturedGrid></FeaturedGrid>
             <HowWorks></HowWorks>
             <SuccessPartner></SuccessPartner>
-            <SuccessHistory></SuccessHistory>
+            <SuccessStory></SuccessStory>
         </div>
     );
 };

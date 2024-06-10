@@ -122,7 +122,7 @@ const ManageUsers = () => {
                             <tr key={user._id} className="border-b transition duration-200 hover:bg-gray-100">
                                 <th className="py-3 px-4 text-center">{index + 1}</th>
                                 <td className="py-3 px-4 text-center">{user.name}</td>
-                                <td className="py-3 px-4 text-center">{user.email}</td>
+                                <td className="py-3 px-4 text-center">{user.contact_email || user.email}</td>
                                 <td className="py-3 px-4 text-center">
                                     {user.role === 'admin' ? (
                                         <span className="text-sm font-semibold text-blue-600">Admin</span>

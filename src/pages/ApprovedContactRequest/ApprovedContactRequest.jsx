@@ -7,6 +7,7 @@ import useAxiosSecure from '../../hooks/useAxiosSecure';
 const ApprovedContactRequest = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const axiosSecure = useAxiosSecure();
+
     const { data: contactRequests = [], refetch } = useQuery({
         queryKey: ['payments'],
         queryFn: async () => {
@@ -63,7 +64,7 @@ const ApprovedContactRequest = () => {
     };
 
     const filteredContactRequests = contactRequests.filter(contactRequest =>
-        contactRequest.name && contactRequest.name.toLowerCase().includes(searchTerm.toLowerCase())
+        contactRequest.items.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     return (
@@ -89,6 +90,7 @@ const ApprovedContactRequest = () => {
                     <tr>
                         <th className="py-3 px-4 text-center">#</th>
                         <th className="py-3 px-4 text-center">Name</th>
+                        <th className="py-3 px-4 text-center">Mobile Number</th>
                         <th className="py-3 px-4 text-center">Email</th>
                         <th className="py-3 px-4 text-center">Biodata Id</th>
                         <th className="py-3 px-4 text-center">Approved</th>
@@ -98,40 +100,45 @@ const ApprovedContactRequest = () => {
                 <tbody className="bg-white">
                     {filteredContactRequests.length > 0 ? (
                         filteredContactRequests.map((contactRequest, index) => (
-                            <tr key={contactRequest._id} className="border-b transition duration-200 hover:bg-gray-100">
-                                <th className="py-3 px-4 text-center">{index + 1}</th>
-                                <td className="py-3 px-4 text-center">{contactRequest.name}</td>
-                                <td className="py-3 px-4 text-center">{contactRequest.email}</td>
-                                <td className="py-3 px-4 text-center">{contactRequest.biodataId}</td>
-                                <td className="py-3 px-4 text-center">
-                                    {contactRequest.approved ? (
-                                        <FaCheck className="text-green-600 text-xl" />
-                                    ) : (
-                                        <FaTimes className="text-red-600 text-xl" />
-                                    )}
-                                </td>
-                                <td className="py-3 px-4 text-center">
-                                    <button
-                                        onClick={() => handleApproveContact(contactRequest)}
-                                        className={`bg-green-500 text-white p-2 rounded-full hover:bg-green-600 transition duration-200 ${
-                                            contactRequest.approved ? 'opacity-50 cursor-not-allowed' : ''
-                                        }`}
-                                        disabled={contactRequest.approved}
-                                    >
-                                        {contactRequest.approved ? 'Approved' : 'Approve'}
-                                    </button>
-                                    <button
-                                        onClick={() => handleDeleteContactRequest(contactRequest)}
-                                        className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition duration-200 ml-2"
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
+                            <React.Fragment key={contactRequest._id}>
+                                {contactRequest.items.map((item, subIndex) => (
+                                    <tr key={subIndex} className="border-b transition duration-200 hover:bg-gray-100">
+                                        <th className="py-3 px-4 text-center">{index + 1}.{subIndex + 1}</th>
+                                        <td className="py-3 px-4 text-center">{item.name}</td>
+                                        <td className="py-3 px-4 text-center">{item.mobile_number}</td>
+                                        <td className="py-3 px-4 text-center">{contactRequest.email}</td>
+                                        <td className="py-3 px-4 text-center">{item.biodataId}</td>
+                                        <td className="py-3 px-4 text-center">
+                                            {contactRequest.approved ? (
+                                                <FaCheck className="text-green-600 text-xl" />
+                                            ) : (
+                                                <FaTimes className="text-red-600 text-xl" />
+                                            )}
+                                        </td>
+                                        <td className="py-3 px-4 text-center">
+                                            <button
+                                                onClick={() => handleApproveContact(contactRequest)}
+                                                className={`bg-green-500 text-white p-2 rounded-full hover:bg-green-600 transition duration-200 ${
+                                                    contactRequest.approved ? 'opacity-50 cursor-not-allowed' : ''
+                                                }`}
+                                                disabled={contactRequest.approved}
+                                            >
+                                                {contactRequest.approved ? 'Approved' : 'Approve'}
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteContactRequest(contactRequest)}
+                                                className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition duration-200 ml-2"
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </React.Fragment>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="6" className="py-3 px-4 text-center text-gray-500">No Available Contact Requests</td>
+                            <td colSpan="7" className="py-3 px-4 text-center text-gray-500">No Available Contact Requests</td>
                         </tr>
                     )}
                 </tbody>

@@ -85,8 +85,7 @@ const CheckoutForm = () => {
                     transactionId: paymentIntent.id,
                     date: new Date(), // utc date convert. use moment js to 
                     checkoutsIds: checkouts.map(item => item._id),
-                    menuItemIds: checkouts.map(item => item.menuId),
-                    status: 'pending'
+                    status: 'Successful'
                 }
 
                 const res = await axiosSecure.post('/payments', payment);
