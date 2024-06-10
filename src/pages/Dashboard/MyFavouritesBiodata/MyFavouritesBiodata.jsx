@@ -62,44 +62,44 @@ const MyFavouritesBiodata = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-4">My Favourites Biodata</h2>
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="table-auto w-full border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="px-4 py-2 text-left">Name</th>
-                <th className="px-4 py-2 text-left">Biodata Id</th>
-                <th className="px-4 py-2 text-left">Permanent Address</th>
-                <th className="px-4 py-2 text-left">Occupation</th>
-                <th className="px-4 py-2 text-left">Delete</th>
+    <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">My Favourite Biodata</h2>
+    {loading ? (
+      <div className="text-center">Loading...</div>
+    ) : (
+      <div className="overflow-x-auto">
+        <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
+          <thead className="bg-gradient-to-r from-blue-500 to-blue-700 text-white">
+            <tr>
+              <th className="py-3 px-4 text-left">Name</th>
+              <th className="py-3 px-4 text-left">Biodata Id</th>
+              <th className="py-3 px-4 text-left">Permanent Address</th>
+              <th className="py-3 px-4 text-left">Occupation</th>
+              <th className="py-3 px-4 text-left">Delete</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white">
+            {favourites.map((favourite) => (
+              <tr key={favourite._id} className="border-b transition duration-200 hover:bg-gray-100">
+                <td className="py-3 px-4">{favourite?.name}</td>
+                <td className="py-3 px-4">{favourite?.biodataId}</td>
+                <td className="py-3 px-4">{favourite?.permanent_division}</td>
+                <td className="py-3 px-4">{favourite?.occupation}</td>
+                <td className="py-3 px-4">
+                  <button
+                    onClick={() => handleDeleteFavourite(favourite._id)}
+                    className="text-red-500 hover:text-red-700 focus:outline-none"
+                  >
+                    <AiFillDelete className="text-xl" />
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {favourites.map((favourite) => (
-                <tr key={favourite._id} className="border-b border-gray-300">
-                  <td className="px-4 py-2">{favourite?.name}</td>
-                  <td className="px-4 py-2">{favourite?.biodataId}</td>
-                  <td className="px-4 py-2">{favourite?.permanent_division}</td>
-                  <td className="px-4 py-2">{favourite?.occupation}</td>
-                  <td className="px-4 py-2">
-                    <button
-                      onClick={() => handleDeleteFavourite(favourite._id)}
-                      className="text-red-500 hover:text-red-700 focus:outline-none"
-                    >
-                      <AiFillDelete />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
-  );
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </div>
+);
 };
 
 export default MyFavouritesBiodata;

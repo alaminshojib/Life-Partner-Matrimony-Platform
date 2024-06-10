@@ -9,7 +9,7 @@ const SuccessData = ({ review }) => {
   };
 
   return (
-    <div className="border-2 container flex flex-col max-w-80 mt-7 p-10 mx-auto divide-y space-y-3 rounded-lg">
+    <div className="border-2 container flex flex-col max-w-80 h-96 mt-7 p-10 mx-auto divide-y space-y-3 rounded-lg">
       <div className="w-full">
         <div className="mx-auto justify-between">
           <div className="mx-auto flex justify-center mb-3">

@@ -52,9 +52,9 @@ const FeaturedGrid = () => {
   });
 
   return (
-    <div className="featured-item bg-fixed py-5">
+    <div className="featured-item bg-fixed px-5">
       <SectionTitle heading="Some premium Members!" />
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end mb-4 px-5">
         <select
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
@@ -64,7 +64,7 @@ const FeaturedGrid = () => {
           <option value="descending">Age: Descending</option>
         </select>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-around px-5 pt-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16 justify-around px-3 md:px-10 pt-3">
         {sortedPremiumBiodatas.slice(0, 6).map((premiumBiodata) => (
           <Biodata key={premiumBiodata._id} singleData={premiumBiodata} />
         ))}

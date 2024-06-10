@@ -25,25 +25,25 @@ const MarriedSuccess = () => {
 
     return (
         <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-semibold text-gray-800 mb-4">Success Stories</h2>
+            <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">Married Success Stories</h2>
             <div className="overflow-x-auto">
-                <table className="table-auto w-full border-collapse border border-gray-300">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="px-4 py-2 text-left">Male Biodata Id</th>
-                            <th className="px-4 py-2 text-left">Female Biodata Id</th>
-                            <th className="px-4 py-2 text-left">View Story</th>
+                <table className="w-full bg-white shadow-lg rounded-lg text-center overflow-hidden">
+                    <thead className="bg-gradient-to-r from-blue-500 to-blue-700 text-white">
+                        <tr>
+                            <th className="py-3 px-4 ">Male Biodata Id</th>
+                            <th className="py-3 px-4 ">Female Biodata Id</th>
+                            <th className="py-3 px-4 ">View Story</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="bg-white">
                         {successStories.map((story, index) => (
-                            <tr key={index} className="border-b border-gray-300">
-                                <td className="px-4 py-2">{story.selfBiodataId || 'N/A'}</td>
-                                <td className="px-4 py-2">{story.partnerBiodataId || 'N/A'}</td>
-                                <td className="px-4 py-2">
+                            <tr key={index} className="border-b transition duration-200 hover:bg-gray-100">
+                                <td className="py-3 px-4">{story.selfBiodataId || 'N/A'}</td>
+                                <td className="py-3 px-4">{story.partnerBiodataId || 'N/A'}</td>
+                                <td className="py-3 px-4">
                                     <button
                                         onClick={() => handleViewStory(story)}
-                                        className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow focus:outline-none transition duration-200"
                                     >
                                         View Story
                                     </button>

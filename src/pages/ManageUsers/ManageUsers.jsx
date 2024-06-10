@@ -136,7 +136,7 @@ const ManageUsers = () => {
                                     )}
                                 </td>
                                 <td className="py-3 px-4 text-center">
-                                    {biodatas.find(biodata => biodata.biodataId === user.biodataId)?.isPremium === true ? (
+                                    {biodatas.find(biodata => biodata.contact_email)?.isPremium === true ? (
                                         <span className="text-sm font-semibold text-yellow-600">Premium</span>
                                     ) : (
                                         <button

@@ -7,7 +7,7 @@ const UserHome = () => {
     return (
         <div className="flex flex-col items-center justify-center h-full">
             <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full">
-                <h2 className="text-3xl text-center mb-4 font-bold text-gray-800">Welcome to Your Dashboard</h2>
+                <h2 className="text-3xl text-center mb-4 font-bold text-blue-800">Welcome to Your Dashboard</h2>
                 <p className="text-lg text-center mb-6 text-gray-600">
                     {user?.displayName ? `Hello, ${user.displayName}!` : `Hello!`}
                 </p>

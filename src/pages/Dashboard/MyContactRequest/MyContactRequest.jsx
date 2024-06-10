@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import Swal from 'sweetalert2';
-import axios from 'axios'; // Import Axios
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useAuth from '../../../hooks/useAuth';
 
 const MyContactRequest = () => {
   const { user } = useAuth();
   const [contactRequests, setContactRequests] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
   const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     fetchContactRequests();
-  }, []);
+  }, [currentPage]);
 
   const fetchContactRequests = async () => {
     try {
@@ -26,21 +27,13 @@ const MyContactRequest = () => {
 
   const handleDeleteRequest = async (requestId, biodataId) => {
     try {
-      // Send a DELETE request to the server endpoint with the biodataId
-      const response = await axios.delete(`/payments/${biodataId}`);
-      
-      // If the deletion is successful, update the state to reflect the changes
-      if (response.status === 200) {
-        // Filter out the deleted item from the contactRequests array
+      const response = await axiosSecure.delete(`/payments/${biodataId}`);
+      if (response?.status === 200) {
         const updatedRequests = contactRequests.map(request => ({
           ...request,
-          items: request.items.filter(item => item.biodataId !== biodataId)
-        })).filter(request => request.items.length > 0);
-        
-        // Update the state with the modified contact requests
+          items: request?.items?.filter(item => item?.biodataId !== biodataId)
+        })).filter(request => request?.items?.length > 0);
         setContactRequests(updatedRequests);
-  
-        // Show a success message to the user
         Swal.fire({
           icon: 'success',
           title: 'Success',
@@ -48,10 +41,7 @@ const MyContactRequest = () => {
         });
       }
     } catch (error) {
-      // Handle errors if the deletion fails
       console.error('Error deleting item:', error);
-      
-      // Show an error message to the user
       Swal.fire({
         icon: 'error',
         title: 'Error',
@@ -60,42 +50,40 @@ const MyContactRequest = () => {
     }
   };
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = contactRequests.slice(indexOfFirstItem, indexOfLastItem);
+
   return (
     <div className="container mx-auto px-4">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-4">My Contact Requests</h2>
+      <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">My Contact Requests</h2>
       <div className="overflow-x-auto">
-        <table className="table-auto w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="px-4 py-2 text-left">Biodata Id</th>
-              <th className="px-4 py-2 text-left">Name</th>
-
-              <th className="px-4 py-2 text-left">Mobile No</th>
-              <th className="px-4 py-2 text-left">Email</th>
-              <th className="px-4 py-2 text-left">Status</th>
-
-              <th className="px-4 py-2 text-left">Delete</th>
+        <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
+          <thead className="bg-gradient-to-r from-blue-500 to-blue-700 text-white">
+            <tr>
+              <th className="py-3 px-4 text-left">Biodata Id</th>
+              <th className="py-3 px-4 text-left">Name</th>
+              <th className="py-3 px-4 text-left">Mobile No</th>
+              <th className="py-3 px-4 text-left">Email</th>
+              <th className="py-3 px-4 text-left">Status</th>
+              <th className="py-3 px-4 text-left">Delete</th>
             </tr>
           </thead>
-          <tbody>
-            {contactRequests.map(request =>
+          <tbody className="bg-white">
+            {currentItems.map(request =>
               request.items.map((item, index) => (
-                <tr key={`${request._id}-${index}`} className="border-b border-gray-300">
-                  <td className="px-4 py-2">{item.biodataId || 'N/A'}</td>
-                  <td className="px-4 py-2">{item.name || 'N/A'}</td>
-
-                 
-                  <td className="px-4 py-2">{request.status === 'Approved' ? item.mobile_number || 'N/A' : 'N/A'}</td>
-                  <td className="px-4 py-2">{request.status === 'Approved' ? item.contact_email || 'N/A' : 'N/A'}</td>
-                  <td className="px-4 py-2">
-                    {request.status === 'Approved' ? request.status || 'N/A' : 'Pending'}
-                  </td>
-                  <td className="px-4 py-2">
+                <tr key={`${request._id}-${index}`} className="border-b transition duration-200 hover:bg-gray-100">
+                  <td className="py-3 px-4">{item.biodataId || 'N/A'}</td>
+                  <td className="py-3 px-4">{item.name || 'N/A'}</td>
+                  <td className="py-3 px-4">{request.status === 'Approved' ? item.mobile_number || 'N/A' : 'N/A'}</td>
+                  <td className="py-3 px-4">{request.status === 'Approved' ? item.contact_email || 'N/A' : 'N/A'}</td>
+                  <td className="py-3 px-4">{request.status === 'Approved' ? request.status || 'N/A' : 'Pending'}</td>
+                  <td className="py-3 px-4">
                     <button
                       onClick={() => handleDeleteRequest(request._id, item.biodataId)}
-                      className="text-red-500 hover:text-red-700 focus:outline-none"
+                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full shadow focus:outline-none transition duration-200"
                     >
-                      <AiFillDelete />
+                      <AiFillDelete className="text-white text-xl" />
                     </button>
                   </td>
                 </tr>
@@ -103,6 +91,22 @@ const MyContactRequest = () => {
             )}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={() => setCurrentPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l-full focus:outline-none transition duration-200"
+        >
+          Previous
+        </button>
+        <button
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={indexOfLastItem >= contactRequests.length}
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r-full focus:outline-none transition duration-200"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

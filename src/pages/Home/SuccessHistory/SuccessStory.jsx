@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Typewriter } from 'react-simple-typewriter';
 import SuccessData from './SuccessData';
 import useAxiosPublic from '../../../hooks/useAxiosPublic';
 
@@ -47,14 +46,7 @@ const SuccessStory = () => {
   return (
     <div className="mx-auto max-w-5xl my-2 md:my-5">
       <h1 className="text-center text-3xl font-bold mb-4">
-        <Typewriter
-          words={['Married Success Stories']}
-          loop={0}
-          typeSpeed={250}
-          deleteSpeed={0}
-          delaySpeed={0}
-          cursor={null}
-        />
+      Married Success Stories
       </h1>
       <p className="text-center text-gray-500 pb-5">Our success hinges on customer satisfaction.</p>
 

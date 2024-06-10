@@ -18,13 +18,13 @@ const AdminHome = () => {
 
     if (isLoading) {
         return <div className="flex justify-center items-center h-screen">
-            <div className="text-xl font-bold">Loading...</div>
+            <div className="text-3xl font-bold text-blue-500">Loading...</div>
         </div>;
     }
 
     if (isError) {
         return <div className="flex justify-center items-center h-screen">
-            <div className="text-xl font-bold text-red-500">Error loading stats</div>
+            <div className="text-3xl font-bold text-red-500">Error loading stats</div>
         </div>;
     }
 
@@ -39,49 +39,50 @@ const AdminHome = () => {
     };
 
     return (
-        <div className="container mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-8 text-gradient bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-transparent bg-clip-text">
-                Admin Dashboard
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div className="bg-gradient-to-r from-green-400 to-blue-500 p-6 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
-                    <div className="flex items-center justify-center text-5xl text-white mb-4">
+        <div className="container mx-auto px-8 py-12">
+            <h2 className="text-4xl font-bold text-center mb-8 text-purple-700">Admin Dashboard</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+                <div className="bg-green-500 p-8 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+                    <div className="flex items-center justify-center text-6xl text-white mb-4">
                         <FaBook />
                     </div>
-                    <div className="text-center text-2xl font-bold text-white">Total Biodata Count</div>
+                    <div className="text-center text-xl font-semibold text-white">Total Biodata Count</div>
                     <div className="text-center text-3xl font-bold text-white">{stats.totalBiodata}</div>
                 </div>
-                <div className="bg-gradient-to-r from-yellow-400 to-orange-500 p-6 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
-                    <div className="flex items-center justify-center text-5xl text-white mb-4">
+                <div className="bg-yellow-500 p-8 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+                    <div className="flex items-center justify-center text-6xl text-white mb-4">
                         <FaUsers />
                     </div>
-                    <div className="text-center text-2xl font-bold text-white">Male Biodata Count</div>
+                    <div className="text-center text-xl font-semibold text-white">Male Biodata Count</div>
                     <div className="text-center text-3xl font-bold text-white">{stats.maleBiodata}</div>
                 </div>
-                <div className="bg-gradient-to-r from-pink-400 to-red-500 p-6 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
-                    <div className="flex items-center justify-center text-5xl text-white mb-4">
+                <div className="bg-pink-500 p-8 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+                    <div className="flex items-center justify-center text-6xl text-white mb-4">
                         <FaUsers />
                     </div>
-                    <div className="text-center text-2xl font-bold text-white">Female Biodata Count</div>
+                    <div className="text-center text-xl font-semibold text-white">Female Biodata Count</div>
                     <div className="text-center text-3xl font-bold text-white">{stats.femaleBiodata}</div>
                 </div>
-                <div className="bg-gradient-to-r from-purple-400 to-indigo-500 p-6 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
-                    <div className="flex items-center justify-center text-5xl text-white mb-4">
+                <div className="bg-purple-500 p-8 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+                    <div className="flex items-center justify-center text-6xl text-white mb-4">
                         <FaUsers />
                     </div>
-                    <div className="text-center text-2xl font-bold text-white">Premium Biodata Count</div>
+                    <div className="text-center text-xl font-semibold text-white">Premium Biodata Count</div>
                     <div className="text-center text-3xl font-bold text-white">{stats.premiumBiodata}</div>
                 </div>
-                <div className="bg-gradient-to-r from-teal-400 to-cyan-500 p-6 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
-                    <div className="flex items-center justify-center text-5xl text-white mb-4">
+                <div className="bg-teal-500 p-8 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
+                    <div className="flex items-center justify-center text-6xl text-white mb-4">
                         <FaDollarSign />
                     </div>
-                    <div className="text-center text-2xl font-bold text-white">Total Revenue</div>
+                    <div className="text-center text-xl font-semibold text-white">Total Revenue</div>
                     <div className="text-center text-3xl font-bold text-white">${stats.totalRevenue}</div>
                 </div>
             </div>
-            <div className="mt-8">
-                <Pie data={pieData} />
+            <div className="mt-12">
+                <h1 className="text-bold text-3xl text-center p-4">Summarry Details By PieChart :</h1>
+                <div className="w-full sm:w-2/6 mx-auto">
+                    <Pie data={pieData} />
+                </div>
             </div>
         </div>
     );

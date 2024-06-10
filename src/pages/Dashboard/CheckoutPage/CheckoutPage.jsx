@@ -65,7 +65,7 @@ const CheckoutPage = () => {
     <div className="container mx-auto px-4">
       {!modalIsOpen && (
         <>
-          <SectionTitle heading="Checkout" />
+          <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">Checkout</h2>
           {isError && <div className="text-red-600">An error occurred</div>}
           <div className="flex justify-between mb-8">
             <div>
@@ -90,7 +90,7 @@ const CheckoutPage = () => {
           <div className="overflow-x-auto">
             <table className="table w-full border-collapse border border-gray-300">
               <thead>
-                <tr>
+                <tr className='bg-blue-500 text-white'>
                   <th className="text-center border border-gray-300 px-4 py-2">#</th>
                   <th className="text-center border border-gray-300 px-4 py-2">Name</th>
                   <th className="text-center border border-gray-300 px-4 py-2">Price</th>
@@ -120,6 +120,7 @@ const CheckoutPage = () => {
       )}
     </div>
   );
+  
 };
 
 export default CheckoutPage;
