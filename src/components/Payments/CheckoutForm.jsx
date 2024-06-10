@@ -13,7 +13,7 @@ const CheckoutForm = ({ totalPrice, onClose, items, refetch}) => {
     const [error, setError] = useState('');
     const [clientSecret, setClientSecret] = useState('');
     const [transactionId, setTransactionId] = useState('');
-
+console.log(items)
     useEffect(() => {
         const fetchClientSecret = async () => {
             try {
@@ -128,13 +128,15 @@ const CheckoutForm = ({ totalPrice, onClose, items, refetch}) => {
 
         setLoading(false);
     };
-
     return (
         <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Complete Your Payment</h2>
             <div className="mb-4">
                 <p className="text-gray-700 mb-2">User Email: {user.email}</p>
-                <p className="text-gray-700 mb-2">User BiodataId: {user.biodataId}</p>
+                <p className="text-gray-700 mb-2">User BiodataIds: {items.map((item, index) => (
+                        <li key={index}>{item.biodataId}</li>
+                    ))}</p>
+                
             </div>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
@@ -167,6 +169,7 @@ const CheckoutForm = ({ totalPrice, onClose, items, refetch}) => {
             </form>
         </div>
     );
+    
     
 };
 

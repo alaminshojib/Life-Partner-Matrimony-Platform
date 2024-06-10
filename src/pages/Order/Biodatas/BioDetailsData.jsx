@@ -16,10 +16,8 @@ const BioDetailsData = ({ singleData, isPremium }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const axiosSecure = useAxiosSecure();
   const [checkouts, refetch] = useCheckout();
-  const [menu] = useMenu();
   const [alert, setAlert] = useState(null);
   
 
@@ -233,7 +231,7 @@ const BioDetailsData = ({ singleData, isPremium }) => {
             </tbody>
           </table>
         </div>
-        {(isPremium) ? (
+        {(isPremium === true) ? (
           <div className="flex flex-col gap-2 p-4 space-y-2 text-sm text-gray-600 border shadow-md">
             <div><p className="font-bold pr-4 text-md text-blue-500">Premium/Approved Contact User can see this :</p></div>
             <div>

@@ -17,7 +17,7 @@ const Contact = () => {
 						<div className='flex font-medium text-2xl mt-3 gap-2'>
 							<Link to={"/"} className='cursor-pointer hover:text-orange-700'>Home</Link>
 							<h2>|</h2>
-							<Link to={"/biodatas"} className='cursor-pointer hover:text-orange-700'>Rooms</Link>
+							<Link to={"/biodatas"} className='cursor-pointer hover:text-orange-700'>All Biodatas</Link>
 						</div>
 					</div>
 				</div>

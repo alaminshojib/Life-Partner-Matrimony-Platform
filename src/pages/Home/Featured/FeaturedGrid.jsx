@@ -65,10 +65,11 @@ const FeaturedGrid = () => {
         </select>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-around px-5 pt-3">
-        {sortedPremiumBiodatas.map((premiumBiodata) => (
+        {sortedPremiumBiodatas.slice(0, 6).map((premiumBiodata) => (
           <Biodata key={premiumBiodata._id} singleData={premiumBiodata} />
         ))}
       </div>
+
     </div>
   );
 };

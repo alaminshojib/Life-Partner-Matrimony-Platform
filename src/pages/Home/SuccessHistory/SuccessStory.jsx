@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Typewriter } from 'react-simple-typewriter';
 import SuccessData from './SuccessData';
 import useAxiosPublic from '../../../hooks/useAxiosPublic';
@@ -8,7 +8,7 @@ const SuccessStory = () => {
   const [sortOrder, setSortOrder] = useState('ascending');
   const sliderRef = useRef(null);
   const axiosPublic = useAxiosPublic();
-console.log(reviews)
+
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -16,9 +16,9 @@ console.log(reviews)
         if (Array.isArray(response.data)) {
           // Sort reviews based on the marriage date
           const sortedReviews = response.data.sort((a, b) => {
-            const dateA = new Date(a.marriageDate);
-            const dateB = new Date(b.marriageDate);
-            return sortOrder === 'ascending' ? dateA - dateB : dateB - dateA;
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
+            return sortOrder === 'ascending' ? dateB - dateA : dateA - dateB;
           });
           setReviews(sortedReviews);
         } else {
@@ -30,8 +30,7 @@ console.log(reviews)
     };
   
     fetchReviews();
-  }, [sortOrder]);
-  
+  }, [sortOrder, axiosPublic]);
 
   const scrollLeft = () => {
     if (sliderRef.current) {

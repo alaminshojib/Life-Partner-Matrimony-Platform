@@ -21,14 +21,15 @@ const BioDetails = () => {
             const signData = menu.find((bio) => bio._id === id);
             setSingleData(signData);
             // Check if user email matches premium data
-            if (signData && user.email && signData.isPremium) {
+            if (signData && user.email && signData.isPremium ) { // Corrected logical condition
                 setIsPremium(true);
             } else {
                 setIsPremium(false); // Reset premium status if not premium
             }
         }
     }, [id, menu, user]); // Include user in dependency array
-console.log(isPremium)
+
+    
     useEffect(() => {
         if (!menu) return;
 
