@@ -16,15 +16,27 @@ const SuccessStory = () => {
     try {
       const response = await axiosPublic.get('/success-stories');
       console.log('Response:', response.data); // Log the response data
-      if (Array.isArray(response.data.successStories)) {
+      if (Array.isArray(response.data)) {
         // Sort reviews in descending order based on timestamp
-        const sortedReviews = response.data.successStories.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        const sortedReviews = response.data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         setReviews(sortedReviews);
       } else {
         console.error('Invalid response data format:', response.data);
       }
     } catch (error) {
       console.error('Failed to fetch reviews:', error);
+    }
+  };
+
+  const scrollLeft = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({ left: -sliderRef.current.clientWidth, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({ left: sliderRef.current.clientWidth, behavior: 'smooth' });
     }
   };
 
@@ -38,12 +50,14 @@ const SuccessStory = () => {
           deleteSpeed={0}
           delaySpeed={0}
           cursor={null}
-          typeWriterSpan={props => <span {...props} className="inline-block" />}
         />
       </h1>
       <p className="text-center text-gray-500 pb-5">Our success hinges on customer satisfaction.</p>
 
       <div className="relative">
+        <button className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-300 rounded-full p-2" onClick={scrollLeft}>
+          &lt;
+        </button>
         <div
           ref={sliderRef}
           className="flex overflow-x-auto scrollbar-none"
@@ -55,6 +69,9 @@ const SuccessStory = () => {
             </div>
           ))}
         </div>
+        <button className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-300 rounded-full p-2" onClick={scrollRight}>
+          &gt;
+        </button>
       </div>
     </div>
   );

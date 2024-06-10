@@ -83,6 +83,12 @@ const Dashboard = () => {
                                     Approved Contact Request
                                 </NavLink>
                             </li>
+                            <li>
+                                <NavLink to="/dashboard/success-stories" className="flex items-center space-x-2 text-white hover:bg-white hover:text-blue-500 py-2 px-4 rounded-lg">
+                                    <FaEnvelopeOpen className="mr-2" />
+                                    Success Stories
+                                </NavLink>
+                            </li>
 
                         </>
                             :

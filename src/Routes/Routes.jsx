@@ -6,7 +6,6 @@ import Home from "../pages/Home/Home/Home";
 import Login from "../pages/Login/Login";
 import SignUp from "../pages/SignUp/SignUp";
 import PrivateRoute from "./PrivateRoute";
-import Secret from "../pages/Shared/Secret/Secret";
 import Dashboard from "../Layout/Dashboard";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
 import AddItems from "../pages/Dashboard/AddItems/AddItems";
@@ -31,6 +30,7 @@ import ApprovedContactRequest from "../pages/ApprovedContactRequest/ApprovedCont
 import CheckoutPage from "../pages/Dashboard/CheckoutPage/CheckoutPage";
 import GotMarried from "../pages/Dashboard/GotMarried/GotMarried";
 import PaymentModal from "../components/Payments/PaymentModal";
+import MarriedSuccess from "../pages/Shared/MarriedSuccess/MarriedSuccess";
 
 
   export const router = createBrowserRouter([
@@ -145,6 +145,10 @@ import PaymentModal from "../components/Payments/PaymentModal";
           element: <AdminRoute><ApprovedContactRequest></ApprovedContactRequest></AdminRoute>
         },
         {
+          path: 'success-stories',
+          element: <AdminRoute><MarriedSuccess></MarriedSuccess> </AdminRoute>
+        },
+        {
           path: 'success-story',
           element: <GotMarried></GotMarried>
         },
@@ -152,6 +156,7 @@ import PaymentModal from "../components/Payments/PaymentModal";
           path: 'payments',
           element: <PaymentModal></PaymentModal>
         }
+
 
       ]
     }

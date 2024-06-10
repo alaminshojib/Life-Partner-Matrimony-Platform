@@ -3,8 +3,10 @@ import { AiFillDelete } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import axios from 'axios'; // Import Axios
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import useAuth from '../../../hooks/useAuth';
 
 const MyContactRequest = () => {
+  const { user } = useAuth();
   const [contactRequests, setContactRequests] = useState([]);
   const axiosSecure = useAxiosSecure();
 
@@ -15,14 +17,13 @@ const MyContactRequest = () => {
   const fetchContactRequests = async () => {
     try {
       const response = await axiosSecure.get('/payments');
-      setContactRequests(response.data);
+      const filteredRequests = response.data.filter(request => request.email === user.email);
+      setContactRequests(filteredRequests);
     } catch (error) {
       console.error('Error fetching contact requests:', error);
     }
   };
 
-
-  
   const handleDeleteRequest = async (requestId, biodataId) => {
     try {
       // Send a DELETE request to the server endpoint with the biodataId
@@ -31,10 +32,10 @@ const MyContactRequest = () => {
       // If the deletion is successful, update the state to reflect the changes
       if (response.status === 200) {
         // Filter out the deleted item from the contactRequests array
-        const updatedRequests = requestId.map(request => ({
+        const updatedRequests = contactRequests.map(request => ({
           ...request,
           items: request.items.filter(item => item.biodataId !== biodataId)
-        }));
+        })).filter(request => request.items.length > 0);
         
         // Update the state with the modified contact requests
         setContactRequests(updatedRequests);
@@ -58,8 +59,7 @@ const MyContactRequest = () => {
       });
     }
   };
-  
-  
+
   return (
     <div className="container mx-auto px-4">
       <h2 className="text-3xl font-semibold text-gray-800 mb-4">My Contact Requests</h2>
@@ -86,7 +86,6 @@ const MyContactRequest = () => {
                   </td>
                   <td className="px-4 py-2">{item.mobile_number || 'N/A'}</td>
                   <td className="px-4 py-2">{item.contact_email || 'N/A'}</td>
-                  
                   <td className="px-4 py-2">
                     <button
                       onClick={() => handleDeleteRequest(request._id, item.biodataId)}
