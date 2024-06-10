@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Modal from 'react-modal';
+import Swal from 'sweetalert2';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useAuth from '../../../hooks/useAuth';
-import Swal from 'sweetalert2';
 
 const ViewBiodata = () => {
   const [biodata, setBiodata] = useState(null);
-  const [loading, setLoading] = useState(true); // State for loading spinner
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
 
@@ -19,7 +17,7 @@ const ViewBiodata = () => {
       } catch (error) {
         console.error('Error fetching biodata:', error);
       } finally {
-        setLoading(false); // Set loading to false once data is fetched or on error
+        setLoading(false);
       }
     };
 
@@ -27,32 +25,40 @@ const ViewBiodata = () => {
   }, [axiosSecure, user.email]);
 
   const handleMakePremium = () => {
-    setIsModalOpen(true);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Do you want to make your biodata premium?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, make it premium!',
+      cancelButtonText: 'No, cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleConfirmMakePremium(biodata._id); // Pass user ID to the function
+      }
+    });
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleConfirmMakePremium = async () => {
+  const handleConfirmMakePremium = async (userId) => {
     try {
-      await axiosSecure.patch(`/biodatas/premium/${user.email}`);
-      setIsModalOpen(false);
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'Biodata has been marked as premium.',
-      });
-      setBiodata(prevState => ({ ...prevState, isPremium: true }));
+      // Send a POST request to the /premium-user endpoint with the biodata details
+      await axiosSecure.post(`/premium-user`, biodata);
+      // Update local state to reflect the premium status change
+      setBiodata(prevState => ({
+        ...prevState,
+        isPremium: true
+      }));
+      // Show success message
+      Swal.fire('Success', 'Your biodata is now premium!', 'success');
     } catch (error) {
-      console.error('Error marking biodata as premium:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to mark biodata as premium. Please try again.',
-      });
+      console.error('Error making biodata premium:', error);
+      // Show error message
+      Swal.fire('Error', 'Failed to make your biodata premium', 'error');
     }
   };
+  
 
   if (loading) {
     return (
@@ -79,7 +85,19 @@ const ViewBiodata = () => {
 
   return (
     <div className="container mx-auto px-4 relative">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-4">View Biodata (Myself Biodata Id : {biodata.biodataId})</h2>
+      <div className='flex justify-between items-center '>
+        <h2 className="text-3xl font-semibold text-gray-800 mb-4">View Biodata (Myself Biodata Id : {biodata.biodataId})</h2>
+        {biodata.isPremium ? (
+          <button className="mt-8 bg-orange-500 text-white font-bold py-2 px-4 rounded-md cursor-not-allowed opacity-50" disabled>
+            Already Marked as Premium
+          </button>
+        ) : (
+          <button className="mt-8 bg-orange-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600" onClick={handleMakePremium}>
+            Make Biodata Premium
+          </button>
+        )}
+      </div>
+
       <div className="bg-white rounded-lg shadow-md p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -110,30 +128,7 @@ const ViewBiodata = () => {
             </div>
           </div>
         </div>
-        {biodata.isPremium ? (
-          <button className="mt-8 bg-orange-500 text-white font-bold py-2 px-4 rounded-md cursor-not-allowed opacity-50" disabled>
-            Already Marked as Premium
-          </button>
-        ) : (
-          <button onClick={handleMakePremium} className="mt-8 bg-orange-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Make Biodata Premium</button>
-        )}
       </div>
-     {/* Modal for confirming premium */}
-     <Modal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        contentLabel="Confirm Make Biodata Premium"
-        className="modal fixed inset-0 flex items-center justify-center"
-        overlayClassName="overlay fixed inset-0 flex items-center justify-center"
-      >
-        <div className="bg-white p-8 rounded-lg shadow-md max-w-sm mx-auto">
-          <h2 className="text-xl font-semibold mb-4">Are you sure to make your biodata premium?</h2>
-          <div className="flex justify-center">
-            <button onClick={handleConfirmMakePremium} className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:bg-green-600 mr-2">Yes</button>
-            <button onClick={handleCloseModal} className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:bg-red-600">No</button>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 };

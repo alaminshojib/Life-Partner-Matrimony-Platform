@@ -2,7 +2,11 @@ import React from 'react';
 import Featured from './Featured'; 
 import SectionTitle from '../../../components/SectionTitle/SectionTitle';
 
+
 const FeaturedGrid = () => {
+  
+
+  const[menu]=useMenu
   return (
     <div className="featured-item  bg-fixed text-white  py-5">
     <SectionTitle heading="Some premium Members!" ></SectionTitle>

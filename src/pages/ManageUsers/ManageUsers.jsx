@@ -7,10 +7,17 @@ import useAxiosSecure from '../../hooks/useAxiosSecure';
 const ManageUsers = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const axiosSecure = useAxiosSecure();
-    const { data: users = [], refetch } = useQuery({
+    const { data: users = [], refetch: refetchUsers } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             const res = await axiosSecure.get('/users');
+            return res.data;
+        }
+    });
+    const { data: biodatas = [], refetch: refetchBiodatas } = useQuery({
+        queryKey: ['biodatas'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('/biodatas');
             return res.data;
         }
     });
@@ -19,7 +26,7 @@ const ManageUsers = () => {
         try {
             const res = await axiosSecure.patch(`/users/admin/${user._id}`);
             if (res.data.modifiedCount > 0) {
-                refetch();
+                refetchUsers();
                 Swal.fire({
                     icon: 'success',
                     title: `${user.name} is now an admin!`,
@@ -34,16 +41,13 @@ const ManageUsers = () => {
 
     const handleMakePremium = async (user) => {
         try {
-            const res = await axiosSecure.patch(`/users/premium/${user._id}`);
-            if (res.data.modifiedCount > 0) {
-                refetch();
-                Swal.fire({
-                    icon: 'success',
-                    title: `${user.name} is now a premium user!`,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
+            await axiosSecure.patch(`/biodatas/premium/${user.contact_email}`);
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'User is now a premium member.',
+            });
+            refetchBiodatas(); // Refetch to update the state
         } catch (error) {
             handleError(error);
         }
@@ -53,7 +57,7 @@ const ManageUsers = () => {
         try {
             const res = await axiosSecure.delete(`/users/${user._id}`);
             if (res.data.deletedCount > 0) {
-                refetch();
+                refetchUsers();
                 Swal.fire({
                     icon: 'success',
                     title: `${user.name} deleted successfully!`,
@@ -67,7 +71,7 @@ const ManageUsers = () => {
     };
 
     const handleSearch = () => {
-        refetch();
+        refetchUsers();
     };
 
     const handleError = (error) => {
@@ -84,7 +88,7 @@ const ManageUsers = () => {
     );
 
     return (
-        <div className="container mx-auto ">
+        <div className="container mx-auto">
             <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Manage Users</h1>
             <div className="flex justify-center mb-6">
                 <input
@@ -132,7 +136,7 @@ const ManageUsers = () => {
                                     )}
                                 </td>
                                 <td className="py-3 px-4 text-center">
-                                    {user.role1 === 'premium' ? (
+                                    {biodatas.find(biodata => biodata.biodataId === user.biodataId)?.isPremium === true ? (
                                         <span className="text-sm font-semibold text-yellow-600">Premium</span>
                                     ) : (
                                         <button
