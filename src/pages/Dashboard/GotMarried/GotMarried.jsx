@@ -1,20 +1,24 @@
+// Import necessary libraries
 import React, { useEffect, useState } from 'react';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useMenu from '../../../hooks/useMenu';
 import useAuth from '../../../hooks/useAuth';
-import Swal from 'sweetalert2'; // Import SweetAlert
+import Swal from 'sweetalert2';
 
+// Define the GotMarried component
 const GotMarried = () => {
+  // Define state variables
   const [partnerBiodataId, setPartnerBiodataId] = useState('');
   const [coupleImageLink, setCoupleImageLink] = useState('');
   const [story, setStory] = useState('');
   const [myselfBiodataId, setMyselfBiodataId] = useState('');
-  const [submittedData, setSubmittedData] = useState(null); // State to hold submitted data
-  const [editMode, setEditMode] = useState(false); // State to manage edit mode
+  const [submittedData, setSubmittedData] = useState(null);
+  const [loading, setLoading] = useState(false); // State variable for loading
   const axiosSecure = useAxiosSecure();
   const [menu, refetch] = useMenu();
   const { user } = useAuth();
 
+  // useEffect to fetch menu data and set user biodata ID
   useEffect(() => {
     if (menu.length > 0 && user?.email) {
       const findBiodata = menu.find(item => item.contact_email === user.email);
@@ -24,111 +28,87 @@ const GotMarried = () => {
     }
   }, [menu, user]);
 
+  // useEffect to fetch submitted success story data
   useEffect(() => {
-    // Check if the user has already submitted the form
-    const hasSubmitted = sessionStorage.getItem('submitted');
-    if (hasSubmitted) {
-      // If user has submitted, set the submittedData state to prevent further submission
-      setSubmittedData(JSON.parse(hasSubmitted));
-    }
-  }, []);
+    const fetchSuccessStories = async () => {
+      try {
+        const response = await axiosSecure.get('https://life-partner-matrimony-server.vercel.app/success-stories');
+        const userStory = response.data.find(story => story.selfBiodataId === myselfBiodataId);
+        if (userStory) {
+          setSubmittedData(userStory);
+        }
+      } catch (error) {
+        console.error('Error fetching success stories:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Failed to fetch success stories. Please try again.',
+        });
+      }
+    };
 
-  useEffect(() => {
-    // Set default values when edit mode is activated
-    if (editMode && submittedData) {
-      setPartnerBiodataId(submittedData.partnerBiodataId);
-      setCoupleImageLink(submittedData.coupleImageLink);
-      setStory(submittedData.story);
-    }
-  }, [editMode, submittedData]);
+    fetchSuccessStories();
+  }, [axiosSecure, myselfBiodataId]);
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true when form is submitted
+
+    // Define payload for submission
+    const payload = {
+      selfBiodataId: myselfBiodataId,
+      partnerBiodataId,
+      coupleImageLink,
+      story,
+    };
+
     try {
-      // Check if the user has already submitted their success story
       if (submittedData) {
-        // Show error message using SweetAlert if the user has already submitted
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: 'You have already submitted your success story. You cannot submit again.',
         });
-        return; // Exit the function early
+      } else {
+        const response = await axiosSecure.post('https://life-partner-matrimony-server.vercel.app/success-stories', payload);
+        setSubmittedData(payload);
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: response.data.message,
+        });
       }
-  
-      // Proceed with submitting the success story if the user has not already submitted
-      const payload = {
-        selfBiodataId: myselfBiodataId,
-        partnerBiodataId,
-        coupleImageLink,
-        story,
-      };
-  
-      // Post the data to the server
-      const response = await axiosSecure.post('http://localhost:5000/success-stories', payload);
-  
-      // Save submitted data for rendering
-      setSubmittedData(payload);
-  
-      // Save to session storage to track submission
-      sessionStorage.setItem('submitted', JSON.stringify(payload));
-  
-      // Show success message using SweetAlert
-      Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: response.data.message,
-      }).then(() => {
-        // Close modal after saving
-        setEditMode(false);
-      });
-  
-      // Clear the form fields
+
+      // Reset form fields after submission
       setPartnerBiodataId('');
       setCoupleImageLink('');
       setStory('');
     } catch (error) {
       console.error('Error submitting success story:', error);
-  
-      // Show error message using SweetAlert
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Failed to submit success story. Please try again.',
       });
     }
-  };
-  
-
-  const handleEdit = () => {
-    // Enable edit mode
-    setEditMode(true);
+    setLoading(false); // Set loading to false after submission
   };
 
-  const handleCancelEdit = () => {
-    // Disable edit mode and reset form fields to submitted data
-    setEditMode(false);
-    setPartnerBiodataId(submittedData.partnerBiodataId);
-    setCoupleImageLink(submittedData.coupleImageLink);
-    setStory(submittedData.story);
-  };
-
+  // Return JSX for the GotMarried component
   return (
     <div className="mx-auto bg-white p-8 rounded-lg shadow-md max-w-3xl">
-      {submittedData && !editMode && (
+      {submittedData && (
         <div className="bg-gray-100 rounded-xl shadow-lg p-8 mb-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-3xl font-bold text-gray-900">Submitted Details</h2>
-            <button onClick={handleEdit} className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Edit</button>
           </div>
-
           <div className="border-b border-gray-300 pb-6">
             <p className="text-gray-600 text-sm mb-2"><strong>Couple Image:</strong></p>
             <div className="rounded-lg overflow-hidden">
               <img className='w-full h-40 object-cover' src={submittedData.coupleImageLink} alt="Couple Image" />
             </div>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="border-b border-gray-300 pb-6">
               <p className="text-gray-600 text-sm mb-2"><strong>My Biodata ID:</strong></p>
@@ -139,18 +119,15 @@ const GotMarried = () => {
               <p className="text-gray-800 font-semibold">{submittedData.partnerBiodataId}</p>
             </div>
           </div>
-
           <div className="border-b border-gray-300 pb-6">
             <p className="text-gray-600 text-sm mb-2"><strong>Success Story:</strong></p>
             <p className="text-gray-800">{submittedData.story}</p>
           </div>
         </div>
       )}
-
-      {(editMode || !submittedData) && (
+      {!submittedData && (
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-6">Share Your Success Story</h1>
-
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="myselfBiodataId" className="block text-sm font-medium text-gray-700">Myself Biodata ID:</label>
@@ -196,19 +173,19 @@ focus:border-indigo-500 sm:text-sm"
               ></textarea>
             </div>
             <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={handleCancelEdit}
-                className="bg-gray-600 text-white px-4 py-2 rounded-md shadow-md mr-2 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-indigo-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                {editMode ? 'Save' : 'Submit'}
-              </button>
+              {/* Render spinner when loading state is true */}
+              {loading ? (
+                <div className="spinner-border text-indigo-500" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Submit
+                </button>
+              )}
             </div>
           </form>
         </div>

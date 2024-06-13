@@ -5,19 +5,29 @@ import useAuth from "./useAuth";
 const useCheckouts = () => {
     const axiosSecure = useAxiosSecure();
     const { user } = useAuth();
-    const contact_email = user?.email || ""; // Get the user's email from authentication
 
-    const { refetch, data: checkouts = [] } = useQuery({
-        queryKey: ['checkouts', contact_email],
+    const { data: checkouts = [], refetch } = useQuery({
+        queryKey: ['checkouts'],
         queryFn: async () => {
-            if (!contact_email) {
-                // No email available, return empty array
-                return [];
-            }
-            const res = await axiosSecure.get(`/checkouts?email=${contact_email}`);
-            return res.data;
-        }
-    });
+          const response = await axiosSecure.get('/checkouts');
+    
+          const { data: payments = [] } = await axiosSecure.get('/payments');
+    
+          // Filter payments data where email matches user.email
+          const filteredPayments = payments.filter(payment => payment.email === user.email);
+    
+          // Extract biodataIds from filtered payments
+          const filteredBiodataIds = filteredPayments.map(payment => payment.items.map(item => item.biodataId)).flat();
+    
+          // Filter checkouts data where the combination of user.email and biodataId is not present in the filtered payments data
+          const filteredCheckouts = response.data.filter(checkout => !filteredBiodataIds.includes(checkout.biodataId));
+    
+          return filteredCheckouts.map(item => ({
+            ...item,
+            price: item.price || 5, // Set default price to $5 if price is not provided
+          }));
+        },
+      });
 
     return [checkouts, refetch];
 };

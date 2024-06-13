@@ -15,14 +15,15 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { FcGoogle } from "react-icons/fc";
 import Swal from 'sweetalert2';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { AuthContext } from '../../providers/AuthProvider';
+import SocialLogin from '../../components/SocialLogin/SocialLogin';
+import { Container } from '@mui/material';
 
 function Login() {
-    const { signIn, googleSignIn } = useContext(AuthContext);
+    const { signIn } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
@@ -36,22 +37,21 @@ function Login() {
     const handleLogin = async (event) => {
         event.preventDefault();
         const { email, password } = event.target.elements;
-
-        if (!isPasswordValid(password.value)) {
-            showError('Invalid Password', 'Please enter a valid password.');
-            return;
-        }
-
+    
+        
+    
         try {
             const result = await signIn(email.value, password.value);
             const user = result.user;
             showSuccess('User Login Successful');
             navigate(from, { replace: true });
         } catch (error) {
-            handleAuthError(error);
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                showError('Invalid email or password', 'Please try again.');
+            } 
         }
     };
-
+    
     const isPasswordValid = (password) => {
         const minLength = 6;
         const containsLetter = /[a-zA-Z]/.test(password);
@@ -60,25 +60,9 @@ function Login() {
         return password.length >= minLength && containsLetter && containsNumber;
     };
 
-    const handleOAuthLogin = (provider) => {
-        provider()
-            .then(result => {
-                const user = result.user;
-                showSuccess('User Login Successful');
-                navigate(from, { replace: true });
-            })
-            .catch(error => {
-                handleAuthError(error);
-            });
-    };
-
-    const handleAuthError = (error) => {
-        // Handle authentication errors here
-    };
-
     const showError = (title, message) => {
         Swal.fire({
-            icon: 'error',
+            icon: 'info',
             title: title,
             text: message,
             showConfirmButton: true,
@@ -100,113 +84,91 @@ function Login() {
                 <title>Life Partner | Login</title>
             </Helmet>
             <ThemeProvider theme={createTheme()}>
-                <Grid container component="main" sx={{ height: '100vh' }}>
+                <Container component="main" maxWidth="xs">
                     <CssBaseline />
-                    <Grid
-                        item
-                        xs={false}
-                        sm={4}
-                        md={7}
+                    <Box
                         sx={{
-                            backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundColor: (t) =>
-                                t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
+                            marginTop: 5,
+                            marginBottom: 5,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
                         }}
-                    />
-                    <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-                        <Box
-                            sx={{
-                                my: 8,
-                                mx: 4,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                                <LockOutlinedIcon />
-                            </Avatar>
-                            <Typography component="h1" variant="h5">
-                                Sign in
-                            </Typography>
-                            <Box component="form" noValidate onSubmit={handleLogin} sx={{ mt: 1 }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="email"
-                                    label="Email Address"
-                                    name="email"
-                                    autoComplete="email"
-                                    autoFocus
-                                />
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    name="password"
-                                    label="Password"
-                                    type={showPassword ? 'text' : 'password'}
-                                    id="password"
-                                    autoComplete="current-password"
-                                    InputProps={{
-                                        endAdornment: (
-                                            <Box
-                                                component="span"
-                                                sx={{
-                                                    cursor: 'pointer',
-                                                    '&:hover': {
-                                                        color: 'primary.main',
-                                                    },
-                                                }}
-                                                onClick={togglePasswordVisibility}
-                                            >
-                                                {showPassword ? <Visibility /> : <VisibilityOff />}
-                                            </Box>
-                                        ),
-                                    }}
-                                />
-                                <FormControlLabel
-                                    control={<Checkbox value="remember" color="primary" />}
-                                    label="Remember me"
-                                />
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    sx={{ mt: 3, mb: 2 }}
-                                >
-                                    Sign In
-                                </Button>
-                                <Button
-                                    fullWidth
-                                    variant="outlined"
-                                    color="primary"
-                                    onClick={() => handleOAuthLogin(googleSignIn)}
-                                    className="text-[#002D74] border-2 py-2 my-2 w-fit px-3 mx-auto rounded-xl  flex justify-center items-center text-sm hover:scale-105 duration-300 hover:bg-[#60a8bc4f] font-medium"
-                                >
-                                    <FcGoogle className="mr-3" />
-                                    Login with Google
-                                </Button>
-                                <Grid container>
-                                    <Grid item xs>
-                                        <Link href="#" variant="body2">
-                                            Forgot password?
-                                        </Link>
-                                    </Grid>
-                                    <Grid item>
-                                        <Link href={"/signup"} variant="body2">
-                                            {"Don't have an account? Sign Up"}
-                                        </Link>
-                                    </Grid>
-                                </Grid>
+                    >
+                        <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+                            <LockOutlinedIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h5" sx={{ mt: 2 }}>
+                            Sign in
+                        </Typography>
+                        <Box component="form" noValidate onSubmit={handleLogin} sx={{ mt: 1, width: '100%' }}>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="email"
+                                label="Email Address"
+                                name="email"
+                                autoComplete="email"
+                                autoFocus
+                            />
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type={showPassword ? 'text' : 'password'}
+                                id="password"
+                                autoComplete="current-password"
+                                InputProps={{
+                                    endAdornment: (
+                                        <Box
+                                            component="span"
+                                            sx={{
+                                                cursor: 'pointer',
+                                                '&:hover': {
+                                                    color: 'primary.main',
+                                                },
+                                            }}
+                                            onClick={togglePasswordVisibility}
+                                        >
+                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                        </Box>
+                                    ),
+                                }}
+                            />
+                            <FormControlLabel
+                                control={<Checkbox value="remember" color="primary" />}
+                                label="Remember me"
+                                sx={{ mb: 1 }}
+                            />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                Sign In
+                            </Button>
+                            <SocialLogin />
+                            <div className='flex items-center justify-between px-5'> 
+
+                            <Box mt={2}>
+                                <Link component="button" variant="body2" onClick={() => navigate("/forgot-password")}>
+                                    Forgot password?
+                                </Link>
                             </Box>
+                            <Box mt={2}>
+                                <Link component="button" variant="body2" onClick={() => navigate("/signup")}>
+                                    Don't have an account? Sign Up
+                                </Link>
+                            </Box>
+                            </div>
+                            
                         </Box>
-                    </Grid>
-                </Grid>
+                    </Box>
+                </Container>
             </ThemeProvider>
         </>
     );

@@ -33,14 +33,14 @@ const About = () => {
             <section className="container mx-auto px-4 md:px-8">
                 <h1 className="text-xl md:text-2xl font-bold text-center py-8">EXPLORE THE VIDEOS HOW CAN YOU FIND OUT YOUR BEST LIFE PARTNER.</h1>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:py-10 lg:pb-16 gap-3 justify-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 px-5 lg:py-10 lg:pb-16 gap-3 justify-around">
                     <div className="aspect-w-16 aspect-h-9">
-                        <iframe width="612" height="320" src="https://www.youtube.com/embed/mdj70f2_2ao" title="যেভাবে ফিল্টার করে বায়োডাটা খুঁজবেন ! Deendarpartner.com" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <iframe width="420" height="300" src="https://www.youtube.com/embed/mdj70f2_2ao" title="যেভাবে ফিল্টার করে বায়োডাটা খুঁজবেন ! Deendarpartner.com" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
                     <div className="flex flex-col justify-center px-6">
                         <p className="pb-5 text-md md:text-xl">Start walking with your spouse
                             Finally, get married to your eternal life partner. Insha Allah will make dua for us when the marriage is completed. Allah will give you Barakah in your married life Insha Allah. When the marriage is completed, there is a gift for you from Dindar Partner Team. Click the button below to receive the gift and provide the information!</p>
-                        <button className="btn btn-primary text-white w-fit justify-start ">Explore Biodatas</button>
+                        <button className="bg-blue-400 p-2 rounded-md text-white w-fit justify-start ">Explore Biodatas</button>
                     </div>
                 </div>
             </section>

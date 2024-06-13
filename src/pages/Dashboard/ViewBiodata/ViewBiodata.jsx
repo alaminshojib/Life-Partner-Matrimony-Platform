@@ -6,6 +6,7 @@ import useAuth from '../../../hooks/useAuth';
 const ViewBiodata = () => {
   const [biodata, setBiodata] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isPremiumRequested, setIsPremiumRequested] = useState(false);
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
 
@@ -21,8 +22,24 @@ const ViewBiodata = () => {
       }
     };
 
+    const checkPremiumStatus = async () => {
+      try {
+        const response = await axiosSecure.get(`/users/${user.email}`);
+        setIsPremiumRequested(response.data.isPremium === true);
+        
+        // If premium status is already set, show an alert
+        if (response.data.isPremium) {
+          Swal.fire('Already Premium', 'Your biodata is already marked as premium', 'info');
+        }
+      } catch (error) {
+        console.error('Error checking premium status:', error);
+      }
+    };
+
     fetchBiodata();
+    checkPremiumStatus();
   }, [axiosSecure, user.email]);
+
 
   const handleMakePremium = () => {
     Swal.fire({
@@ -43,18 +60,22 @@ const ViewBiodata = () => {
 
   const handleConfirmMakePremium = async (userId) => {
     try {
-      // Send a POST request to the /premium-user endpoint with the biodata details
-      await axiosSecure.post(`/premium-user`, biodata);
-      // Update local state to reflect the premium status change
+      const premiumData = {
+        email: user.email,
+        isPremium: true,
+        ...biodata
+      };
+
+      await axiosSecure.post(`/premium-user`, premiumData);
+  
       setBiodata(prevState => ({
         ...prevState,
         isPremium: true
       }));
-      // Show success message
+  
       Swal.fire('Success', 'Your biodata is now premium!', 'success');
     } catch (error) {
       console.error('Error making biodata premium:', error);
-      // Show error message
       Swal.fire('Error', 'Failed to make your biodata premium', 'error');
     }
   };
@@ -65,7 +86,6 @@ const ViewBiodata = () => {
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
           <h2 className="text-3xl font-semibold text-gray-800 mb-4">Loading Biodata...</h2>
-          {/* You can add a spinner component or any other loading indicator here if needed */}
         </div>
       </div>
     );
@@ -77,7 +97,6 @@ const ViewBiodata = () => {
         <div className="text-center">
           <h2 className="text-3xl font-semibold text-gray-800 mb-4">No Biodata Found</h2>
           <p className="text-lg text-gray-600 mb-8">Please publish your biodata first.</p>
-          {/* You can add a button or any other elements here if needed */}
         </div>
       </div>
     );
@@ -87,7 +106,7 @@ const ViewBiodata = () => {
     <div className="container mx-auto px-4 relative">
       <div className='flex justify-between items-center '>
         <h2 className="text-3xl font-semibold text-gray-800 mb-4">View Biodata (Myself Biodata Id : {biodata.biodataId})</h2>
-        {biodata.isPremium ? (
+        { isPremiumRequested || biodata.isPremium ? (
           <button className="mt-8 bg-orange-500 text-white font-bold py-2 px-4 rounded-md cursor-not-allowed opacity-50" disabled>
             Already Marked as Premium
           </button>
@@ -97,6 +116,7 @@ const ViewBiodata = () => {
           </button>
         )}
       </div>
+
 
       <div className="bg-white rounded-lg shadow-md p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

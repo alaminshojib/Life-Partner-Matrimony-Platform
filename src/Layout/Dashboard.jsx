@@ -45,10 +45,10 @@ const Dashboard = () => {
                             <NavLink to="/" className=" hover:text-orange-500">Home</NavLink>
                         </li>
                         <li>
-                            <NavLink to="/order/salad" className=" hover:text-orange-500">Menu</NavLink>
+                            <NavLink to="/biodatas" className=" hover:text-orange-500">All Biodatas</NavLink>
                         </li>
                         <li>
-                            <NavLink to="/order/contact" className=" hover:text-orange-500">Contact</NavLink>
+                            <NavLink to="/contactUs" className=" hover:text-orange-500">Contact</NavLink>
                         </li>
                     </ul>
                 </nav>

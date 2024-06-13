@@ -4,10 +4,12 @@ import useAuth from '../../../hooks/useAuth';
 import countryData from 'country-flag-icons/react/3x2';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useMenu from '../../../hooks/useMenu';
+import { useNavigate } from 'react-router-dom';
 
 const EditBiodata = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+const navigate=useNavigate();
 
   const defaultFormData = {
     biodata_type: '',
@@ -63,7 +65,8 @@ const EditBiodata = () => {
         text: 'Your biodata has been saved successfully.',
       });
       setFormData(defaultFormData);
-      window.location.reload();
+      navigate("/dashboard/view-biodata")
+
     } catch (error) {
       console.error('Error:', error);
       Swal.fire({
@@ -73,6 +76,7 @@ const EditBiodata = () => {
       });
     } finally {
       setLoading(false);
+      
     }
   };
 

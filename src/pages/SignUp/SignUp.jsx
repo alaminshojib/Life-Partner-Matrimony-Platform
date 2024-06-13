@@ -17,12 +17,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { AuthContext } from "../../providers/AuthProvider";
 import Swal from 'sweetalert2';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import InputAdornment from '@mui/material/InputAdornment';
-import { IconButton } from "@mui/material";
+import IconButton from '@mui/material/IconButton';
+import CircularProgress from '@mui/material/CircularProgress';
+import { AuthContext } from "../../providers/AuthProvider";
 
 // Define default theme
 const defaultTheme = createTheme();
@@ -39,13 +40,15 @@ export default function SignUp() {
     const navigate = useNavigate();
 
     // Authentication context for user creation
-    const { createUser, updateUserProfile, logout } = useContext(AuthContext);
+    const { createUser, updateUserProfile } = useContext(AuthContext);
 
     // State for showing/hiding password
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Form submission handler
     const onSubmit = data => {
+        setIsLoading(true);
         createUser(data.email, data.password)
             .then(result => {
                 const loggedUser = result.user;
@@ -68,20 +71,21 @@ export default function SignUp() {
                                         timer: 2000
                                     });
                                     // Navigate to login page
+                                    navigate('/login');
                                 }
                             })
                     })
-                    .catch(error => console.log(error))
+                    .catch(error => {
+                        setIsLoading(false);
+                        console.error(error);
+                        // Handle error here
+                    });
             })
             .catch(error => {
+                setIsLoading(false);
                 console.error(error);
                 // Handle error here
-            })
-            .finally(
-                navigate('/login')
-
-            )
-
+            });
     };
 
     // Toggle password visibility
@@ -104,6 +108,8 @@ export default function SignUp() {
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
+                            marginBottom:8,
+                        
                         }}
                     >
                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -217,7 +223,7 @@ export default function SignUp() {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                             >
-                                Sign Up
+                                {isLoading ? <CircularProgress size={24} color="inherit" /> : "Sign Up"}
                             </Button>
                             {/* Link to login page */}
                             <Grid container justifyContent="flex-end">
@@ -229,7 +235,7 @@ export default function SignUp() {
                             </Grid>
                         </Box>
                     </Box>
-                </Container>
+                    </Container>
             </ThemeProvider>
         </>
     );

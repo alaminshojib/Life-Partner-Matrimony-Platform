@@ -31,12 +31,15 @@ import CheckoutPage from "../pages/Dashboard/CheckoutPage/CheckoutPage";
 import GotMarried from "../pages/Dashboard/GotMarried/GotMarried";
 import PaymentModal from "../components/Payments/PaymentModal";
 import MarriedSuccess from "../pages/Shared/MarriedSuccess/MarriedSuccess";
+import ErrorPage from "../pages/ErrorPage/ErrorPage";
 
 
   export const router = createBrowserRouter([
     {
       path: "/",
       element: <Main></Main>,
+      errorElement: <ErrorPage />,
+
       children: [
         {
             path: '/',
@@ -126,7 +129,7 @@ import MarriedSuccess from "../pages/Shared/MarriedSuccess/MarriedSuccess";
         {
           path: 'updateItem/:id',
           element: <AdminRoute><UpdateItem></UpdateItem></AdminRoute>,
-          loader: ({params}) => fetch(`http://localhost:5000/biodatas/${params.id}`)
+          loader: ({params}) => fetch(`https://life-partner-matrimony-server.vercel.app/biodatas/${params.id}`)
         },
         {
           path: 'users',

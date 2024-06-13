@@ -3,6 +3,7 @@ import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import Swal from 'sweetalert2';
 import useAuth from '../../hooks/useAuth';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { useNavigate } from 'react-router-dom';
 
 const CheckoutForm = ({ totalPrice, onClose, items, refetch}) => {
     const stripe = useStripe();
@@ -13,6 +14,7 @@ const CheckoutForm = ({ totalPrice, onClose, items, refetch}) => {
     const [error, setError] = useState('');
     const [clientSecret, setClientSecret] = useState('');
     const [transactionId, setTransactionId] = useState('');
+    const navigate=useNavigate();
 console.log(items)
     useEffect(() => {
         const fetchClientSecret = async () => {
@@ -108,6 +110,7 @@ console.log(items)
                 setTransactionId(paymentIntent.id);
                 onClose();
                 refetch();
+                navigate('/dashboard/my-contact-request')
             } else {
                 setError('Payment failed');
                 Swal.fire({

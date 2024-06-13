@@ -6,6 +6,7 @@ import useMenu from '../../../hooks/useMenu';
 import { useParams } from 'react-router-dom';
 import Biodata from './Biodata';
 import useAuth from '../../../hooks/useAuth';
+import useAxiosSecure from '../../../hooks/useAxiosSecure'; // Assuming you have this hook for making secure axios requests
 
 const BioDetails = () => {
     const { id } = useParams();
@@ -14,32 +15,50 @@ const BioDetails = () => {
     const [femaleData, setFemaleData] = useState([]);
     const [menu] = useMenu();
     const { user } = useAuth();
+    const axiosSecure = useAxiosSecure(); // Use secure axios instance
     const [isPremium, setIsPremium] = useState(false); // State to track premium status
 
     useEffect(() => {
-        if (menu && user) {
+        if (menu) {
             const signData = menu.find((bio) => bio._id === id);
             setSingleData(signData);
-            // Check if user email matches premium data
-            if (signData && user.email && signData.isPremium ) { // Corrected logical condition
-                setIsPremium(true);
-            } else {
-                setIsPremium(false); // Reset premium status if not premium
-            }
         }
-    }, [id, menu, user]); // Include user in dependency array
+    }, [id, menu]);
 
-    
     useEffect(() => {
-        if (!menu) return;
-
-        const maleBiodatas = menu.filter((item) => item.biodata_type === 'Male');
-        const femaleBiodatas = menu.filter((item) => item.biodata_type === 'Female');
-
-        setMaleData([...maleBiodatas]); // Use spread operator to create a new array
-        setFemaleData([...femaleBiodatas]); // Use spread operator to create a new array
-    }, [menu]); 
-
+        if (singleData) {
+            const fetchUserData = async () => {
+                try {
+                    const response = await axiosSecure.get('/users');
+                    const users = response.data;
+                    const matchingUser = users.find(userData => userData.contact_email === singleData.contact_email);
+                    
+                    if (matchingUser && user.email === matchingUser.contact_email) {
+                        setIsPremium(true);
+                    }else {
+                        setIsPremium(false);
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                    setIsPremium(false);
+                }
+            };
+        
+            fetchUserData();
+        }
+    }, [singleData, user, axiosSecure]);
+    
+    // Additional useEffect to fetch male and female biodata when `menu` changes
+    useEffect(() => {
+        if (menu) {
+            const maleBiodatas = menu.filter((item) => item.biodata_type === 'Male');
+            const femaleBiodatas = menu.filter((item) => item.biodata_type === 'Female');
+    
+            setMaleData([...maleBiodatas]); // Use spread operator to create a new array
+            setFemaleData([...femaleBiodatas]); // Use spread operator to create a new array
+        }
+    }, [menu]);
+    
     return (
         <div>
             <Helmet>
@@ -50,7 +69,6 @@ const BioDetails = () => {
                 <div className="container grid grid-cols-12 gap-8 mx-auto justify-between">
                     <div className="col-span-12 md:col-span-4 mt-5 pt-5 flex flex-col justify-between py-2">
                         <div className="flex flex-col">
-                            {/* Pass isPremium prop to BioDetailsData component */}
                             <BioDetailsData singleData={singleData} isPremium={isPremium}/>
                         </div>
                     </div>
@@ -114,15 +132,9 @@ const BioDetails = () => {
                                                     <td className="p-6">
                                                         <p>Expected Partner Weight: <span className='text-black font-normal '>{singleData?.expected_partner_weight}</span> </p>
                                                     </td>
-                                                    <td className="p-6">
-                                                        <p>Contact Email: <span className='text-black font-normal '>{singleData?.contact_email}</span> </p>
-                                                    </td>
+                                                 
                                                 </tr>
-                                                <tr className="border-b border-opacity-20 border-gray-700 font-medium text-blue-500">
-                                                    <td className="p-6" colSpan="2">
-                                                        <p>Mobile Number: <span className='text-black font-normal '>{singleData?.mobile_number}</span> </p>
-                                                    </td>
-                                                </tr>
+                                                
                                             </tbody>
                                         </table>
                                     </div>
@@ -135,7 +147,6 @@ const BioDetails = () => {
                     <h1 className="text-gray-900">Some Similar Biodata type</h1>
                 </div>
                 <div className='flex items-center justify-center gap-5 px-10'>
-                    {/* Conditionally render similar biodata based on selected biodata type */}
                     {singleData?.biodata_type === "Male" ? (
                         maleData.slice(0, 3).map((data) => (
                             <Biodata key={data._id} singleData={data} />

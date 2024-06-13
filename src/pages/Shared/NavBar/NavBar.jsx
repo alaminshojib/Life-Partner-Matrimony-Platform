@@ -44,7 +44,15 @@ export default function NavBar() {
         <Disclosure as="nav" className="navbar fixed z-10 bg-opacity-30 w-screen bg-black text-white">
             {({ open }) => (
                 <>
-                    <div className="flex items-center justify-between px-8 py-4">
+                    <div className="flex items-center justify-between px-4 py-4">
+                    <div className="sm:hidden">
+                            <DisclosureButton className="inline-flex items-center justify-center p-2 text-gray-50 hover:bg-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                                {open ? <XMarkIcon className="h-6 w-6" aria-hidden="true" /> : <Bars3Icon className="h-6 w-6" aria-hidden="true" />}
+                            </DisclosureButton>
+                        </div>
+
+
+
                         <div className="flex items-center justify-center gap-2">
                             <img className="h-6 w-6 " src={logo} alt="Your Company" />
                             <h1 className="text-2xl font-bold text-white">Life Partner</h1>
@@ -53,7 +61,7 @@ export default function NavBar() {
                         <div className="flex items-center">
 
 
-                            <div className="hidden sm:ml-6 sm:block mx-auto justify-center items-center ">
+                            <div className="hidden  sm:ml-6 sm:block mx-auto justify-center items-center ">
                                 <div className="flex space-x-4 w-fit  mx-auto justify-center items-center">
 
 
@@ -62,6 +70,7 @@ export default function NavBar() {
                                 </div>
                             </div>
                         </div>
+
                         <div className="flex items-center">
                             <Link to={"/dashboard/checkouts"}
                                 type="button"
@@ -105,15 +114,10 @@ export default function NavBar() {
                                 </Transition>
                             </Menu>
                         </div>
-                        <div className="sm:hidden">
-                            <DisclosureButton className="inline-flex items-center justify-center p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                                <span className="sr-only">Open main menu</span>
-                                {open ? <XMarkIcon className="h-6 w-6" aria-hidden="true" /> : <Bars3Icon className="h-6 w-6" aria-hidden="true" />}
-                            </DisclosureButton>
-                        </div>
+                       
                     </div>
-                    <DisclosurePanel className="sm:hidden">
-                        <div className="px-2 pt-2 pb-3 space-y-1">
+                    <DisclosurePanel className="sm:hidden  rounded-r-md  w-2/6 bg-white text-black justify-end">
+                        <div className="px-2 pt-2 pb-3 space-y-1 flex divide-y-2 gap-2 flex-col justify-end ">
                             {navOptions}
                         </div>
                     </DisclosurePanel>

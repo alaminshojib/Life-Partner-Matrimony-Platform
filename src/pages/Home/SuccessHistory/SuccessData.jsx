@@ -22,10 +22,13 @@ const SuccessData = ({ review }) => {
           <div className="flex justify-between space-x-4">
             <div>
               <h4 className="font-bold text-sm">Biodata Id: {review.selfBiodataId}</h4>
+              <h6 className=" text-sm">Partner Id: {review.partnerBiodataId}</h6>
+
               <span className="text-xs">Marriage Date: {new Date(review.createdAt).toLocaleDateString()}</span>
             </div>
             <div className="flex items-center space-x-1 text-yellow-500 dark:text-yellow-700">
-              <span className="text-xs font-bold">Rating: <AiFillStar className="text-sm" /></span>
+
+              <span className="text-xs font-bold">Married</span>
             </div>
           </div>
         </div>

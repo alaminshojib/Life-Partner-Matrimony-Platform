@@ -35,7 +35,7 @@ const PaymentHistory = () => {
                       <td className="border px-4 py-2">{index + 1}</td>
                       <td className="border px-4 py-2">${payment.price.toFixed(2)}</td>
                       <td className="border px-4 py-2">{payment.transactionId}</td>
-                      <td className="border px-4 text-green-500 py-2">{payment.status}</td>
+                      <td className="border px-4 text-green-500 py-2">Successful</td>
                     </tr>
                   ))
                 ) : (

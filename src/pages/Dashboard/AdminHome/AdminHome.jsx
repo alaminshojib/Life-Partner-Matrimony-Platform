@@ -46,41 +46,41 @@ const AdminHome = () => {
                     <div className="flex items-center justify-center text-6xl text-white mb-4">
                         <FaBook />
                     </div>
-                    <div className="text-center text-xl font-semibold text-white">Total Biodata Count</div>
+                    <div className="text-center text-xl font-semibold text-white">Total Biodata Count: </div>
                     <div className="text-center text-3xl font-bold text-white">{stats.totalBiodata}</div>
                 </div>
                 <div className="bg-yellow-500 p-8 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
                     <div className="flex items-center justify-center text-6xl text-white mb-4">
                         <FaUsers />
                     </div>
-                    <div className="text-center text-xl font-semibold text-white">Male Biodata Count</div>
+                    <div className="text-center text-xl font-semibold text-white">Male Biodata Count: </div>
                     <div className="text-center text-3xl font-bold text-white">{stats.maleBiodata}</div>
                 </div>
                 <div className="bg-pink-500 p-8 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
                     <div className="flex items-center justify-center text-6xl text-white mb-4">
                         <FaUsers />
                     </div>
-                    <div className="text-center text-xl font-semibold text-white">Female Biodata Count</div>
+                    <div className="text-center text-xl font-semibold text-white">Female Biodata Count: </div>
                     <div className="text-center text-3xl font-bold text-white">{stats.femaleBiodata}</div>
                 </div>
                 <div className="bg-purple-500 p-8 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
                     <div className="flex items-center justify-center text-6xl text-white mb-4">
                         <FaUsers />
                     </div>
-                    <div className="text-center text-xl font-semibold text-white">Premium Biodata Count</div>
+                    <div className="text-center text-xl font-semibold text-white">Premium Biodata Count: </div>
                     <div className="text-center text-3xl font-bold text-white">{stats.premiumBiodata}</div>
                 </div>
                 <div className="bg-teal-500 p-8 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300">
                     <div className="flex items-center justify-center text-6xl text-white mb-4">
                         <FaDollarSign />
                     </div>
-                    <div className="text-center text-xl font-semibold text-white">Total Revenue</div>
+                    <div className="text-center text-xl font-semibold text-white">Total Revenue: </div>
                     <div className="text-center text-3xl font-bold text-white">${stats.totalRevenue}</div>
                 </div>
             </div>
             <div className="mt-12">
-                <h1 className="text-bold text-3xl text-center p-4">Summarry Details By PieChart :</h1>
-                <div className="w-full sm:w-2/6 mx-auto">
+                <h1 className="text-bold text-3xl text-center py-5">Summarry Details By PieChart :</h1>
+                <div className="w-full lg:w-2/6 mx-auto">
                     <Pie data={pieData} />
                 </div>
             </div>

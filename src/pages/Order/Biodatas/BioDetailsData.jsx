@@ -2,30 +2,62 @@ import React, { useState, useEffect } from "react";
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAuth from "../../../hooks/useAuth";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useCheckout from "../../../hooks/useCheckouts";
 import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import Swal from "sweetalert2";
-import useMenu from "../../../hooks/useMenu";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
 
-const BioDetailsData = ({ singleData, isPremium }) => {
+const BioDetailsData = ({ singleData }) => {
   const [showFavouriteModal, setShowFavouriteModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
+  const axiosPublic = useAxiosPublic();
   const [checkouts, refetch] = useCheckout();
   const [alert, setAlert] = useState(null);
-  
+
+  useEffect(() => {
+    const checkPremiumStatus = async () => {
+      try {
+        if (user && user.email) {
+          const response = await axiosSecure.get('/biodatas');
+          const userData = response.data.find(u => u?.contact_email === user.email);
+          setIsPremium(userData && userData?.isPremium===true );
+        }
+       
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    checkPremiumStatus();
+  }, [user, axiosSecure]);
+
+
+  useEffect(() => {
+    const checkApprovalStatus = async () => {
+      try {
+        if (singleData?.biodataId) {
+          const response = await axiosPublic.get(`/biodatas/${singleData?.biodataId}`);
+          setIsApproved(response.data?.isPremium);
+        }
+      } catch (error) {
+        console.error("Error fetching biodata status:", error);
+      }
+    };
+    checkApprovalStatus();
+  }, [singleData, axiosSecure]);
 
   useEffect(() => {
     if (alert) {
       const timer = setTimeout(() => {
         setAlert(null);
-      }, 2000); // Auto dismiss after 5 seconds
+      }, 5000); // Auto dismiss after 5 seconds
 
       return () => clearTimeout(timer);
     }
@@ -36,7 +68,7 @@ const BioDetailsData = ({ singleData, isPremium }) => {
       if (!user || !user.email) {
         throw new Error("User not logged in");
       }
-  
+
       const checkoutsItem = {
         biodataId: singleData?.biodataId,
         email: user?.email,
@@ -46,12 +78,12 @@ const BioDetailsData = ({ singleData, isPremium }) => {
         mobile_number: singleData?.mobile_number,
         status: 'Pending', // Adding status field
       };
-  
+
       const alreadyInCheckouts = checkouts.some(item => item.biodataId === checkoutsItem.biodataId);
       if (alreadyInCheckouts) {
         throw new Error(`${singleData.name} is already in your checkouts`);
       }
-  
+
       const res = await axiosSecure.post('/checkouts', checkoutsItem);
       if (res.data && res.data.message === 'Checkout item saved successfully') {
         setAlert(
@@ -69,7 +101,7 @@ const BioDetailsData = ({ singleData, isPremium }) => {
                 <CloseIcon fontSize="inherit" />
               </IconButton>
             }
-            sx={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999 }}
+            sx={{ position: 'fixed', top: '70px', right: '20px', zIndex: 9999 }}
           >
             {`${singleData.name} added to your checkouts`}
           </Alert>
@@ -95,7 +127,7 @@ const BioDetailsData = ({ singleData, isPremium }) => {
               <CloseIcon fontSize="inherit" />
             </IconButton>
           }
-          sx={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999 }}
+          sx={{ position: 'fixed', top: '70px', right: '20px', zIndex: 9999 }}
         >
           {error.message || 'Failed to add to your checkouts'}
         </Alert>
@@ -104,7 +136,6 @@ const BioDetailsData = ({ singleData, isPremium }) => {
       navigate("/dashboard/checkouts");
     }
   };
-  
 
   const handleAddToFavorites = async () => {
     setShowFavouriteModal(true);
@@ -112,7 +143,7 @@ const BioDetailsData = ({ singleData, isPremium }) => {
       if (!user || !user.email) {
         throw new Error("User not logged in");
       }
-  
+
       const favouritesItem = {
         biodataId: singleData?.biodataId,
         email: user?.email,
@@ -121,7 +152,7 @@ const BioDetailsData = ({ singleData, isPremium }) => {
         contact_email: singleData?.contact_email,
         permanent_division: singleData?.permanent_division
       };
-  
+
       const res = await axiosSecure.post('/favourites', favouritesItem);
       if (res?.data && res?.data?.message === 'Favourite item saved successfully') {
         setAlert(
@@ -139,7 +170,7 @@ const BioDetailsData = ({ singleData, isPremium }) => {
                 <CloseIcon fontSize="inherit" />
               </IconButton>
             }
-            sx={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999 }}
+            sx={{ position: 'fixed', top: '70px', right: '20px', zIndex: 9999 }}
           >
             {`${singleData.name} added to your favourites`}
           </Alert>
@@ -162,19 +193,18 @@ const BioDetailsData = ({ singleData, isPremium }) => {
                 setAlert(null);
               }}
             >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
           }
-          sx={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999 }}
+          sx={{ position: 'fixed', top: '70px', right: '20px', zIndex: 9999 }}
         >
-          {error.message|| 'Already Added in Favourites Lists'}
+          {error.message || 'Already Added in Favourites Lists'}
         </Alert>
       );
     } finally {
       setShowFavouriteModal(false);
     }
   };
-  
 
   const handleConfirmation = () => {
     setShowConfirmationModal(true);
@@ -231,7 +261,7 @@ const BioDetailsData = ({ singleData, isPremium }) => {
             </tbody>
           </table>
         </div>
-        {(isPremium === true) ? (
+        {(isPremium || isApproved ) ? (
           <div className="flex flex-col gap-2 p-4 space-y-2 text-sm text-gray-600 border shadow-md">
             <div><p className="font-bold pr-4 text-md text-blue-500">Premium/Approved Contact User can see this :</p></div>
             <div>
@@ -244,7 +274,7 @@ const BioDetailsData = ({ singleData, isPremium }) => {
         ) : (
           <button
             onClick={() => {
-              const alreadyInCheckouts = checkouts.some(item => item.biodataId === singleData._id);
+              const alreadyInCheckouts = checkouts.some(item => item.biodataId === singleData.biodataId);
               if (!alreadyInCheckouts) {
                 handleConfirmation();
               } else {
@@ -263,14 +293,14 @@ const BioDetailsData = ({ singleData, isPremium }) => {
                         <CloseIcon fontSize="inherit" />
                       </IconButton>
                     }
-                    sx={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999 }}
+                    sx={{ position: 'fixed', top: '70px', right: '20px', zIndex: 9999 }}
                   >
                     {`${singleData.name} is already in your checkouts`}
                   </Alert>
                 );
               }
             }}
-            className="bg-blue-500 text-white py-2 px-4 rounded-md w-fit btn-gradient justify-center mx-auto flex hover:bg-blue-600 transition duration-300"
+            className="bg-orange-500 font-semibold text-white py-2 mt-2 px-4 rounded-md w-fit btn-gradient justify-center mx-auto flex hover:bg-orange-700 transition duration-300"
           >
             Request Contact Info
           </button>
@@ -294,4 +324,3 @@ const BioDetailsData = ({ singleData, isPremium }) => {
 };
 
 export default BioDetailsData;
-

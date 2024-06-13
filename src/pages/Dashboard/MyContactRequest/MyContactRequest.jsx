@@ -1,115 +1,109 @@
-import React, { useState, useEffect } from 'react';
-import { AiFillDelete } from 'react-icons/ai';
+import React from 'react';
+import { useQuery, useMutation, QueryClient, QueryClientProvider } from 'react-query';
 import Swal from 'sweetalert2';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useAuth from '../../../hooks/useAuth';
 
-const MyContactRequest = () => {
-  const { user } = useAuth();
-  const [contactRequests, setContactRequests] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+const ApprovedContactRequest = () => {
   const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
 
-  useEffect(() => {
-    fetchContactRequests();
-  }, [currentPage]);
-
-  const fetchContactRequests = async () => {
-    try {
-      const response = await axiosSecure.get('/payments');
-      const filteredRequests = response.data.filter(request => request.email === user.email);
-      setContactRequests(filteredRequests);
-    } catch (error) {
-      console.error('Error fetching contact requests:', error);
+  const { data: contactRequests = [], refetch } = useQuery({
+    queryKey: ['payments'],
+    queryFn: async () => {
+      const res = await axiosSecure.get('/payments');
+      // Filter contactRequests where contact_email matches user's email
+      return res.data.filter(request => request.email === user.email);
     }
+  });
+
+  const handleError = (error) => {
+    console.error('Error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Something went wrong!',
+    });
   };
 
-  const handleDeleteRequest = async (requestId, biodataId) => {
-    try {
-      const response = await axiosSecure.delete(`/payments/${biodataId}`);
-      if (response?.status === 200) {
-        const updatedRequests = contactRequests.map(request => ({
-          ...request,
-          items: request?.items?.filter(item => item?.biodataId !== biodataId)
-        })).filter(request => request?.items?.length > 0);
-        setContactRequests(updatedRequests);
+  const deleteContactRequestMutation = useMutation(
+    contactRequest => axiosSecure.delete(`/payments/${contactRequest._id}`),
+    {
+      onSuccess: () => {
+        refetch();
         Swal.fire({
           icon: 'success',
-          title: 'Success',
-          text: 'Item deleted successfully',
+          title: 'Contact request deleted successfully!',
+          showConfirmButton: false,
+          timer: 1500
         });
-      }
-    } catch (error) {
-      console.error('Error deleting item:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to delete item. Please try again later.',
-      });
+      },
+      onError: handleError
     }
+  );
+
+  const handleDeleteContactRequest = (contactRequest) => {
+    deleteContactRequestMutation.mutate(contactRequest);
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = contactRequests.slice(indexOfFirstItem, indexOfLastItem);
+  console.log(contactRequests);
 
   return (
-    <div className="container mx-auto px-4">
-      <h2 className="text-4xl font-bold text-center mb-8 text-gray-800">My Contact Requests</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
-          <thead className="bg-gradient-to-r from-blue-500 to-blue-700 text-white">
-            <tr>
-              <th className="py-3 px-4 text-left">Biodata Id</th>
-              <th className="py-3 px-4 text-left">Name</th>
-              <th className="py-3 px-4 text-left">Mobile No</th>
-              <th className="py-3 px-4 text-left">Email</th>
-              <th className="py-3 px-4 text-left">Status</th>
-              <th className="py-3 px-4 text-left">Delete</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white">
-            {currentItems.map(request =>
-              request.items.map((item, index) => (
-                <tr key={`${request._id}-${index}`} className="border-b transition duration-200 hover:bg-gray-100">
+    <div className="container mx-auto">
+      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">My Contact Requests</h1>
+      <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
+        <thead className="bg-gradient-to-r from-blue-500 to-blue-700 text-white">
+          <tr>
+            <th className="py-3 px-4 text-center">#</th>
+            <th className="py-3 px-4 text-center">Biodata Id</th>
+            <th className="py-3 px-4 text-center">Name</th>
+            <th className="py-3 px-4 text-center">Mobile Number</th>
+            <th className="py-3 px-4 text-center">Email</th>
+            <th className="py-3 px-4 text-center">Status</th>
+            <th className="py-3 px-4 text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white">
+          {contactRequests.length > 0 ? (
+            contactRequests.map((transaction, index) => (
+              transaction.items.map((item, i) => (
+                <tr key={`${index}-${i}`} className="border-b text-center transition duration-200 hover:bg-gray-100">
+                  <td className="py-3 px-4">#</td>
                   <td className="py-3 px-4">{item.biodataId || 'N/A'}</td>
                   <td className="py-3 px-4">{item.name || 'N/A'}</td>
-                  <td className="py-3 px-4">{request.status === 'Approved' ? item.mobile_number || 'N/A' : 'N/A'}</td>
-                  <td className="py-3 px-4">{request.status === 'Approved' ? item.contact_email || 'N/A' : 'N/A'}</td>
-                  <td className="py-3 px-4">{request.status === 'Approved' ? request.status || 'N/A' : 'Pending'}</td>
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-4">{transaction.status === 'Approved' ? item.mobile_number : 'N/A'}</td>
+                  <td className="py-3 px-4">{transaction.status === 'Approved' ? item.contact_email : 'N/A'}</td>
+                  <td className="py-3 px-4 text-green-500 font-bold">{transaction.status}</td>
+                  <td className="py-3 px-4 text-center">
                     <button
-                      onClick={() => handleDeleteRequest(request._id, item.biodataId)}
-                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full shadow focus:outline-none transition duration-200"
+                      onClick={() => handleDeleteContactRequest(transaction)}
+                      className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition duration-200 ml-2"
                     >
-                      <AiFillDelete className="text-white text-xl" />
+                      Delete
                     </button>
                   </td>
                 </tr>
               ))
-            )}
-          </tbody>
-        </table>
-      </div>
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => setCurrentPage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l-full focus:outline-none transition duration-200"
-        >
-          Previous
-        </button>
-        <button
-          onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={indexOfLastItem >= contactRequests.length}
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r-full focus:outline-none transition duration-200"
-        >
-          Next
-        </button>
-      </div>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="7" className="py-3 px-4 text-center text-gray-500">No Available Contact Requests</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default MyContactRequest;
+const queryClient = new QueryClient();
+
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ApprovedContactRequest />
+    </QueryClientProvider>
+  );
+};
+
+export default App;

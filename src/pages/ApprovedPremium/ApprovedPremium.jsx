@@ -1,26 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery, useMutation, QueryClient, QueryClientProvider } from 'react-query';
 import Swal from 'sweetalert2';
-import { FaTrashAlt, FaCrown } from "react-icons/fa";
+import { FaCrown, FaTrashAlt } from "react-icons/fa";
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 const ApprovedPremium = () => {
-    const [searchTerm, setSearchTerm] = useState('');
     const axiosSecure = useAxiosSecure();
 
-    const { data: biodatas = [], refetch } = useQuery(['biodatas'], async () => {
-        const usersResponse = await axiosSecure.get('/users');
-        const usersEmails = usersResponse.data.map(user => user.contact_email);
-
+    const { data: biodatas = [], refetch: refetchBiodatas } = useQuery(['premiumBiodatas'], async () => {
         const biodatasResponse = await axiosSecure.get('/biodatas');
-        // Filter the biodatas based on conditions
-        const filteredBiodatas = biodatasResponse.data.filter(biodata => {
-            // Add your conditions here
-            // For example, to get all biodatas with isPremium set to true
-            return biodata.isPremium === true;
-        });
+        return biodatasResponse.data.filter(biodata => biodata.isPremium);
+    });
 
-        return filteredBiodatas;
+    const { data: users = [], refetch: refetchUsers } = useQuery(['premiumUsers'], async () => {
+        const usersResponse = await axiosSecure.get('/users');
+        return usersResponse.data.filter(user => user.isPremium);
     });
 
     const makePremiumMutation = useMutation(
@@ -29,19 +23,22 @@ const ApprovedPremium = () => {
         },
         {
             onSuccess: () => {
-                refetch();
+                refetchBiodatas();
+                refetchUsers();
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
-                    text: 'Biodata has been marked as premium.',
+                    text: 'User marked as premium successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
                 });
             },
             onError: (error) => {
-                console.error('Error marking biodata as premium:', error);
+                console.error('Error making user premium:', error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Failed to mark biodata as premium. Please try again.',
+                    text: 'Failed to mark user as premium. Please try again.',
                 });
             },
         }
@@ -53,7 +50,8 @@ const ApprovedPremium = () => {
         },
         {
             onSuccess: () => {
-                refetch();
+                refetchBiodatas();
+                refetchUsers();
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
@@ -73,10 +71,6 @@ const ApprovedPremium = () => {
         }
     );
 
-    const handleSearch = () => {
-        refetch();
-    };
-
     const handleMakePremium = (user) => {
         makePremiumMutation.mutate(user.contact_email);
     };
@@ -88,21 +82,6 @@ const ApprovedPremium = () => {
     return (
         <div className="container mx-auto">
             <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Approved Premium Users</h1>
-            <div className="flex justify-center mb-6">
-                <input
-                    type="text"
-                    placeholder="Search by name"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="border border-gray-300 rounded-full px-4 py-2 mr-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                    onClick={handleSearch}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow focus:outline-none transition duration-200"
-                >
-                    Search
-                </button>
-            </div>
             <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
                 <thead className="bg-gradient-to-r from-blue-500 to-blue-700 text-white">
                     <tr>
@@ -115,8 +94,8 @@ const ApprovedPremium = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {biodatas.length > 0 ? (
-                        biodatas.filter(user => user.name?.toLowerCase().includes(searchTerm.toLowerCase())).map((user, index) => (
+                    {biodatas.concat(users).length > 0 ? (
+                        biodatas.concat(users).map((user, index) => (
                             <tr key={user._id} className="border-b transition duration-200 hover:bg-gray-100">
                                 <td className="py-3 px-4 text-center">{index + 1}</td>
                                 <td className="py-3 px-4 text-center">{user.biodataId}</td>
@@ -148,7 +127,7 @@ const ApprovedPremium = () => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="6" className="py-3 px-4 text-center text-gray-500">No Available Data By This Name</td>
+                            <td colSpan="6" className="py-3 px-4 text-center text-gray-500">No premium users available</td>
                         </tr>
                     )}
                 </tbody>

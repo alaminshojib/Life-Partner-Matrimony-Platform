@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
+import { useQuery, useMutation, QueryClient, QueryClientProvider } from 'react-query';
 import Swal from 'sweetalert2';
-import { FaCheck, FaTimes } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 const ApprovedContactRequest = () => {
@@ -16,44 +16,6 @@ const ApprovedContactRequest = () => {
         }
     });
 
-    const handleSearch = () => {
-        refetch();
-    };
-
-    const handleApproveContact = async (contactRequest) => {
-        try {
-            const res = await axiosSecure.patch(`/payments/${contactRequest._id}`);
-            if (res.data.success) {
-                await refetch();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Contact request approved!',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        } catch (error) {
-            handleError(error);
-        }
-    };
-
-    const handleDeleteContactRequest = async (contactRequest) => {
-        try {
-            const res = await axiosSecure.delete(`/payments/${contactRequest._id}`);
-            if (res.data.deletedCount > 0) {
-                refetch();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Contact request deleted successfully!',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-        } catch (error) {
-            handleError(error);
-        }
-    };
-
     const handleError = (error) => {
         console.error('Error:', error);
         Swal.fire({
@@ -61,6 +23,50 @@ const ApprovedContactRequest = () => {
             title: 'Oops...',
             text: 'Something went wrong!',
         });
+    };
+
+    const approveContactMutation = useMutation(
+        contactRequest => axiosSecure.patch(`/payments/${contactRequest._id}`),
+        {
+            onSuccess: () => {
+                refetch();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Contact request approved!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            },
+            onError: handleError
+        }
+    );
+
+    const deleteContactRequestMutation = useMutation(
+        contactRequest => axiosSecure.delete(`/payments/${contactRequest._id}`),
+        {
+            onSuccess: () => {
+                refetch();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Contact request deleted successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            },
+            onError: handleError
+        }
+    );
+
+    const handleSearch = () => {
+        refetch();
+    };
+
+    const handleApproveContact = (contactRequest) => {
+        approveContactMutation.mutate(contactRequest);
+    };
+
+    const handleDeleteContactRequest = (contactRequest) => {
+        deleteContactRequestMutation.mutate(contactRequest);
     };
 
     const filteredContactRequests = contactRequests.filter(contactRequest =>
@@ -106,25 +112,20 @@ const ApprovedContactRequest = () => {
                                         <th className="py-3 px-4 text-center">{index + 1}.{subIndex + 1}</th>
                                         <td className="py-3 px-4 text-center">{item.name}</td>
                                         <td className="py-3 px-4 text-center">{item.mobile_number}</td>
-                                        <td className="py-3 px-4 text-center">{contactRequest.email}</td>
+                                        <td className="py-3 px-4 text-center">{item.contact_email}</td>
                                         <td className="py-3 px-4 text-center">{item.biodataId}</td>
-                                        <td className="py-3 px-4 text-center">
-                                            {contactRequest.approved ? (
-                                                <FaCheck className="text-green-600 text-xl" />
-                                            ) : (
-                                                <FaTimes className="text-red-600 text-xl" />
-                                            )}
-                                        </td>
                                         <td className="py-3 px-4 text-center">
                                             <button
                                                 onClick={() => handleApproveContact(contactRequest)}
-                                                className={`bg-green-500 text-white p-2 rounded-full hover:bg-green-600 transition duration-200 ${
+                                                className={` font-bold p-2 rounded-full text-green-600 transition duration-200 ${
                                                     contactRequest.approved ? 'opacity-50 cursor-not-allowed' : ''
                                                 }`}
-                                                disabled={contactRequest.approved}
+                                                disabled={contactRequest.status === "Approved"}
                                             >
-                                                {contactRequest.approved ? 'Approved' : 'Approve'}
+                                                {contactRequest.status === "Approved" ?  <FaCheck className="text-green-600 text-xl" /> : 'Approve'}
                                             </button>
+                                        </td>
+                                        <td className="py-3 px-4 text-center">
                                             <button
                                                 onClick={() => handleDeleteContactRequest(contactRequest)}
                                                 className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition duration-200 ml-2"
