@@ -28,4 +28,15 @@
 ## Project Overview:
 The Life Partner-Matrimony Platform is designed to provide a user-friendly experience for individuals seeking life partners. It features robust authentication mechanisms, secure payment processing, and comprehensive profile management functionalities. The platform aims to connect users efficiently through detailed biodata listings, success stories, and interactive features like favorites management and contact requests.
 
+## Getting Started
 
+To run this project locally, follow these steps:
+
+- Clone this repository: `git clone <repository-url>`
+- Navigate to the project directory: `cd art-craft-store`
+- Install dependencies for both frontend and backend:
+- Set up environment variables:
+1. Create a `.env` file in the `frontend` directory and add necessary environment variables.
+2. Create a `.env` file in the `backend` directory and add necessary environment variables.
+- Start the frontend and backend servers:
+- Open your browser and navigate to `http://localhost:3000` to view the application.
